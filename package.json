@@ -1,0 +1,69 @@
+{
+  "name": "bitcoin-core",
+  "version": "0.0.0",
+  "description": "A modern Bitcoin Core REST and RPC client.",
+  "author": {
+    "name": "Rui Marinho",
+    "email": "rui.marinho@seegno.com",
+    "url": "http://seegno.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/seegno/bitcoin-core",
+  "bugs": "https://github.com/seegno/bitcoin-core/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seegno/bitcoin-core.git"
+  },
+  "main": "dist/index.js",
+  "keywords": [
+    "bitcoin",
+    "bitcoind",
+    "client",
+    "request",
+    "rest",
+    "rpc"
+  ],
+  "options": {
+    "mocha": "--compilers js:babel-register --recursive --require should test"
+  },
+  "scripts": {
+    "changelog": "github_changelog_generator --no-issues --header-label='# Changelog'",
+    "cover": "babel-node node_modules/.bin/isparta cover --report html _mocha -- $npm_package_options_mocha",
+    "lint": "eslint src test && jscs src test",
+    "prepublish": "npm run transpile",
+    "testdocker": "docker-compose run --rm sut",
+    "test": "NODE_ENV=test mocha $npm_package_options_mocha",
+    "transpile": "rm -rf dist/* && babel src --out-dir dist"
+  },
+  "dependencies": {
+    "bluebird": "^3.1.1",
+    "lodash": "^4.0.0",
+    "request": "^2.53.0",
+    "semver": "^5.1.0",
+    "standard-error": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.4.0",
+    "babel-eslint": "^4.1.6",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-preset-es2015-node4": "^2.0.2",
+    "babel-register": "^6.3.13",
+    "eslint": "^1.10.3",
+    "eslint-config-seegno": "^1.2.0",
+    "eslint-plugin-babel": "^3.0.0",
+    "isparta": "^4.0.0",
+    "jscs": "^2.7.0",
+    "jscs-config-seegno": "^1.0.0",
+    "mocha": "^2.3.4",
+    "nock": "^5.2.1",
+    "pre-commit": "^1.1.2",
+    "should": "^8.0.0",
+    "sinon": "^1.17.2"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "engines": {
+    "node": ">=4"
+  }
+}

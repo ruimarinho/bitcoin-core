@@ -1,0 +1,4 @@
+extends: seegno
+
+rules:
+  max-nested-callbacks: [2, 5]
