@@ -16,6 +16,7 @@ bitcoind:
     -rest
     -rpcallowip=10.211.0.0/16
     -rpcallowip=172.17.0.0/16
+    -rpcallowip=192.168.0.0/16
     -rpcpassword=bar
     -rpcuser=foo
     -server
@@ -51,6 +52,7 @@ bitcoind-username-only:
     -rest
     -rpcallowip=10.211.0.0/16
     -rpcallowip=172.17.0.0/16
+    -rpcallowip=192.168.0.0/16
     -rpcuser=foo
     -server
   ports:
