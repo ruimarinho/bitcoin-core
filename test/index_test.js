@@ -127,13 +127,15 @@ describe('Client', () => {
         });
     });
 
-    it('should return the response headers if `headers` is enabled using callbacks', () => {
-      return new Client(_.defaults({ headers: true }, config.bitcoind)).getInfo((err, [info, headers]) => {
+    it('should return the response headers if `headers` is enabled using callbacks', (done) => {
+      new Client(_.defaults({ headers: true }, config.bitcoind)).getInfo((err, [info, headers]) => {
         should.not.exist(err);
 
         info.should.be.an.Object();
 
         headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
+
+        done();
       });
     });
 
@@ -150,7 +152,7 @@ describe('Client', () => {
         });
     });
 
-    it('should return the response headers if `headers` is enabled and batching is used with callbacks', () => {
+    it('should return the response headers if `headers` is enabled and batching is used with callbacks', (done) => {
       const batch = [];
 
       _.times(5, () => batch.push({ method: 'getnewaddress' }));
@@ -161,6 +163,8 @@ describe('Client', () => {
         addresses.should.have.length(batch.length);
 
         headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
+
+        done();
       });
     });
   });
