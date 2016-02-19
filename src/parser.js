@@ -11,6 +11,10 @@ import RpcError from './errors/rpc-error';
  */
 
 function get(body, { headers = false, response } = {}) {
+  if (!body) {
+    throw new RpcError(response.statusCode, response.statusMessage);
+  }
+
   if (body.error !== null) {
     throw new RpcError(
       _.get(body, 'error.code', -32603),

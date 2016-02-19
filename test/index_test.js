@@ -122,8 +122,8 @@ describe('Client', () => {
       return new Client(_.defaults({ headers: true }, config.bitcoind)).getInfo()
         .then(([info, headers]) => {
           info.should.be.an.Object();
-          headers.should.have.property('server');
-          headers.server.should.startWith('bitcoin-json-rpc');
+
+          headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
         });
     });
 
@@ -132,8 +132,8 @@ describe('Client', () => {
         should.not.exist(err);
 
         info.should.be.an.Object();
-        headers.should.have.property('server');
-        headers.server.should.startWith('bitcoin-json-rpc');
+
+        headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
       });
     });
 
@@ -146,8 +146,7 @@ describe('Client', () => {
         .then(([addresses, headers]) => {
           addresses.should.have.length(batch.length);
 
-          headers.should.have.property('server');
-          headers.server.should.startWith('bitcoin-json-rpc');
+          headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
         });
     });
 
@@ -161,8 +160,7 @@ describe('Client', () => {
 
         addresses.should.have.length(batch.length);
 
-        headers.should.have.property('server');
-        headers.server.should.startWith('bitcoin-json-rpc');
+        headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
       });
     });
   });
@@ -375,7 +373,7 @@ describe('Client', () => {
       it('should return a transaction json-encoded by default', () => {
         return client.listUnspent()
           .then(([transaction]) => client.getTransactionByHash(transaction.txid))
-          .then((transaction) => transaction.should.have.keys('blockhash', 'blocktime', 'confirmations', 'locktime', 'time', 'txid', 'version', 'vin', 'vout'));
+          .then((transaction) => transaction.should.have.keys('blockhash', 'blocktime', 'confirmations', 'locktime', 'size', 'time', 'txid', 'version', 'vin', 'vout'));
       });
     });
 
@@ -393,7 +391,7 @@ describe('Client', () => {
       it('should return a block json-encoded by default', () => {
         return client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' })
           .then((block) => {
-            block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'time', 'tx', 'version');
+            block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'time', 'tx', 'version');
             block.tx.should.matchEach((value) => value.should.be.an.Object());
           });
       });
@@ -401,7 +399,7 @@ describe('Client', () => {
       it('should return a block summary json-encoded if `summary` is enabled', () => {
         return client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json', summary: true })
           .then((block) => {
-            block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'time', 'tx', 'version');
+            block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'time', 'tx', 'version');
             block.tx.should.matchEach((value) => value.should.be.a.String());
           });
       });
@@ -473,14 +471,14 @@ describe('Client', () => {
     describe('getMemoryPoolContent()', () => {
       it('should return memory pool content json-encoded by default', () => {
         return new Client(config.bitcoind).getMemoryPoolContent()
-          .then((content) => content.should.equal('Not Found'));
+          .then((content) => content.should.eql({}));
       });
     });
 
     describe('getMemoryPoolInformation()', () => {
       it('should return memory pool information json-encoded by default', () => {
         return new Client(config.bitcoind).getMemoryPoolContent()
-          .then((information) => information.should.equal('Not Found'));
+          .then((information) => information.should.eql({}));
       });
     });
   });
