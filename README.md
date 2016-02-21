@@ -189,7 +189,7 @@ These configuration values may also be set on the `bitcoin.conf` file of your pl
 ### getTransactionByHash()
 Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
 
-##### Arguments
+#### Arguments
 1. `hash` _(string)_: the transaction hash.
 2. `[summary=false]` _(boolean)_: whether to return just the transaction hash, thus saving memory.
 3. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
@@ -197,14 +197,14 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 ### getBlockByHash()
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
 
-##### Arguments
+#### Arguments
 1. `hash` _(string)_: the block hash.
 2. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
 
 ### getBlockHeadersByHash()
 Given a block hash, returns amount of block headers in upward direction.
 
-##### Arguments
+#### Arguments
 1. `hash` _(string)_: the block hash.
 2. `count` _(number)_: the number of blocks to count in upward direction.
 3. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
@@ -215,7 +215,7 @@ Returns various state info regarding block chain processing.
 ### getUnspentTransactionOutputs()
 Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
 
-##### Arguments
+#### Arguments
 1. `outpoints` _(array\<Object\>|Object)_: the outpoint to query in the format `{ id: "<txid>", index: "<index>" }`.
 2. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
 
