@@ -2,6 +2,8 @@ sut:
   build: .
   command: test
   entrypoint: npm
+  environment:
+    - CI
   links:
     - bitcoind
     - bitcoind-ssl
@@ -19,8 +21,6 @@ bitcoind:
     -rpcpassword=bar
     -rpcuser=foo
     -server
-  ports:
-    - 18332
 
 bitcoind-ssl:
   image: seegno/bitcoind:0.11
@@ -37,8 +37,6 @@ bitcoind-ssl:
     -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
     -rpcuser=foo
     -server
-  ports:
-    - 18332
   volumes:
     - ./test/config/ssl:/etc/ssl/bitcoind
 
@@ -53,5 +51,3 @@ bitcoind-username-only:
     -rpcallowip=192.168.0.0/16
     -rpcuser=foo
     -server
-  ports:
-    - 18332
