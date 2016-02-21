@@ -33,7 +33,7 @@
     "lint": "eslint src test && jscs src test",
     "prepublish": "npm run transpile",
     "testdocker": "docker-compose run --rm sut",
-    "test": "mocha $npm_package_options_mocha",
+    "test": "NODE_ENV=test mocha $npm_package_options_mocha",
     "transpile": "rm -rf dist/* && babel src --out-dir dist",
     "version": "npm run changelog -- --future-release=$npm_package_version && sed -i '' -e :a -e '$d;N;2,3ba' -e 'P;D' CHANGELOG.md && npm run transpile && git add -A CHANGELOG.md dist"
   },
@@ -48,6 +48,7 @@
     "babel-cli": "^6.4.0",
     "babel-eslint": "^4.1.6",
     "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-transform-async-to-module-method": "^6.5.2",
     "babel-preset-es2015-node4": "^2.0.2",
     "babel-register": "^6.3.13",
     "eslint": "^1.10.3",
