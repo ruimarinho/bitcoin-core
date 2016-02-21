@@ -282,7 +282,6 @@ const client = new Client({
 ```
 
 ## Tests
-
 Currently the test suite is tailored for Docker (including `docker-compose`) due to the multitude of different `bitcoind` configurations that are required in order to get the test suite passing.
 
 To test using a local installation of `node.js` but with dependencies (e.g. `bitcoind`) running inside Docker:
@@ -296,6 +295,12 @@ To test using Docker exclusively (similarly to what is done in Travis CI):
 
 ```sh
 npm run testdocker
+```
+
+## Release
+
+```sh
+npm version [<newversion> | major | minor | patch] -m "Release %s"
 ```
 
 ## License
