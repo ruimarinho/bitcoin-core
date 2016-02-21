@@ -1,22 +1,18 @@
-FROM mhart/alpine-node:5
+FROM mhart/alpine-node:4
 
-RUN apk add --update make gcc g++ python git && rm -rf /var/cache/apk/*
+RUN adduser -S node
 
-RUN adduser -S bitcoin
+WORKDIR /home/node/app
 
-WORKDIR /home/bitcoin/app
-
-COPY package.json /home/bitcoin/app/
+COPY package.json /home/node/app/
 
 RUN npm install --ignore-scripts
 
-COPY . /home/bitcoin/app/
+COPY . /home/node/app/
 
-RUN chown -R bitcoin /home/bitcoin
+RUN chown -R node /home/node
 
-USER bitcoin
-
-RUN npm rebuild
+USER node
 
 RUN npm run transpile
 
