@@ -10,7 +10,6 @@ sut:
 bitcoind:
   image: seegno/bitcoind:0.12
   command:
-    -datadir=/var/lib/bitcoind
     -printtoconsole
     -regtest=1
     -rest
@@ -26,7 +25,6 @@ bitcoind:
 bitcoind-ssl:
   image: seegno/bitcoind:0.11
   command:
-    -datadir=/var/lib/bitcoind
     -printtoconsole
     -regtest=1
     -rest
@@ -47,7 +45,6 @@ bitcoind-ssl:
 bitcoind-username-only:
   image: seegno/bitcoind:0.11
   command:
-    -datadir=/var/lib/bitcoind
     -printtoconsole
     -regtest=1
     -rest
