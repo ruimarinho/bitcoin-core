@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/seegno/bitcoin-core.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "keywords": [
     "bitcoin",
     "bitcoind",
@@ -34,7 +34,7 @@
     "prepublish": "npm run transpile",
     "testdocker": "docker-compose run --rm sut",
     "test": "NODE_ENV=test mocha $npm_package_options_mocha",
-    "transpile": "rm -rf dist/* && babel src --out-dir dist",
+    "transpile": "rm -rf dist/* && babel src --out-dir dist/src",
     "version": "npm run changelog --future-release=$npm_package_version && npm run transpile && git add -A CHANGELOG.md dist"
   },
   "dependencies": {
