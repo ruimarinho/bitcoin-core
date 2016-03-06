@@ -10,7 +10,7 @@ sut:
     - bitcoind-username-only
 
 bitcoind:
-  image: seegno/bitcoind:0.12
+  image: seegno/bitcoind:0.12-alpine
   command:
     -printtoconsole
     -regtest=1
@@ -23,7 +23,7 @@ bitcoind:
     -server
 
 bitcoind-ssl:
-  image: seegno/bitcoind:0.11
+  image: seegno/bitcoind:0.11-alpine
   command:
     -printtoconsole
     -regtest=1
@@ -41,7 +41,7 @@ bitcoind-ssl:
     - ./test/config/ssl:/etc/ssl/bitcoind
 
 bitcoind-username-only:
-  image: seegno/bitcoind:0.11
+  image: seegno/bitcoind:0.11-alpine
   command:
     -printtoconsole
     -regtest=1
