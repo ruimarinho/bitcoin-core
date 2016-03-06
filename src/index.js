@@ -12,16 +12,16 @@ import request from 'request';
 import semver from 'semver';
 
 /**
- * Parse arguments to find out if a callback
- * has been passed.
+ * Source arguments to find out if a callback has been passed.
  */
 
-function getArguments(...args) {
-  let callback;
-  const lastArg = _.last(args);
+function source(...args) {
+  const last = _.last(args);
 
-  if (_.isFunction(lastArg)) {
-    callback = lastArg;
+  let callback;
+
+  if (_.isFunction(last)) {
+    callback = last;
     args = _.dropRight(args);
   }
 
@@ -132,7 +132,7 @@ class Client {
    */
 
   getTransactionByHash(...args) {
-    const [[hash, { extension = 'json' } = {}], callback] = getArguments(...args);
+    const [[hash, { extension = 'json' } = {}], callback] = source(...args);
 
     return Promise.try(() => {
       return this.request.getAsync(`/rest/tx/${hash}.${extension}`)
@@ -148,7 +148,7 @@ class Client {
    */
 
   getBlockByHash(...args) {
-    const [[hash, { summary = false, extension = 'json' } = {}], callback] = getArguments(...args);
+    const [[hash, { summary = false, extension = 'json' } = {}], callback] = source(...args);
 
     return Promise.try(() => {
       return this.request.getAsync(`/rest/block${summary ? '/notxdetails/' : '/'}${hash}.${extension}`)
@@ -162,7 +162,7 @@ class Client {
    */
 
   getBlockHeadersByHash(...args) {
-    const [[hash, count, { extension = 'json' } = {}], callback] = getArguments(...args);
+    const [[hash, count, { extension = 'json' } = {}], callback] = source(...args);
 
     return Promise.try(() => {
       if (!_.includes(['bin', 'hex'], extension)) {
@@ -181,7 +181,7 @@ class Client {
    */
 
   getBlockchainInformation(...args) {
-    const [, callback] = getArguments(...args);
+    const [, callback] = source(...args);
 
     return this.request.getAsync(`/rest/chaininfo.json`)
       .bind(this)
@@ -196,7 +196,7 @@ class Client {
    */
 
   getUnspentTransactionOutputs(...args) {
-    const [[outpoints, { extension = 'json' } = {}], callback] = getArguments(...args);
+    const [[outpoints, { extension = 'json' } = {}], callback] = source(...args);
 
     const sets = _.flatten([outpoints]).map((outpoint) => {
       return `${outpoint.id}-${outpoint.index}`;
@@ -214,7 +214,7 @@ class Client {
    */
 
   getMemoryPoolContent(...args) {
-    const [, callback] = getArguments(...args);
+    const [, callback] = source(...args);
 
     return this.request.getAsync('/rest/mempool/contents.json')
       .bind(this)
@@ -232,7 +232,7 @@ class Client {
    */
 
   getMemoryPoolInformation(...args) {
-    const [, callback] = getArguments(...args);
+    const [, callback] = source(...args);
 
     return this.request.getAsync('/rest/mempool/info.json')
       .bind(this)
