@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-core",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A modern Bitcoin Core REST and RPC client.",
   "author": {
     "name": "Rui Marinho",
