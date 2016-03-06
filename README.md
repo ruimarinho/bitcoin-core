@@ -28,23 +28,21 @@ npm install bitcoin-core --save
 
 ### Examples
 #### Using network mode
+The `network` will automatically determine the port to connect to, just like the `bitcoind` and `bitcoin-cli` commands.
 
 ```js
 const Client = require('bitcoin-core');
-const client = new Client({
-  network: 'regtest'
-});
+const client = new Client({ network: 'regtest' });
 ```
 
-#### Using a custom port
+##### Setting a custom port
 
 ```js
-const client = new Client({
-  port: 28332
-});
+const client = new Client({ port: 28332 });
 ```
 
 #### Connecting to an SSL/TLS server with strict checking enabled
+By default, when `ssl` is enabled, strict checking is implicitly enabled.
 
 ```js
 const fs = require('fs');
@@ -69,66 +67,55 @@ const client = new Client({
 
 #### Using promises to process the response
 
-```
-// Using promise style:
+```js
 client.getInfo().then((help) => console.log(help));
 ```
 
 #### Using callbacks to process the response
 
-```
+```js
 client.getInfo((error, help) => console.log(help));
 ```
 
 #### Returning headers in the response
+For compatibility with other Bitcoin Core clients.
 
 ```js
-const client = new Client({
-  headers: true
-});
+const client = new Client({ headers: true });
 
 // Promise style with headers enabled:
 client.getInfo().then(([body, headers]) => console.log(body, headers));
 
 // Await style based on promises with headers enabled:
 const [body, headers] = await client.getInfo();
-console.log(body, headers);
 ```
 
 ### Version Checking
 By default, all methods are exposed on the client independently of the version it is connecting to. This is the most flexible option as defining methods for unavailable RPC calls does not cause any harm and the library is capable of handling a `Method not found` response error correctly.
 
 ```js
-const client = new Client({
-  version: '0.12.0'
-});
+const client = new Client();
 
 client.command('foobar');
-// RpcError: -32601 Method not found
+// => RpcError: -32601 Method not found
 ```
 
 However, if you prefer to be on the safe side, you can enable strict version checking. This will validate all method calls before executing the actual RPC request:
 
 ```js
-const client = new Client({
-  version: '0.12.0'
-});
+const client = new Client({ version: '0.12.0' });
 
 client.getHashesPerSec();
-// Method "gethashespersec" is not supported by version "0.12.0"
+// => Method "gethashespersec" is not supported by version "0.12.0"
 ```
 
 If you want to enable strict version checking for the bleeding edge version, you may set a very high version number to exclude recently deprecated calls:
 
 ```js
-const client = new Client({
-  version: `${Number.MAX_SAFE_INTEGER}.0.0`
-});
+const client = new Client({ version: `${Number.MAX_SAFE_INTEGER}.0.0` });
 
-// Method `getwork` was deprecated in 0.11.0, so version 9007199254740991.0.0 will
-// definitely not have it too.
 client.getWork();
-// Throws 'Method "getwork" is not supported by version "9007199254740991.0.0"'.
+// => Throws 'Method "getwork" is not supported by version "9007199254740991.0.0"'.
 ```
 
 To avoid potential issues with prototype references, all methods are still enumerable on the library client prototype.
@@ -137,7 +124,7 @@ To avoid potential issues with prototype references, all methods are still enume
 Start the `bitcoind` with the RPC server enabled and optionally configure a username and password:
 
 ```sh
-bitcoind -rpcuser=foo -rpcpassword=bar -server
+docker run --rm -it seegno/bitcoind:0.12-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -server
 ```
 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation.
@@ -145,6 +132,9 @@ These configuration values may also be set on the `bitcoin.conf` file of your pl
 By default, port `8332` is used to listen for requests in `mainnet` mode, or `18332` in `testnet` or `regtest` modes. Use the `network` property to initialize the client on the desired mode and automatically set the respective default port. You can optionally set a custom port of your choice too.
 
 The RPC services binds to the localhost loopback network interface, so use `rpcbind` to change where to bind to and `rpcallowip` to whitelist source IP access.
+
+#### Methods
+All RPC [methods](src/methods.js) are exposed on the client interface as a camelcase'd version of those available on `bitcoind`.
 
 #### Batch requests
 Batched requests are support by passing an array to the `command` method with a `method` and optionally, `parameters`. The return value will be an array with all the responses.
@@ -169,8 +159,8 @@ const batch = [
   { method: 'getnewaddress', params: [] }
 ]
 
-// Logs `mkteeBFmGkraJaWN5WzqHCjmbQWVrPo5X3, { [RpcError: Method not found] message: 'Method not found', name: 'RpcError', code: -32601 }`.
 new Client().command(batch).then(([address, error]) => console.log(address, error)));
+// => `mkteeBFmGkraJaWN5WzqHCjmbQWVrPo5X3, { [RpcError: Method not found] message: 'Method not found', name: 'RpcError', code: -32601 }`.
 ```
 
 ### REST
@@ -181,57 +171,103 @@ Error handling is still fragile so avoid passing user input.
 Start the `bitcoind` with the REST server enabled:
 
 ```sh
-bitcoind -server -rest
+docker run --rm -it seegno/bitcoind:0.12-alpine -printtoconsole -server -rest
 ```
 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation. Use `txindex=1` if you'd like to enable full transaction query support (note: this will take a considerable amount of time on the first run).
 
-### getTransactionByHash()
-Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
-
-#### Arguments
-1. `hash` _(string)_: the transaction hash.
-2. `[summary=false]` _(boolean)_: whether to return just the transaction hash, thus saving memory.
-3. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
-
-### getBlockByHash()
+### Methods
+#### getBlockByHash(hash)
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
 
-#### Arguments
+##### Arguments
 1. `hash` _(string)_: the block hash.
-2. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
+2. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
 
-### getBlockHeadersByHash()
+#### getBlockHeadersByHash(hash, count, [options])
 Given a block hash, returns amount of block headers in upward direction.
 
-#### Arguments
+##### Arguments
 1. `hash` _(string)_: the block hash.
 2. `count` _(number)_: the number of blocks to count in upward direction.
-3. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
+3. `[options]` _(Object)_: The options object.
+4. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
 
-### getBlockchainInformation()
+##### Example
+
+```js
+client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
+```
+
+#### getBlockchainInformation()
 Returns various state info regarding block chain processing.
 
-### getUnspentTransactionOutputs()
-Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
+##### Example
 
-#### Arguments
-1. `outpoints` _(array\<Object\>|Object)_: the outpoint to query in the format `{ id: "<txid>", index: "<index>" }`.
-2. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`), or JSON format.
+```js
+client.getBlockchainInformation();
+```
 
-### getMemoryPoolContent()
+#### getMemoryPoolContent()
 Returns transactions in the transaction memory pool.
 
-### getMemoryPoolInformation()
+##### Example
+
+```js
+client.getMemoryPoolContent();
+```
+
+#### getMemoryPoolInformation()
 Returns various information about the transaction memory pool. Only supports JSON as output format.
 - size: the number of transactions in the transaction memory pool.
 - bytes: size of the transaction memory pool in bytes.
 - usage: total transaction memory pool memory usage.
 
+##### Example
+
+```js
+client.getMemoryPoolInformation();
+```
+
+#### getTransactionByHash(hash, [options])
+Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
+
+#### Arguments
+1. `hash` _(string)_: the transaction hash.
+2. `[options]` _(Object)_: The options object.
+3. `[options.summary=false]` _(boolean)_: whether to return just the transaction hash, thus saving memory.
+4. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+
+##### Example
+
+```js
+client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe', { extension: 'json', summary: false });
+```
+
+### getUnspentTransactionOutputs(outpoints, [options])
+Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
+
+#### Arguments
+1. `outpoints` _(array\<Object\>|Object)_: the outpoint to query in the format `{ id: '<txid>', index: '<index>' }`.
+2. `[options]` _(Object)_: The options object.
+3. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+
+##### Example
+
+```js
+client.getUnspentTransactionOutputs([{
+  id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
+  index: 0
+}, {
+  id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
+  index: 1
+}], { extension: 'json' })
+```
+
 ### SSL
 This client supports SSL out of the box. Simply pass the SSL public certificate to the client and optionally disable strict SSL checking which will bypass SSL validation (the connection is still encrypted but the server it is connecting to may not be trusted). This is, of course, discouraged unless for testing purposes when using something like self-signed certificates.
 
-#### Generating an self-signed certificates for testing purposes
+#### Generating a self-signed certificates for testing purposes
 Please note that the following procedure should only be used for testing purposes.
 
 Generate an self-signed certificate together with an unprotected private key:
@@ -244,7 +280,7 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nod
 On Bitcoin Core <0.12, you can start the `bitcoind` RPC server directly with SSL:
 
 ```sh
-bitcoind -rpcuser=foo -rpcpassword=bar -rpcssl -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem -server
+docker run --rm -it -v $(PWD)/ssl:/etc/ssl seegno/bitcoind:0.11-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -rpcssl -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem -server
 ```
 
 On Bitcoin Core >0.12, use must use `stunnel` (`brew install stunnel` or `sudo apt-get install stunnel4`) or an HTTPS reverse proxy to configure SSL since the built-in support for SSL has been removed. The trade off with `stunnel` is performance and simplicity versus features, as it lacks more powerful capacities such as Basic Authentication and caching which are standard in reverse proxies.
