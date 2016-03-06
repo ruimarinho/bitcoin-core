@@ -177,12 +177,19 @@ docker run --rm -it seegno/bitcoind:0.12-alpine -printtoconsole -server -rest
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation. Use `txindex=1` if you'd like to enable full transaction query support (note: this will take a considerable amount of time on the first run).
 
 ### Methods
-#### getBlockByHash(hash)
+#### getBlockByHash(hash, [options])
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
+
+##### Example
+
+```js
+client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
+```
 
 ##### Arguments
 1. `hash` _(string)_: the block hash.
-2. `[extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+2. `[options]` _(Object)_: The options object.
+3. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
 
 #### getBlockHeadersByHash(hash, count, [options])
 Given a block hash, returns amount of block headers in upward direction.
