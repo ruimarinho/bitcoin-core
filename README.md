@@ -12,7 +12,8 @@ npm install bitcoin-core --save
 ```
 
 ## Usage
-### Arguments
+### Client(...args)
+#### Arguments
 1. `[agentOptions]` _(Object)_: Optional `agent` [options](https://github.com/request/request#using-optionsagentoptions) to configure SSL/TLS.
 2. `[headers=false]` _(boolean)_: Whether to return the response headers.
 3. `[host=localhost]` _(string)_: The host to connect to.
@@ -136,6 +137,16 @@ The RPC services binds to the localhost loopback network interface, so use `rpcb
 #### Methods
 All RPC [methods](src/methods.js) are exposed on the client interface as a camelcase'd version of those available on `bitcoind`.
 
+For a more complete reference about which methods are available, check the [RPC documentation](https://bitcoin.org/en/developer-reference#remote-procedure-calls-rpcs) on the [Bitcoin Core Developer Reference website](https://bitcoin.org/en/developer-reference).
+
+##### Examples
+
+```js
+client.createRawTransaction([{ txid: '1eb590cd06127f78bf38ab4140c4cdce56ad9eb8886999eb898ddf4d3b28a91d', vout: 0 }], { 'mgnucj8nYqdrPFh2JfZSB1NmUThUGnmsqe': 0.13 });
+client.sendMany('test1', { mjSk1Ny9spzU2fouzYgLqGUD8U41iR35QN: 0.1, mgnucj8nYqdrPFh2JfZSB1NmUThUGnmsqe: 0.2 }, 6, 'Example Transaction');
+client.sendToAddress('mmXgiR6KAhZCyQ8ndr2BCfEq1wNG2UnyG6', 0.1,  'sendtoaddress example', 'Nemo From Example.com');
+```
+
 #### Batch requests
 Batched requests are support by passing an array to the `command` method with a `method` and optionally, `parameters`. The return value will be an array with all the responses.
 
@@ -177,8 +188,14 @@ docker run --rm -it seegno/bitcoind:0.12-alpine -printtoconsole -server -rest
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation. Use `txindex=1` if you'd like to enable full transaction query support (note: this will take a considerable amount of time on the first run).
 
 ### Methods
-#### getBlockByHash(hash, [options])
+#### getBlockByHash(hash, [options], [callback])
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
+
+##### Arguments
+1. `hash` _(string)_: The block hash.
+2. `[options]` _(Object)_: The options object.
+3. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+4. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -186,19 +203,15 @@ Given a block hash, returns a block, in binary, hex-encoded binary or JSON forma
 client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
 ```
 
-##### Arguments
-1. `hash` _(string)_: the block hash.
-2. `[options]` _(Object)_: The options object.
-3. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
-
-#### getBlockHeadersByHash(hash, count, [options])
+#### getBlockHeadersByHash(hash, count, [options][, callback])
 Given a block hash, returns amount of block headers in upward direction.
 
 ##### Arguments
-1. `hash` _(string)_: the block hash.
-2. `count` _(number)_: the number of blocks to count in upward direction.
+1. `hash` _(string)_: The block hash.
+2. `count` _(number)_: The number of blocks to count in upward direction.
 3. `[options]` _(Object)_: The options object.
-4. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+4. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+5. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -206,17 +219,23 @@ Given a block hash, returns amount of block headers in upward direction.
 client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
 ```
 
-#### getBlockchainInformation()
+#### getBlockchainInformation([callback])
 Returns various state info regarding block chain processing.
+
+#### Arguments
+1. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
 ```js
-client.getBlockchainInformation();
+client.getBlockchainInformation([callback]);
 ```
 
 #### getMemoryPoolContent()
 Returns transactions in the transaction memory pool.
+
+#### Arguments
+1. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -224,11 +243,14 @@ Returns transactions in the transaction memory pool.
 client.getMemoryPoolContent();
 ```
 
-#### getMemoryPoolInformation()
+#### getMemoryPoolInformation([callback])
 Returns various information about the transaction memory pool. Only supports JSON as output format.
 - size: the number of transactions in the transaction memory pool.
 - bytes: size of the transaction memory pool in bytes.
 - usage: total transaction memory pool memory usage.
+
+#### Arguments
+1. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -236,14 +258,15 @@ Returns various information about the transaction memory pool. Only supports JSO
 client.getMemoryPoolInformation();
 ```
 
-#### getTransactionByHash(hash, [options])
+#### getTransactionByHash(hash, [options], [callback])
 Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
 
 #### Arguments
-1. `hash` _(string)_: the transaction hash.
+1. `hash` _(string)_: The transaction hash.
 2. `[options]` _(Object)_: The options object.
-3. `[options.summary=false]` _(boolean)_: whether to return just the transaction hash, thus saving memory.
-4. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+3. `[options.summary=false]` _(boolean)_: Whether to return just the transaction hash, thus saving memory.
+4. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+5. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -251,13 +274,14 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe', { extension: 'json', summary: false });
 ```
 
-### getUnspentTransactionOutputs(outpoints, [options])
+### getUnspentTransactionOutputs(outpoints, [options], [callback])
 Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
 
 #### Arguments
-1. `outpoints` _(array\<Object\>|Object)_: the outpoint to query in the format `{ id: '<txid>', index: '<index>' }`.
+1. `outpoints` _(array\<Object\>|Object)_: The outpoint to query in the format `{ id: '<txid>', index: '<index>' }`.
 2. `[options]` _(Object)_: The options object.
-3. `[options.extension=json]` _(string)_: return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+3. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
+4. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -268,7 +292,7 @@ client.getUnspentTransactionOutputs([{
 }, {
   id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
   index: 1
-}], { extension: 'json' })
+}], { extension: 'json' }, [callback])
 ```
 
 ### SSL
