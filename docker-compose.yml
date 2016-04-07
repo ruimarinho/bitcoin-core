@@ -1,7 +1,7 @@
 sut:
-  build: .
-  command: test
-  entrypoint: npm
+  image: seegno/node:4-test
+  volumes:
+    - .:/app
   environment:
     - CI
   links:
@@ -19,8 +19,11 @@ bitcoind:
     -rpcallowip=172.17.0.0/16
     -rpcallowip=192.168.0.0/16
     -rpcpassword=bar
+    -rpcport=18333
     -rpcuser=foo
     -server
+  ports:
+    - 18333:18333
 
 bitcoind-ssl:
   image: seegno/bitcoind:0.11-alpine
@@ -32,6 +35,7 @@ bitcoind-ssl:
     -rpcallowip=172.17.0.0/16
     -rpcallowip=192.168.0.0/16
     -rpcpassword=bar
+    -rpcport=18334
     -rpcssl
     -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
     -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
@@ -39,6 +43,8 @@ bitcoind-ssl:
     -server
   volumes:
     - ./test/config/ssl:/etc/ssl/bitcoind
+  ports:
+    - 18334:18334
 
 bitcoind-username-only:
   image: seegno/bitcoind:0.11-alpine
@@ -49,5 +55,8 @@ bitcoind-username-only:
     -rpcallowip=10.211.0.0/16
     -rpcallowip=172.17.0.0/16
     -rpcallowip=192.168.0.0/16
+    -rpcport=18335
     -rpcuser=foo
     -server
+  ports:
+    - 18335:18335

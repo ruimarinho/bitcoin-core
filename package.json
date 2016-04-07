@@ -24,7 +24,7 @@
     "rpc"
   ],
   "options": {
-    "mocha": "--compilers js:babel-register --timeout 8000 --recursive --require should test"
+    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should test"
   },
   "scripts": {
     "changelog": "github_changelog_generator --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",

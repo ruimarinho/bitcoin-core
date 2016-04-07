@@ -8,7 +8,7 @@
  */
 
 function getHost(name) {
-  return process.env.CI === 'true' ? name : `bitcoincore_${name}_1.bitcoind.docker`;
+  return process.env.CI === 'true' ? name : 'docker.local';
 }
 
 /**
@@ -19,18 +19,18 @@ const config = {
   bitcoind: {
     host: getHost('bitcoind'),
     password: 'bar',
-    port: 18332,
+    port: 18333,
     username: 'foo'
   },
   bitcoindSsl: {
     host: getHost('bitcoind-ssl'),
     password: 'bar',
-    port: 18332,
+    port: 18334,
     username: 'foo'
   },
   bitcoindUsernameOnly: {
     host: getHost('bitcoind-username-only'),
-    port: 18332,
+    port: 18335,
     username: 'foo'
   }
 };
