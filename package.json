@@ -2,19 +2,6 @@
   "name": "bitcoin-core",
   "version": "1.0.0",
   "description": "A modern Bitcoin Core REST and RPC client.",
-  "author": {
-    "name": "Rui Marinho",
-    "email": "rui.marinho@seegno.com",
-    "url": "http://seegno.com"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/seegno/bitcoin-core",
-  "bugs": "https://github.com/seegno/bitcoin-core/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/seegno/bitcoin-core.git"
-  },
-  "main": "dist/src/index.js",
   "keywords": [
     "bitcoin",
     "bitcoind",
@@ -23,14 +10,27 @@
     "rest",
     "rpc"
   ],
+  "homepage": "https://github.com/seegno/bitcoin-core",
+  "bugs": "https://github.com/seegno/bitcoin-core/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Rui Marinho",
+    "email": "rui.marinho@seegno.com",
+    "url": "http://seegno.com"
+  },
+  "main": "dist/src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seegno/bitcoin-core.git"
+  },
   "scripts": {
     "changelog": "github_changelog_generator --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
     "cover": "nyc --reporter=html --reporter=text npm test",
     "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
     "lint": "eslint src test",
     "prepublish": "npm run transpile",
-    "testdocker": "docker-compose run --rm sut",
     "test": "NODE_ENV=test mocha $npm_package_options_mocha",
+    "testdocker": "docker-compose run --rm sut",
     "transpile": "rm -rf dist/* && babel src --out-dir dist/src",
     "version": "npm run changelog --future-release=$npm_package_version && npm run transpile && git add -A CHANGELOG.md dist"
   },
@@ -58,12 +58,6 @@
     "pre-commit": "^1.1.2",
     "should": "^11.1.0"
   },
-  "options": {
-    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should"
-  },
-  "pre-commit": [
-    "lint"
-  ],
   "engines": {
     "node": ">=4"
   },
@@ -74,5 +68,11 @@
     "instrument": false,
     "report-dir": "./coverage",
     "sourceMap": false
-  }
+  },
+  "options": {
+    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should"
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }
