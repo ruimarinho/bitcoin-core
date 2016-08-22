@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-import _ from 'lodash';
 import Parser from './parser';
-import Requester from './requester';
 import Promise from 'bluebird';
+import Requester from './requester';
+import _ from 'lodash';
 import methods from './methods';
 import request from 'request';
 import semver from 'semver';
@@ -76,7 +76,7 @@ class Client {
 
     if (version) {
       unsupported = _.chain(methods)
-        .pickBy((range) => !semver.satisfies(version, range))
+        .pickBy(range => !semver.satisfies(version, range))
         .keys()
         .invokeMap(String.prototype.toLowerCase)
         .value();
@@ -198,7 +198,7 @@ class Client {
   getUnspentTransactionOutputs(...args) {
     const [[outpoints, { extension = 'json' } = {}], callback] = source(...args);
 
-    const sets = _.flatten([outpoints]).map((outpoint) => {
+    const sets = _.flatten([outpoints]).map(outpoint => {
       return `${outpoint.id}-${outpoint.index}`;
     }).join('/');
 
