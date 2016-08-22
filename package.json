@@ -23,12 +23,9 @@
     "rest",
     "rpc"
   ],
-  "options": {
-    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should test"
-  },
   "scripts": {
     "changelog": "github_changelog_generator --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
-    "cover": "babel-node node_modules/.bin/isparta cover --report html _mocha -- $npm_package_options_mocha",
+    "cover": "nyc --reporter=html --reporter=text npm test",
     "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
     "lint": "eslint src test",
     "prepublish": "npm run transpile",
@@ -47,23 +44,35 @@
   "devDependencies": {
     "babel-cli": "^6.4.0",
     "babel-eslint": "^6.0.0",
-    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-istanbul": "^2.0.0",
     "babel-plugin-transform-async-to-module-method": "^6.5.2",
     "babel-preset-es2015-node4": "^2.0.2",
     "babel-register": "^6.3.13",
     "eslint": "^3.3.1",
     "eslint-config-seegno": "^6.0.0",
     "isparta": "^4.0.0",
-    "mocha": "^2.3.4",
-    "nock": "^7.2.2",
+    "mocha": "^3.0.2",
+    "nock": "^8.0.0",
+    "nyc": "^8.1.0",
     "pre-commit": "^1.1.2",
-    "should": "^8.0.0",
-    "sinon": "^1.17.2"
+    "should": "^11.1.0"
+  },
+  "options": {
+    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should"
   },
   "pre-commit": [
     "lint"
   ],
   "engines": {
     "node": ">=4"
+  },
+  "nyc": {
+    "include": [
+      "src/"
+    ],
+    "instrument": false,
+    "report-dir": "./coverage",
+    "sourceMap": false
   }
 }

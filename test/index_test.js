@@ -506,7 +506,7 @@ describe('Client', () => {
         }]);
 
         result.should.have.keys('bitmap', 'chainHeight', 'chaintipHash', 'utxos');
-        result.chainHeight.should.equal(200);
+        result.chainHeight.should.be.a.Number();
       });
     });
 
@@ -520,9 +520,15 @@ describe('Client', () => {
 
     describe('getMemoryPoolInformation()', () => {
       it('should return memory pool information json-encoded by default', async () => {
-        const information = await new Client(config.bitcoind).getMemoryPoolContent();
+        const information = await new Client(config.bitcoind).getMemoryPoolInformation();
 
-        information.should.eql({});
+        information.should.eql({
+          bytes: 0,
+          maxmempool: 300000000,
+          mempoolminfee: 0,
+          size: 0,
+          usage: 0
+        });
       });
     });
   });
