@@ -2,19 +2,6 @@
   "name": "bitcoin-core",
   "version": "1.0.0",
   "description": "A modern Bitcoin Core REST and RPC client.",
-  "author": {
-    "name": "Rui Marinho",
-    "email": "rui.marinho@seegno.com",
-    "url": "http://seegno.com"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/seegno/bitcoin-core",
-  "bugs": "https://github.com/seegno/bitcoin-core/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/seegno/bitcoin-core.git"
-  },
-  "main": "dist/src/index.js",
   "keywords": [
     "bitcoin",
     "bitcoind",
@@ -23,22 +10,32 @@
     "rest",
     "rpc"
   ],
-  "options": {
-    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should test"
+  "homepage": "https://github.com/seegno/bitcoin-core",
+  "bugs": "https://github.com/seegno/bitcoin-core/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Rui Marinho",
+    "email": "rui.marinho@seegno.com",
+    "url": "http://seegno.com"
+  },
+  "main": "dist/src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seegno/bitcoin-core.git"
   },
   "scripts": {
     "changelog": "github_changelog_generator --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
-    "cover": "babel-node node_modules/.bin/isparta cover --report html _mocha -- $npm_package_options_mocha",
+    "cover": "nyc --reporter=html --reporter=text npm test",
     "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
-    "lint": "eslint src test && jscs src test",
+    "lint": "eslint src test",
     "prepublish": "npm run transpile",
-    "testdocker": "docker-compose run --rm sut",
     "test": "NODE_ENV=test mocha $npm_package_options_mocha",
+    "testdocker": "docker-compose run --rm sut",
     "transpile": "rm -rf dist/* && babel src --out-dir dist/src",
     "version": "npm run changelog --future-release=$npm_package_version && npm run transpile && git add -A CHANGELOG.md dist"
   },
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.4.1",
     "lodash": "^4.0.0",
     "request": "^2.53.0",
     "semver": "^5.1.0",
@@ -47,26 +44,35 @@
   "devDependencies": {
     "babel-cli": "^6.4.0",
     "babel-eslint": "^6.0.0",
-    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-istanbul": "^2.0.0",
     "babel-plugin-transform-async-to-module-method": "^6.5.2",
     "babel-preset-es2015-node4": "^2.0.2",
     "babel-register": "^6.3.13",
-    "eslint": "^2.3.0",
-    "eslint-config-seegno": "^3.0.0",
-    "eslint-plugin-babel": "^3.0.0",
+    "eslint": "^3.3.1",
+    "eslint-config-seegno": "^6.0.0",
     "isparta": "^4.0.0",
-    "jscs": "^2.7.0",
-    "jscs-config-seegno": "^1.0.0",
-    "mocha": "^2.3.4",
-    "nock": "^7.2.2",
+    "mocha": "^3.0.2",
+    "nock": "^8.0.0",
+    "nyc": "^8.1.0",
     "pre-commit": "^1.1.2",
-    "should": "^8.0.0",
-    "sinon": "^1.17.2"
+    "should": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "nyc": {
+    "include": [
+      "src/"
+    ],
+    "instrument": false,
+    "report-dir": "./coverage",
+    "sourceMap": false
+  },
+  "options": {
+    "mocha": "--compilers js:babel-register --timeout 20000 --recursive --require should"
   },
   "pre-commit": [
     "lint"
-  ],
-  "engines": {
-    "node": ">=4"
-  }
+  ]
 }

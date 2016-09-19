@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-import _ from 'lodash';
 import RpcError from './errors/rpc-error';
+import _ from 'lodash';
 
 /**
  * Get response result and errors.
@@ -57,7 +57,7 @@ export default class Parser {
     }
 
     // Batch response parsing where each response may or may not be successful.
-    const batch = body.map((response) => {
+    const batch = body.map(response => {
       try {
         return get(response, { headers: false, response });
       } catch (e) {

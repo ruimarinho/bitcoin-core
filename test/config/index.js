@@ -8,7 +8,7 @@
  */
 
 function getHost(name) {
-  return process.env.CI === 'true' ? name : 'docker.local';
+  return process.env.CI === 'true' ? name : '127.0.0.1';
 }
 
 /**

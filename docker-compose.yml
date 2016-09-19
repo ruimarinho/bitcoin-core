@@ -10,7 +10,7 @@ sut:
     - bitcoind-username-only
 
 bitcoind:
-  image: seegno/bitcoind:0.12-alpine
+  image: seegno/bitcoind:0.13-alpine
   command:
     -printtoconsole
     -regtest=1

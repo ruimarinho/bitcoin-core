@@ -3,9 +3,9 @@
  * Module dependencies.
  */
 
-import _ from 'lodash';
 import Client from '../src/index';
 import RpcError from '../src/errors/rpc-error';
+import _ from 'lodash';
 import config from './config';
 import fs from 'fs';
 import methods from '../src/methods';
@@ -137,7 +137,7 @@ describe('Client', () => {
       headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
     });
 
-    it('should return the response headers if `headers` is enabled using callbacks', (done) => {
+    it('should return the response headers if `headers` is enabled using callbacks', done => {
       new Client(_.defaults({ headers: true }, config.bitcoind)).getInfo((err, [info, headers]) => {
         should.not.exist(err);
 
@@ -160,7 +160,7 @@ describe('Client', () => {
       headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
     });
 
-    it('should return the response headers if `headers` is enabled and batching is used with callbacks', (done) => {
+    it('should return the response headers if `headers` is enabled and batching is used with callbacks', done => {
       const batch = [];
 
       _.times(5, () => batch.push({ method: 'getnewaddress' }));
@@ -269,7 +269,7 @@ describe('Client', () => {
     it('should establish a connection if certificate is self signed but `ca` agent option is passed', async () => {
       const sslClient = new Client(_.defaults({
         agentOptions: {
-          /*eslint-disable no-sync */
+          /* eslint-disable no-sync */
           ca: fs.readFileSync(path.join(__dirname, '/config/ssl/cert.pem')),
           checkServerIdentity() {
             // Skip server identity checks otherwise the certificate would be immediately rejected
@@ -301,7 +301,7 @@ describe('Client', () => {
     _.difference(parse(help), _.invokeMap(Object.keys(methods), String.prototype.toLowerCase)).should.be.empty();
   });
 
-  it('should support callbacks', (done) => {
+  it('should support callbacks', done => {
     new Client(config.bitcoind).help((err, help) => {
       should.not.exist(err);
 
@@ -406,7 +406,7 @@ describe('Client', () => {
         const [transaction] = await client.listUnspent();
         const hex = await client.getTransactionByHash(transaction.txid);
 
-        hex.should.have.keys('blockhash', 'blocktime', 'confirmations', 'locktime', 'size', 'time', 'txid', 'version', 'vin', 'vout');
+        hex.should.have.keys('blockhash', 'blocktime', 'confirmations', 'locktime', 'hash', 'size', 'time', 'txid', 'version', 'vin', 'vout', 'vsize');
       });
     });
 
@@ -426,15 +426,15 @@ describe('Client', () => {
       it('should return a block json-encoded by default', async () => {
         const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
 
-        block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'time', 'tx', 'version');
-        block.tx.should.matchEach((value) => value.should.be.an.Object());
+        block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
+        block.tx.should.matchEach(value => value.should.be.an.Object());
       });
 
       it('should return a block summary json-encoded if `summary` is enabled', async () => {
         const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json', summary: true });
 
-        block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'time', 'tx', 'version');
-        block.tx.should.matchEach((value) => value.should.be.a.String());
+        block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
+        block.tx.should.matchEach(value => value.should.be.a.String());
       });
     });
 
@@ -506,7 +506,7 @@ describe('Client', () => {
         }]);
 
         result.should.have.keys('bitmap', 'chainHeight', 'chaintipHash', 'utxos');
-        result.chainHeight.should.equal(200);
+        result.chainHeight.should.be.a.Number();
       });
     });
 
@@ -520,9 +520,15 @@ describe('Client', () => {
 
     describe('getMemoryPoolInformation()', () => {
       it('should return memory pool information json-encoded by default', async () => {
-        const information = await new Client(config.bitcoind).getMemoryPoolContent();
+        const information = await new Client(config.bitcoind).getMemoryPoolInformation();
 
-        information.should.eql({});
+        information.should.eql({
+          bytes: 0,
+          maxmempool: 300000000,
+          mempoolminfee: 0,
+          size: 0,
+          usage: 0
+        });
       });
     });
   });
