@@ -40,7 +40,7 @@ class Requester {
 
     return {
       id: `${ Date.now() }${ suffix !== undefined ? `-${ suffix }` : '' }`,
-      method,
+      method: method,
       params: parameters
     };
   }

@@ -1,6 +1,16 @@
 # Changelog
 
-## [1.0.0](https://github.com/seegno/bitcoin-core/tree/1.0.0) (2016-03-06)
+## [1.1.0](https://github.com/seegno/bitcoin-core/tree/1.1.0) (2016-09-19)
+[Full Changelog](https://github.com/seegno/bitcoin-core/compare/v1.0.0...1.1.0)
+
+**Merged pull requests:**
+
+- Add support for bitcoind 0.13 [\#18](https://github.com/seegno/bitcoin-core/pull/18) ([ruimarinho](https://github.com/ruimarinho))
+- Simplify Docker setup [\#14](https://github.com/seegno/bitcoin-core/pull/14) ([ruimarinho](https://github.com/ruimarinho))
+- Update babel-eslint@6.0.0 [\#13](https://github.com/seegno/bitcoin-core/pull/13) ([ruimarinho](https://github.com/ruimarinho))
+- Improve RPC documentation [\#12](https://github.com/seegno/bitcoin-core/pull/12) ([ruimarinho](https://github.com/ruimarinho))
+
+## [v1.0.0](https://github.com/seegno/bitcoin-core/tree/v1.0.0) (2016-03-06)
 **Merged pull requests:**
 
 - Add a better changelog sed [\#10](https://github.com/seegno/bitcoin-core/pull/10) ([ruimarinho](https://github.com/ruimarinho))

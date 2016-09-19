@@ -9,13 +9,13 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
  * Module dependencies.
  */
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _rpcError = require('./errors/rpc-error');
 
 var _rpcError2 = _interopRequireDefault(_rpcError);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -78,13 +78,13 @@ class Parser {
     }
 
     if (!Array.isArray(body)) {
-      return get(body, { headers: this.headers, response });
+      return get(body, { headers: this.headers, response: response });
     }
 
     // Batch response parsing where each response may or may not be successful.
     const batch = body.map(response => {
       try {
-        return get(response, { headers: false, response });
+        return get(response, { headers: false, response: response });
       } catch (e) {
         return e;
       }

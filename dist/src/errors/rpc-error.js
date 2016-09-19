@@ -44,7 +44,7 @@ class RpcError extends _standardError2.default {
     Object.defineProperty(this, 'status', {
       configurable: true,
       enumerable: true,
-      value,
+      value: value,
       writable: true
     });
   }

@@ -9,21 +9,21 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
  * Module dependencies.
  */
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _parser = require('./parser');
 
 var _parser2 = _interopRequireDefault(_parser);
+
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _requester = require('./requester');
 
 var _requester2 = _interopRequireDefault(_requester);
 
-var _bluebird = require('bluebird');
+var _lodash = require('lodash');
 
-var _bluebird2 = _interopRequireDefault(_bluebird);
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _methods = require('./methods');
 
@@ -95,7 +95,7 @@ class Client {
     let version = _ref.version;
 
     if (!_lodash2.default.has(networks, network)) {
-      throw new Error(`Invalid network name "${ network }"`, { network });
+      throw new Error(`Invalid network name "${ network }"`, { network: network });
     }
 
     this.agentOptions = agentOptions;
@@ -124,7 +124,7 @@ class Client {
       strictSSL: this.ssl.strict,
       timeout: this.timeout
     }), { multiArgs: true });
-    this.requester = new _requester2.default({ unsupported, version });
+    this.requester = new _requester2.default({ unsupported: unsupported, version: version });
     this.parser = new _parser2.default({ headers: this.headers });
   }
 
@@ -153,12 +153,12 @@ class Client {
       if (Array.isArray(input)) {
         body = input.map((method, index) => this.requester.prepare({ method: method.method, parameters: method.parameters, suffix: index }));
       } else {
-        body = this.requester.prepare({ method: input, parameters });
+        body = this.requester.prepare({ method: input, parameters: parameters });
       }
 
       return this.request.postAsync({
         auth: _lodash2.default.pickBy(this.auth, _lodash2.default.identity),
-        body,
+        body: body,
         uri: '/'
       }).bind(this).then(this.parser.rpc);
     }).asCallback(callback);
