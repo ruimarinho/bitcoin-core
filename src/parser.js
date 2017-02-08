@@ -3,8 +3,15 @@
  * Module dependencies.
  */
 
+import JSONBigInt from 'json-bigint';
 import RpcError from './errors/rpc-error';
 import _ from 'lodash';
+
+/**
+ * JSONBigInt parser.
+ */
+
+const { parse } = JSONBigInt({ storeAsString: true, strict: true }); // eslint-disable-line new-cap
 
 /**
  * Get response result and errors.
@@ -51,6 +58,9 @@ export default class Parser {
     if (typeof body === 'string' && response.statusCode !== 200) {
       throw new RpcError(response.statusCode);
     }
+
+    // Parsing the body with custom parser to support BigNumbers.
+    body = parse(body);
 
     if (!Array.isArray(body)) {
       return get(body, { headers: this.headers, response });

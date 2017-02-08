@@ -199,7 +199,7 @@ describe('Client', () => {
       it('should return the proof-of-work difficulty', async () => {
         const difficulty = await new Client(config.bitcoind).getDifficulty();
 
-        difficulty.should.be.a.Number();
+        difficulty.should.be.a.String();
       });
     });
 
