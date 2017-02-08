@@ -122,7 +122,8 @@ class Client {
 
       return this.request.postAsync({
         auth: _.pickBy(this.auth, _.identity),
-        body,
+        body: JSON.stringify(body),
+        json: false,
         uri: '/'
       })
       .bind(this)

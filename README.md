@@ -92,6 +92,10 @@ client.getInfo().then(([body, headers]) => console.log(body, headers));
 const [body, headers] = await client.getInfo();
 ```
 
+### Floating point number precision in JavaScript
+
+Due to [Javascript's limited floating point precision](http://floating-point-gui.de/), all big numbers (numbers with more than 15 significant digits) are returned as strings to prevent precision loss.
+
 ### Version Checking
 By default, all methods are exposed on the client independently of the version it is connecting to. This is the most flexible option as defining methods for unavailable RPC calls does not cause any harm and the library is capable of handling a `Method not found` response error correctly.
 
