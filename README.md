@@ -17,15 +17,16 @@ npm install bitcoin-core --save
 1. `[agentOptions]` _(Object)_: Optional `agent` [options](https://github.com/request/request#using-optionsagentoptions) to configure SSL/TLS.
 2. `[headers=false]` _(boolean)_: Whether to return the response headers.
 3. `[host=localhost]` _(string)_: The host to connect to.
-4. `[network=mainnet]` _(string)_: The network
-5. `[password]` _(string)_: The RPC server user password.
-6. `[port=[network]]` _(string)_: The RPC server port.
-7. `[ssl]` _(boolean|Object)_: Whether to use SSL/TLS with strict checking (_boolean_) or an expanded config (_Object_).
-8. `[ssl.enabled]` _(boolean)_: Whether to use SSL/TLS.
-9. `[ssl.strict]` _(boolean)_: Whether to do strict SSL/TLS checking (certificate must match host).
-10. `[timeout=30000]` _(number)_: How long until the request times out (ms).
-11. `[username]` _(number)_: The RPC server user name.
-12. `[version]` _(string)_: Which version to check methods for ([read more](#versionchecking)).
+4. `[logger=debugnyan('bitcoin-core')]` _(Function)_: Custom logger (by default, `debugnyan`).
+5. `[network=mainnet]` _(string)_: The network
+6. `[password]` _(string)_: The RPC server user password.
+7. `[port=[network]]` _(string)_: The RPC server port.
+8. `[ssl]` _(boolean|Object)_: Whether to use SSL/TLS with strict checking (_boolean_) or an expanded config (_Object_).
+9. `[ssl.enabled]` _(boolean)_: Whether to use SSL/TLS.
+10. `[ssl.strict]` _(boolean)_: Whether to do strict SSL/TLS checking (certificate must match host).
+11. `[timeout=30000]` _(number)_: How long until the request times out (ms).
+12. `[username]` _(number)_: The RPC server user name.
+13. `[version]` _(string)_: Which version to check methods for ([read more](#versionchecking)).
 
 ### Examples
 #### Using network mode
@@ -347,6 +348,46 @@ const client = new Client({
   ssl: true
 });
 ```
+
+## Logging
+
+By default, all requests made with `bitcoin-core` are logged using [seegno/debugnyan](https://github.com/seegno/debugnyan) with `bitcoin-core` as the logging namespace.
+
+Please note that all sensitive data is obfuscated before calling the logger.
+
+#### Example
+
+Example output defining the environment variable `DEBUG=bitcoin-core`:
+
+```javascript
+const client = new Client();
+
+client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe');
+
+// {
+//   "name": "bitcoin-core",
+//   "hostname": "localhost",
+//   "pid": 57908,
+//   "level": 20,
+//   "request": {
+//     "headers": {
+//       "host": "localhost:8332",
+//       "accept": "application/json"
+//     },
+//     "id": "82cea4e5-2c85-4284-b9ec-e5876c84e67c",
+//     "method": "GET",
+//     "type": "request",
+//     "uri": "http://localhost:8332/rest/tx/b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe.json"
+//   },
+//   "msg": "Making request 82cea4e5-2c85-4284-b9ec-e5876c84e67c to GET http://localhost:8332/rest/tx/b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe.json",
+//   "time": "2017-02-07T14:40:35.020Z",
+//   "v": 0
+// }
+```
+
+### Custom logger
+
+A custom logger can be passed via the `logger` option and it should implement [bunyan's log levels](https://github.com/trentm/node-bunyan#levels).
 
 ## Tests
 Currently the test suite is tailored for Docker (including `docker-compose`) due to the multitude of different `bitcoind` configurations that are required in order to get the test suite passing.

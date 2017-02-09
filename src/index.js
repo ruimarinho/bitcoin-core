@@ -7,8 +7,9 @@ import Parser from './parser';
 import Promise from 'bluebird';
 import Requester from './requester';
 import _ from 'lodash';
+import debugnyan from 'debugnyan';
 import methods from './methods';
-import request from 'request';
+import requestLogger from './logging/request-logger';
 import semver from 'semver';
 
 /**
@@ -47,6 +48,7 @@ class Client {
     agentOptions,
     headers = false,
     host = 'localhost',
+    logger = debugnyan('bitcoin-core'),
     network = 'mainnet',
     password,
     port,
@@ -76,11 +78,13 @@ class Client {
 
     if (version) {
       unsupported = _.chain(methods)
-        .pickBy(range => !semver.satisfies(version, range))
+        .pickBy(method => !semver.satisfies(version, method.version))
         .keys()
         .invokeMap(String.prototype.toLowerCase)
         .value();
     }
+
+    const request = requestLogger(logger);
 
     this.request = Promise.promisifyAll(request.defaults({
       agentOptions: this.agentOptions,

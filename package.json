@@ -35,7 +35,9 @@
     "version": "npm run changelog --future-release=$npm_package_version && npm run transpile && git add -A CHANGELOG.md dist"
   },
   "dependencies": {
+    "@uphold/request-logger": "^1.2.0",
     "bluebird": "^3.4.1",
+    "debugnyan": "^1.0.0",
     "lodash": "^4.0.0",
     "request": "^2.53.0",
     "semver": "^5.1.0",
