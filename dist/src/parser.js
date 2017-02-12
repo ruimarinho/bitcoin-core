@@ -24,11 +24,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 
 function get(body) {
-  var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+      _ref$headers = _ref.headers;
 
-  var _ref$headers = _ref.headers;
-  let headers = _ref$headers === undefined ? false : _ref$headers;
-  let response = _ref.response;
+  let headers = _ref$headers === undefined ? false : _ref$headers,
+      response = _ref.response;
 
   if (!body) {
     throw new _rpcError2.default(response.statusCode, response.statusMessage);
@@ -55,7 +55,7 @@ function get(body) {
 
 class Parser {
   constructor() {
-    var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     let headers = _ref2.headers;
 
@@ -69,8 +69,8 @@ class Parser {
   rpc(_ref3) {
     var _ref4 = _slicedToArray(_ref3, 2);
 
-    let response = _ref4[0];
-    let body = _ref4[1];
+    let response = _ref4[0],
+        body = _ref4[1];
 
     // Body contains HTML (e.g. 401 Unauthorized).
     if (typeof body === 'string' && response.statusCode !== 200) {
@@ -100,8 +100,8 @@ class Parser {
   rest(_ref5) {
     var _ref6 = _slicedToArray(_ref5, 2);
 
-    let response = _ref6[0];
-    let body = _ref6[1];
+    let response = _ref6[0],
+        body = _ref6[1];
 
     if (body.error) {
       throw new _rpcError2.default(body.error.code, body.error.message);

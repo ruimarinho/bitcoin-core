@@ -50,7 +50,7 @@ class RpcError extends _standardError2.default {
   }
 
   toString() {
-    return `${ this.name }: ${ this.code } ${ this.message }`;
+    return `${this.name}: ${this.code} ${this.message}`;
   }
 }
 exports.default = RpcError;

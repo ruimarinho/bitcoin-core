@@ -1,7 +1,15 @@
 # Changelog
 
-## [1.1.0](https://github.com/seegno/bitcoin-core/tree/1.1.0) (2016-09-19)
-[Full Changelog](https://github.com/seegno/bitcoin-core/compare/v1.0.0...1.1.0)
+## [1.2.0](https://github.com/seegno/bitcoin-core/tree/1.2.0) (2017-02-12)
+[Full Changelog](https://github.com/seegno/bitcoin-core/compare/v1.1.0...1.2.0)
+
+**Merged pull requests:**
+
+- Pin docker image to 0.13.0 to avoid failing tests on newer versions [\#21](https://github.com/seegno/bitcoin-core/pull/21) ([pedrobranco](https://github.com/pedrobranco))
+- Add logging to all requests [\#19](https://github.com/seegno/bitcoin-core/pull/19) ([pedrobranco](https://github.com/pedrobranco))
+
+## [v1.1.0](https://github.com/seegno/bitcoin-core/tree/v1.1.0) (2016-09-19)
+[Full Changelog](https://github.com/seegno/bitcoin-core/compare/v1.0.0...v1.1.0)
 
 **Merged pull requests:**
 

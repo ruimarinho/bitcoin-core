@@ -25,13 +25,17 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _debugnyan = require('debugnyan');
+
+var _debugnyan2 = _interopRequireDefault(_debugnyan);
+
 var _methods = require('./methods');
 
 var _methods2 = _interopRequireDefault(_methods);
 
-var _request = require('request');
+var _requestLogger = require('./logging/request-logger');
 
-var _request2 = _interopRequireDefault(_request);
+var _requestLogger2 = _interopRequireDefault(_requestLogger);
 
 var _semver = require('semver');
 
@@ -76,26 +80,28 @@ const networks = {
 
 class Client {
   constructor() {
-    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     let agentOptions = _ref.agentOptions;
     var _ref$headers = _ref.headers;
     let headers = _ref$headers === undefined ? false : _ref$headers;
     var _ref$host = _ref.host;
     let host = _ref$host === undefined ? 'localhost' : _ref$host;
+    var _ref$logger = _ref.logger;
+    let logger = _ref$logger === undefined ? (0, _debugnyan2.default)('bitcoin-core') : _ref$logger;
     var _ref$network = _ref.network;
-    let network = _ref$network === undefined ? 'mainnet' : _ref$network;
-    let password = _ref.password;
-    let port = _ref.port;
+    let network = _ref$network === undefined ? 'mainnet' : _ref$network,
+        password = _ref.password,
+        port = _ref.port;
     var _ref$ssl = _ref.ssl;
     let ssl = _ref$ssl === undefined ? false : _ref$ssl;
     var _ref$timeout = _ref.timeout;
-    let timeout = _ref$timeout === undefined ? 30000 : _ref$timeout;
-    let username = _ref.username;
-    let version = _ref.version;
+    let timeout = _ref$timeout === undefined ? 30000 : _ref$timeout,
+        username = _ref.username,
+        version = _ref.version;
 
     if (!_lodash2.default.has(networks, network)) {
-      throw new Error(`Invalid network name "${ network }"`, { network: network });
+      throw new Error(`Invalid network name "${network}"`, { network: network });
     }
 
     this.agentOptions = agentOptions;
@@ -114,12 +120,14 @@ class Client {
     let unsupported = [];
 
     if (version) {
-      unsupported = _lodash2.default.chain(_methods2.default).pickBy(range => !_semver2.default.satisfies(version, range)).keys().invokeMap(String.prototype.toLowerCase).value();
+      unsupported = _lodash2.default.chain(_methods2.default).pickBy(method => !_semver2.default.satisfies(version, method.version)).keys().invokeMap(String.prototype.toLowerCase).value();
     }
 
-    this.request = _bluebird2.default.promisifyAll(_request2.default.defaults({
+    const request = (0, _requestLogger2.default)(logger);
+
+    this.request = _bluebird2.default.promisifyAll(request.defaults({
       agentOptions: this.agentOptions,
-      baseUrl: `${ this.ssl.enabled ? 'https' : 'http' }://${ this.host }:${ this.port }`,
+      baseUrl: `${this.ssl.enabled ? 'https' : 'http'}://${this.host}:${this.port}`,
       json: true,
       strictSSL: this.ssl.strict,
       timeout: this.timeout
@@ -169,22 +177,20 @@ class Client {
    */
 
   getTransactionByHash() {
-    var _source = source.apply(undefined, arguments);
-
-    var _source2 = _slicedToArray(_source, 2);
-
-    var _source2$ = _slicedToArray(_source2[0], 2);
+    var _source = source.apply(undefined, arguments),
+        _source2 = _slicedToArray(_source, 2),
+        _source2$ = _slicedToArray(_source2[0], 2);
 
     const hash = _source2$[0];
     var _source2$$ = _source2$[1];
     _source2$$ = _source2$$ === undefined ? {} : _source2$$;
     var _source2$$$extension = _source2$$.extension;
-    const extension = _source2$$$extension === undefined ? 'json' : _source2$$$extension;
-    const callback = _source2[1];
+    const extension = _source2$$$extension === undefined ? 'json' : _source2$$$extension,
+          callback = _source2[1];
 
 
     return _bluebird2.default.try(() => {
-      return this.request.getAsync(`/rest/tx/${ hash }.${ extension }`).bind(this).then(this.parser.rest);
+      return this.request.getAsync(`/rest/tx/${hash}.${extension}`).bind(this).then(this.parser.rest);
     }).asCallback(callback);
   }
 
@@ -195,11 +201,9 @@ class Client {
    */
 
   getBlockByHash() {
-    var _source3 = source.apply(undefined, arguments);
-
-    var _source4 = _slicedToArray(_source3, 2);
-
-    var _source4$ = _slicedToArray(_source4[0], 2);
+    var _source3 = source.apply(undefined, arguments),
+        _source4 = _slicedToArray(_source3, 2),
+        _source4$ = _slicedToArray(_source4[0], 2);
 
     const hash = _source4$[0];
     var _source4$$ = _source4$[1];
@@ -207,12 +211,12 @@ class Client {
     var _source4$$$summary = _source4$$.summary;
     const summary = _source4$$$summary === undefined ? false : _source4$$$summary;
     var _source4$$$extension = _source4$$.extension;
-    const extension = _source4$$$extension === undefined ? 'json' : _source4$$$extension;
-    const callback = _source4[1];
+    const extension = _source4$$$extension === undefined ? 'json' : _source4$$$extension,
+          callback = _source4[1];
 
 
     return _bluebird2.default.try(() => {
-      return this.request.getAsync(`/rest/block${ summary ? '/notxdetails/' : '/' }${ hash }.${ extension }`).bind(this).then(this.parser.rest);
+      return this.request.getAsync(`/rest/block${summary ? '/notxdetails/' : '/'}${hash}.${extension}`).bind(this).then(this.parser.rest);
     }).asCallback(callback);
   }
 
@@ -221,27 +225,25 @@ class Client {
    */
 
   getBlockHeadersByHash() {
-    var _source5 = source.apply(undefined, arguments);
+    var _source5 = source.apply(undefined, arguments),
+        _source6 = _slicedToArray(_source5, 2),
+        _source6$ = _slicedToArray(_source6[0], 3);
 
-    var _source6 = _slicedToArray(_source5, 2);
-
-    var _source6$ = _slicedToArray(_source6[0], 3);
-
-    const hash = _source6$[0];
-    const count = _source6$[1];
+    const hash = _source6$[0],
+          count = _source6$[1];
     var _source6$$ = _source6$[2];
     _source6$$ = _source6$$ === undefined ? {} : _source6$$;
     var _source6$$$extension = _source6$$.extension;
-    const extension = _source6$$$extension === undefined ? 'json' : _source6$$$extension;
-    const callback = _source6[1];
+    const extension = _source6$$$extension === undefined ? 'json' : _source6$$$extension,
+          callback = _source6[1];
 
 
     return _bluebird2.default.try(() => {
       if (!_lodash2.default.includes(['bin', 'hex'], extension)) {
-        throw new Error(`Extension "${ extension }" is not supported`);
+        throw new Error(`Extension "${extension}" is not supported`);
       }
 
-      return this.request.getAsync(`/rest/headers/${ count }/${ hash }.${ extension }`).bind(this).then(this.parser.rest);
+      return this.request.getAsync(`/rest/headers/${count}/${hash}.${extension}`).bind(this).then(this.parser.rest);
     }).asCallback(callback);
   }
 
@@ -251,9 +253,8 @@ class Client {
    */
 
   getBlockchainInformation() {
-    var _source7 = source.apply(undefined, arguments);
-
-    var _source8 = _slicedToArray(_source7, 2);
+    var _source7 = source.apply(undefined, arguments),
+        _source8 = _slicedToArray(_source7, 2);
 
     const callback = _source8[1];
 
@@ -268,25 +269,23 @@ class Client {
    */
 
   getUnspentTransactionOutputs() {
-    var _source9 = source.apply(undefined, arguments);
-
-    var _source10 = _slicedToArray(_source9, 2);
-
-    var _source10$ = _slicedToArray(_source10[0], 2);
+    var _source9 = source.apply(undefined, arguments),
+        _source10 = _slicedToArray(_source9, 2),
+        _source10$ = _slicedToArray(_source10[0], 2);
 
     const outpoints = _source10$[0];
     var _source10$$ = _source10$[1];
     _source10$$ = _source10$$ === undefined ? {} : _source10$$;
     var _source10$$$extension = _source10$$.extension;
-    const extension = _source10$$$extension === undefined ? 'json' : _source10$$$extension;
-    const callback = _source10[1];
+    const extension = _source10$$$extension === undefined ? 'json' : _source10$$$extension,
+          callback = _source10[1];
 
 
     const sets = _lodash2.default.flatten([outpoints]).map(outpoint => {
-      return `${ outpoint.id }-${ outpoint.index }`;
+      return `${outpoint.id}-${outpoint.index}`;
     }).join('/');
 
-    return this.request.getAsync(`/rest/getutxos/checkmempool/${ sets }.${ extension }`).bind(this).then(this.parser.rest).asCallback(callback);
+    return this.request.getAsync(`/rest/getutxos/checkmempool/${sets}.${extension}`).bind(this).then(this.parser.rest).asCallback(callback);
   }
 
   /**
@@ -295,9 +294,8 @@ class Client {
    */
 
   getMemoryPoolContent() {
-    var _source11 = source.apply(undefined, arguments);
-
-    var _source12 = _slicedToArray(_source11, 2);
+    var _source11 = source.apply(undefined, arguments),
+        _source12 = _slicedToArray(_source11, 2);
 
     const callback = _source12[1];
 
@@ -315,9 +313,8 @@ class Client {
    */
 
   getMemoryPoolInformation() {
-    var _source13 = source.apply(undefined, arguments);
-
-    var _source14 = _slicedToArray(_source13, 2);
+    var _source13 = source.apply(undefined, arguments),
+        _source14 = _slicedToArray(_source13, 2);
 
     const callback = _source14[1];
 
