@@ -72,7 +72,7 @@ export default {
   getNewAddress: { version: '>=0.1.0' },
   getPeerInfo: { version: '>=0.7.0' },
   getRawChangeAddress: { version: '>=0.9.0' },
-  getRawMemPool: { version: '>=0.7.0' },
+  getRawMempool: { version: '>=0.7.0' },
   getRawTransaction: { version: '>=0.7.0' },
   getReceivedByAccount: { version: '>=0.1.0' },
   getReceivedByAddress: { version: '>=0.1.0' },
