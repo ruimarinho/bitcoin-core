@@ -399,7 +399,7 @@ describe('Client', () => {
         const [transaction] = await client.listUnspent();
         const hex = await client.getTransactionByHash(transaction.txid, { extension: 'hex' });
 
-        hex.should.endWith('ac00000000\n');
+        hex.should.endWith('cf900000000\n');
       });
 
       it('should return a transaction json-encoded by default', async () => {

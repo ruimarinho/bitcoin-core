@@ -19,7 +19,7 @@ export default {
   clearBanned: { version: '>=0.12.0' },
   createMultiSig: { version: '>=0.1.0' },
   createRawTransaction: { version: '>=0.7.0' },
-  createWitnessAddress: { version: '>=0.13.0' },
+  createWitnessAddress: { version: '=0.13.0' },
   decodeRawTransaction: { version: '>=0.7.0' },
   decodeScript: { version: '>=0.9.0' },
   disconnectNode: { version: '>=0.12.0' },
