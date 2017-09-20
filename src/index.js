@@ -123,11 +123,11 @@ class Client {
       return this.request.postAsync({
         auth: _.pickBy(this.auth, _.identity),
         body: JSON.stringify(body),
-        json: false,
-        uri: '/',
         headers: {
-          'Connection': 'keep-alive'
-        }
+          Connection: 'keep-alive'
+        },
+        json: false,
+        uri: '/'
       })
       .bind(this)
       .then(this.parser.rpc);

@@ -166,7 +166,11 @@ class Client {
 
       return this.request.postAsync({
         auth: _lodash2.default.pickBy(this.auth, _lodash2.default.identity),
-        body: body,
+        body: JSON.stringify(body),
+        headers: {
+          Connection: 'keep-alive'
+        },
+        json: false,
         uri: '/'
       }).bind(this).then(this.parser.rpc);
     }).asCallback(callback);
