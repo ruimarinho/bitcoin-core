@@ -124,7 +124,10 @@ class Client {
         auth: _.pickBy(this.auth, _.identity),
         body: JSON.stringify(body),
         json: false,
-        uri: '/'
+        uri: '/',
+        headers: {
+          'Connection': 'keep-alive'
+        }
       })
       .bind(this)
       .then(this.parser.rpc);
