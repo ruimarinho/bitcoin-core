@@ -406,7 +406,7 @@ describe('Client', () => {
         const [transaction] = await client.listUnspent();
         const hex = await client.getTransactionByHash(transaction.txid);
 
-        hex.should.have.keys('blockhash', 'blocktime', 'confirmations', 'locktime', 'hash', 'size', 'time', 'txid', 'version', 'vin', 'vout', 'vsize');
+        hex.should.have.keys('blockhash', 'locktime', 'hash', 'size', 'txid', 'version', 'vin', 'vout', 'vsize');
       });
     });
 
