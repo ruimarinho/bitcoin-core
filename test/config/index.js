@@ -21,11 +21,6 @@ const config = {
     password: 'bar',
     port: 18333,
     username: 'foo'
-  },
-  bitcoindUsernameOnly: {
-    host: getHost('bitcoind-username-only'),
-    port: 18335,
-    username: 'foo'
   }
 };
 

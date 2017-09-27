@@ -93,12 +93,6 @@ describe('Client', () => {
         e.status.should.equal(401);
       }
     });
-
-    it('should support username only authentication', async () => {
-      const difficulty = await new Client(config.bitcoindUsernameOnly).getDifficulty();
-
-      difficulty.should.equal(0);
-    });
   });
 
   describe('batching', () => {

@@ -61,7 +61,7 @@ class Client {
     }
 
     this.agentOptions = agentOptions;
-    this.auth = (password || username) && { pass: password, user: username };
+    this.auth = { pass: password, user: username };
     this.headers = headers;
     this.host = host;
     this.password = password;

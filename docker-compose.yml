@@ -6,7 +6,6 @@ sut:
     - CI
   links:
     - bitcoind
-    - bitcoind-username-only
 
 bitcoind:
   image: ruimarinho/bitcoin-core:0.15.0.1-alpine
@@ -23,18 +22,3 @@ bitcoind:
     -server
   ports:
     - 18333:18333
-
-bitcoind-username-only:
-  image: ruimarinho/bitcoin-core:0.15.0.1-alpine
-  command:
-    -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcport=18335
-    -rpcuser=foo
-    -server
-  ports:
-    - 18335:18335
