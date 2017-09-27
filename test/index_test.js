@@ -193,6 +193,15 @@ describe('Client', () => {
 
         balance.should.be.a.Number();
       });
+
+      it('should support named parameters', async () => {
+        const balance = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).getBalance({
+          account: '*',
+          minconf: 0
+        });
+
+        balance.should.be.a.Number();
+      });
     });
 
     describe('getDifficulty()', () => {
@@ -239,6 +248,16 @@ describe('Client', () => {
 
       it('should return the most recent list of transactions from all accounts using default count', async () => {
         const transactions = await new Client(config.bitcoind).listTransactions('test');
+
+        transactions.should.be.an.Array().and.empty();
+      });
+
+      it('should support named parameters', async () => {
+        let transactions = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).listTransactions({ account: 'test' });
+
+        transactions.should.be.an.Array().and.empty();
+
+        transactions = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).listTransactions({ account: 'test', count: 15 });
 
         transactions.should.be.an.Array().and.empty();
       });
