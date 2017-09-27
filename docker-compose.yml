@@ -6,7 +6,6 @@ sut:
     - CI
   links:
     - bitcoind
-    - bitcoind-ssl
     - bitcoind-username-only
 
 bitcoind:
@@ -25,29 +24,8 @@ bitcoind:
   ports:
     - 18333:18333
 
-bitcoind-ssl:
-  image: seegno/bitcoind:0.11-alpine
-  command:
-    -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -rpcport=18334
-    -rpcssl
-    -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
-    -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
-    -rpcuser=foo
-    -server
-  volumes:
-    - ./test/config/ssl:/etc/ssl/bitcoind
-  ports:
-    - 18334:18334
-
 bitcoind-username-only:
-  image: seegno/bitcoind:0.11-alpine
+  image: ruimarinho/bitcoin-core:0.15.0.1-alpine
   command:
     -printtoconsole
     -regtest=1

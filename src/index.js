@@ -52,7 +52,6 @@ class Client {
     network = 'mainnet',
     password,
     port,
-    ssl = false,
     timeout = 30000,
     username,
     version
@@ -68,10 +67,6 @@ class Client {
     this.password = password;
     this.port = port || networks[network];
     this.timeout = timeout;
-    this.ssl = {
-      enabled: _.get(ssl, 'enabled', ssl),
-      strict: _.get(ssl, 'strict', _.get(ssl, 'enabled', ssl))
-    };
 
     // Find unsupported methods according to version.
     let unsupported = [];
@@ -88,9 +83,8 @@ class Client {
 
     this.request = Promise.promisifyAll(request.defaults({
       agentOptions: this.agentOptions,
-      baseUrl: `${this.ssl.enabled ? 'https' : 'http'}://${this.host}:${this.port}`,
+      baseUrl: `http://${this.host}:${this.port}`,
       json: true,
-      strictSSL: this.ssl.strict,
       timeout: this.timeout
     }), { multiArgs: true });
     this.requester = new Requester({ unsupported, version });

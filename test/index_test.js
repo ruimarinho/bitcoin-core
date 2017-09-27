@@ -7,11 +7,9 @@ import Client from '../src/index';
 import RpcError from '../src/errors/rpc-error';
 import _ from 'lodash';
 import config from './config';
-import fs from 'fs';
 import methods from '../src/methods';
 import nock from 'nock';
 import parse from './utils/help-parser-util';
-import path from 'path';
 import should from 'should';
 
 /**
@@ -73,11 +71,6 @@ describe('Client', () => {
 
     it('should set default to port `18332` if network is `regtest`', () => {
       new Client({ network: 'regtest' }).port.should.equal(18332);
-    });
-
-    it('should not have ssl enabled by default', () => {
-      new Client().ssl.enabled.should.equal(false);
-      new Client().ssl.strict.should.equal(false);
     });
 
     it('should have default timeout of 30000ms', () => {
@@ -242,56 +235,6 @@ describe('Client', () => {
 
         transactions.should.be.an.Array().and.empty();
       });
-    });
-  });
-
-  describe('ssl', () => {
-    it('should use `ssl.strict` by default when `ssl` is enabled', () => {
-      const sslClient = new Client(_.defaults({ host: config.bitcoindSsl.host, port: config.bitcoindSsl.port, ssl: true }, config.bitcoind));
-
-      sslClient.ssl.strict.should.be.true();
-    });
-
-    it('should throw an error if certificate is self signed by default', async () => {
-      const sslClient = new Client(_.defaults({ host: config.bitcoindSsl.host, port: config.bitcoindSsl.port, ssl: true }, config.bitcoind));
-
-      sslClient.ssl.strict.should.be.true();
-
-      try {
-        await sslClient.getInfo();
-      } catch (e) {
-        e.should.be.an.instanceOf(Error);
-        e.code.should.equal('DEPTH_ZERO_SELF_SIGNED_CERT');
-        e.message.should.equal('self signed certificate');
-      }
-    });
-
-    it('should establish a connection if certificate is self signed but `ca` agent option is passed', async () => {
-      const sslClient = new Client(_.defaults({
-        agentOptions: {
-          /* eslint-disable no-sync */
-          ca: fs.readFileSync(path.join(__dirname, '/config/ssl/cert.pem')),
-          checkServerIdentity() {
-            // Skip server identity checks otherwise the certificate would be immediately rejected
-            // as connecting to an IP not listed in the `altname` fails.
-            return;
-          }
-        },
-        host: config.bitcoindSsl.host,
-        port: config.bitcoindSsl.port,
-        ssl: true
-      }, config.bitcoind));
-
-      const info = await sslClient.getInfo();
-
-      info.should.not.be.empty();
-    });
-
-    it('should establish a connection if certificate is self signed but `ssl.strict` is disabled', async () => {
-      const sslClient = new Client(_.defaults({ host: config.bitcoindSsl.host, port: config.bitcoindSsl.port, ssl: { enabled: true, strict: false } }, config.bitcoind));
-      const info = await sslClient.getInfo();
-
-      info.should.not.be.empty();
     });
   });
 

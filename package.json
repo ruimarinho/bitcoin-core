@@ -26,7 +26,7 @@
   "scripts": {
     "changelog": "github_changelog_generator --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
     "cover": "nyc --reporter=html --reporter=text npm test",
-    "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
+    "dependencies": "docker-compose up -d bitcoind bitcoind-username-only",
     "lint": "eslint src test",
     "prepublish": "npm run transpile",
     "test": "NODE_ENV=test mocha $npm_package_options_mocha",
