@@ -27,6 +27,14 @@ describe('RequestObfuscator', () => {
       request.should.eql({ headers: { authorization: 'Basic ******' } });
     });
 
+    it('should obfuscate all private keys from `request.body` when `method` is `importmulti`', () => {
+      const request = { body: '{"id":"1485369469422","method":"importmulti","params":[[{"address":"foobar","keys":["myprivate1","myprivate2"]},{"address":"foobar2","keys":["myprivate1","myprivate2"]}]]}' };
+
+      obfuscate(request);
+
+      request.should.eql({ body: '{"id":"1485369469422","method":"importmulti","params":[[{"address":"foobar","keys":["******","******"]},{"address":"foobar2","keys":["******","******"]}]]}' });
+    });
+
     it('should obfuscate the private key from `request.body` when `method` is `importprivkey`', () => {
       const request = { body: '{"id":"1485369469422","method":"importprivkey","params":["foobar"]}' };
 
