@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-import RpcError from '../../src/errors/rpc-error';
 import { STATUS_CODES } from 'http';
+import RpcError from '../../src/errors/rpc-error';
 import should from 'should';
 
 /**
