@@ -105,8 +105,8 @@ describe('Client', () => {
       } catch (e) {
         e.should.be.an.instanceOf(RpcError);
         e.message.should.equal('Unauthorized');
+        e.body.should.equal('');
         e.code.should.equal(401);
-        e.status.should.equal(401);
       }
     });
 
@@ -133,8 +133,19 @@ describe('Client', () => {
 
       const [newAddress, addressValidation] = await new Client(config.bitcoind).command(batch);
 
-      addressValidation.should.have.properties('address', 'isvalid', 'ismine', 'scriptPubKey');
+      addressValidation.should.have.properties('address', 'ismine', 'isvalid', 'scriptPubKey');
       newAddress.should.be.a.String();
+    });
+
+    it('should return an error if one of the request fails', async () => {
+      const batch = [{ method: 'foobar' }, { method: 'validateaddress', parameters: ['mkteeBFmGkraJaWN5WzqHCjmbQWVrPo5X3'] }];
+
+      const [newAddressError, addressValidation] = await new Client(config.bitcoind).command(batch);
+
+      addressValidation.should.have.properties('address', 'ismine', 'isvalid', 'scriptPubKey');
+      newAddressError.should.be.an.instanceOf(RpcError);
+      newAddressError.message.should.equal('Method not found');
+      newAddressError.code.should.equal(-32601);
     });
   });
 
@@ -614,6 +625,32 @@ describe('Client', () => {
         information.size.should.be.a.Number();
         information.usage.should.be.a.Number();
       });
+    });
+
+    it('should throw an error if a method contains invalid arguments', async () => {
+      try {
+        await new Client(config.bitcoind).getTransactionByHash('foobar');
+
+        should.fail();
+      } catch (e) {
+        e.should.be.an.instanceOf(RpcError);
+        e.body.should.equal('Invalid hash: foobar\r\n');
+        e.message.should.equal('Invalid hash: foobar');
+        e.code.should.equal(400);
+      }
+    });
+
+    it('should throw an error if a method in binary mode contains invalid arguments', async () => {
+      try {
+        await new Client(config.bitcoind).getTransactionByHash('foobar', { extension: 'bin' });
+
+        should.fail();
+      } catch (e) {
+        e.should.be.an.instanceOf(RpcError);
+        e.body.should.equal('Invalid hash: foobar\r\n');
+        e.message.should.equal('Invalid hash: foobar');
+        e.code.should.equal(400);
+      }
     });
   });
 });

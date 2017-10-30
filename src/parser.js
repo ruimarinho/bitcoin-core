@@ -14,14 +14,10 @@ import _ from 'lodash';
 const { parse } = JSONBigInt({ storeAsString: true, strict: true }); // eslint-disable-line new-cap
 
 /**
- * Get response result and errors.
+ * Get RPC response body result.
  */
 
-function get(body, { headers = false, response } = {}) {
-  if (!body) {
-    throw new RpcError(response.statusCode, response.statusMessage);
-  }
-
+function getRpcResult(body, { headers = false, response } = {}) {
   if (body.error !== null) {
     throw new RpcError(
       _.get(body, 'error.code', -32603),
@@ -29,6 +25,7 @@ function get(body, { headers = false, response } = {}) {
     );
   }
 
+  // Defensive measure. This should not happen on a RPC call.
   if (!_.has(body, 'result')) {
     throw new RpcError(-32700, 'Missing `result` on the RPC call result');
   }
@@ -54,22 +51,23 @@ export default class Parser {
    */
 
   rpc([response, body]) {
-    // Body contains HTML (e.g. 401 Unauthorized).
-    if (typeof body === 'string' && response.statusCode !== 200) {
-      throw new RpcError(response.statusCode);
+    // The RPC api returns a `text/html; charset=ISO-8859-1` encoded response with an empty string as the body
+    // when an error occurs.
+    if (typeof body === 'string' && response.headers['content-type'] !== 'application/json' && response.statusCode !== 200) {
+      throw new RpcError(response.statusCode, response.statusMessage, { body });
     }
 
     // Parsing the body with custom parser to support BigNumbers.
     body = parse(body);
 
     if (!Array.isArray(body)) {
-      return get(body, { headers: this.headers, response });
+      return getRpcResult(body, { headers: this.headers, response });
     }
 
     // Batch response parsing where each response may or may not be successful.
     const batch = body.map(response => {
       try {
-        return get(response, { headers: false, response });
+        return getRpcResult(response, { headers: false, response });
       } catch (e) {
         return e;
       }
@@ -82,9 +80,22 @@ export default class Parser {
     return batch;
   }
 
-  rest([response, body]) {
-    if (body.error) {
-      throw new RpcError(body.error.code, body.error.message);
+  rest(extension, [response, body]) {
+    // The REST api returns a `text/plain` encoded response with the error line and the control
+    // characters \r\n. For readability and debuggability, the error message is set to this content.
+    // When requesting a binary response, the body will be returned as a Buffer representation of
+    // this error string.
+    if (response.headers['content-type'] !== 'application/json' && response.statusCode !== 200) {
+      if (body instanceof Buffer) {
+        body = body.toString('utf-8');
+      }
+
+      throw new RpcError(response.statusCode, body.replace('\r\n', ''), { body });
+    }
+
+    // Parsing the body with custom parser to support BigNumbers.
+    if (extension === 'json') {
+      body = parse(body);
     }
 
     if (this.headers) {
