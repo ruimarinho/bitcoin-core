@@ -82,7 +82,16 @@ export default class Parser {
     return batch;
   }
 
-  rest([response, body]) {
+  rest(extension, [response, body]) {
+    // Body contains HTML (e.g. 401 Unauthorized).
+    if (typeof body === 'string' && response.statusCode !== 200) {
+      throw new RpcError(response.statusCode);
+    }
+
+    if (extension === 'json') {
+      body = parse(body);
+    }
+
     if (body.error) {
       throw new RpcError(body.error.code, body.error.message);
     }
