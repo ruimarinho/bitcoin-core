@@ -11,7 +11,7 @@ import StandardError from './standard-error';
  */
 
 export default class RpcError extends StandardError {
-  constructor(code, msg, props) {
+  constructor(code, msg, props = {}) {
     if (typeof code != 'number') {
       throw new TypeError(`Non-numeric HTTP code`);
     }
@@ -21,9 +21,9 @@ export default class RpcError extends StandardError {
       msg = null;
     }
 
-    super(msg || STATUS_CODES[code], props);
+    props.code = code;
 
-    this.code = code;
+    super(msg || STATUS_CODES[code], props);
   }
 
   get status() {

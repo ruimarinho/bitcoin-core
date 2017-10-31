@@ -4,6 +4,7 @@
  */
 
 import RpcError from '../../src/errors/rpc-error';
+import { STATUS_CODES } from 'http';
 import should from 'should';
 
 /**
@@ -46,5 +47,11 @@ describe('RpcError', () => {
 
   it('should return a well-formatted string representation', () => {
     new RpcError(-32601, 'Method not found').toString().should.equal('RpcError: -32601 Method not found');
+  });
+
+  it('should return the correct message by its http code', () => {
+    for (const code in STATUS_CODES) {
+      new RpcError(Number(code)).toString().should.equal(`RpcError: ${code} ${STATUS_CODES[code]}`);
+    }
   });
 });
