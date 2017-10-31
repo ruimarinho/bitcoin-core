@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-import methods from '../methods';
 import { defaults, get, has, isArray, isEmpty, isString, map, mapKeys } from 'lodash';
+import methods from '../methods';
 
 /**
  * Map all methods to lowercase.

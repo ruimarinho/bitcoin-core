@@ -130,7 +130,7 @@ To avoid potential issues with prototype references, all methods are still enume
 Start the `bitcoind` with the RPC server enabled and optionally configure a username and password:
 
 ```sh
-docker run --rm -it seegno/bitcoind:0.12-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -server
+docker run --rm -it ruimarinho/bitcoin-core:0.12-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -server
 ```
 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation.
@@ -187,7 +187,7 @@ Error handling is still fragile so avoid passing user input.
 Start the `bitcoind` with the REST server enabled:
 
 ```sh
-docker run --rm -it seegno/bitcoind:0.12-alpine -printtoconsole -server -rest
+docker run --rm -it ruimarinho/bitcoin-core:0.12-alpine -printtoconsole -server -rest
 ```
 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation. Use `txindex=1` if you'd like to enable full transaction query support (note: this will take a considerable amount of time on the first run).
@@ -316,7 +316,7 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nod
 On Bitcoin Core <0.12, you can start the `bitcoind` RPC server directly with SSL:
 
 ```sh
-docker run --rm -it -v $(PWD)/ssl:/etc/ssl seegno/bitcoind:0.11-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -rpcssl -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem -server
+docker run --rm -it -v $(PWD)/ssl:/etc/ssl ruimarinho/bitcoin-core:0.11-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -rpcssl -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem -server
 ```
 
 On Bitcoin Core >0.12, use must use `stunnel` (`brew install stunnel` or `sudo apt-get install stunnel4`) or an HTTPS reverse proxy to configure SSL since the built-in support for SSL has been removed. The trade off with `stunnel` is performance and simplicity versus features, as it lacks more powerful capacities such as Basic Authentication and caching which are standard in reverse proxies.
@@ -355,7 +355,7 @@ const client = new Client({
 
 ## Logging
 
-By default, all requests made with `bitcoin-core` are logged using [seegno/debugnyan](https://github.com/seegno/debugnyan) with `bitcoin-core` as the logging namespace.
+By default, all requests made with `bitcoin-core` are logged using [uphold/debugnyan](https://github.com/uphold/debugnyan) with `bitcoin-core` as the logging namespace.
 
 Please note that all sensitive data is obfuscated before calling the logger.
 
@@ -420,5 +420,5 @@ MIT
 
 [npm-image]: https://img.shields.io/npm/v/bitcoin-core.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/bitcoin-core
-[travis-image]: https://img.shields.io/travis/seegno/bitcoin-core.svg?style=flat-square
-[travis-url]: https://travis-ci.org/seegno/bitcoin-core
+[travis-image]: https://img.shields.io/travis/ruimarinho/bitcoin-core.svg?style=flat-square
+[travis-url]: https://travis-ci.org/ruimarinho/bitcoin-core

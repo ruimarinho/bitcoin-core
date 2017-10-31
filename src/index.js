@@ -125,11 +125,9 @@ class Client {
         body: JSON.stringify(body),
         json: false,
         uri: '/'
-      })
-      .bind(this)
-      .then(this.parser.rpc);
-    })
-    .asCallback(callback);
+      }).bind(this)
+        .then(this.parser.rpc);
+    }).asCallback(callback);
   }
 
   /**

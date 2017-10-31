@@ -1,13 +1,15 @@
 sut:
-  image: seegno/node:4-test
+  image: node:4
+  command: sh -c 'npm install && npm test'
   volumes:
     - .:/app
   environment:
-    - CI
+    - CI=true
   links:
     - bitcoind
     - bitcoind-ssl
     - bitcoind-username-only
+  working_dir: /app
 
 bitcoind:
   image: ruimarinho/bitcoin-core:0.15.0.1-alpine
@@ -26,7 +28,7 @@ bitcoind:
     - 18333:18333
 
 bitcoind-ssl:
-  image: seegno/bitcoind:0.11-alpine
+  image: ruimarinho/bitcoin-core:0.11-alpine
   command:
     -printtoconsole
     -regtest=1
@@ -47,7 +49,7 @@ bitcoind-ssl:
     - 18334:18334
 
 bitcoind-username-only:
-  image: seegno/bitcoind:0.11-alpine
+  image: ruimarinho/bitcoin-core:0.11-alpine
   command:
     -printtoconsole
     -regtest=1

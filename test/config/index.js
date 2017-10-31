@@ -8,7 +8,7 @@
  */
 
 function getHost(name) {
-  return process.env.CI === 'true' ? name : '127.0.0.1';
+  return process.env.CI === 'true' ? name : '127.0.0.1'; // eslint-disable-line no-process-env
 }
 
 /**
