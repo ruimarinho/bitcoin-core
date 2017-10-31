@@ -1,5 +1,1 @@
-extends: seegno
-
-rules:
-  max-nested-callbacks: [2, 5]
-  no-process-env: 0
+extends: uphold

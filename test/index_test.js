@@ -32,9 +32,7 @@ describe('Client', () => {
   describe('constructor', () => {
     it('should throw an error if network is invalid', () => {
       try {
-        /*eslint-disable*/
-        new Client(_.defaults({ network: 'foo' }, config.bitcoind));
-        /*eslint-enable*/
+        new Client(_.defaults({ network: 'foo' }, config.bitcoind)); // eslint-disable-line no-new
 
         should.fail();
       } catch (error) {
