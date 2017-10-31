@@ -341,6 +341,22 @@ describe('Client', () => {
     }
   });
 
+  it('should throw an error if version is invalid', async () => {
+    try {
+      await new Client({ version: '0.12' }).getHashesPerSec();
+
+      should.fail();
+    } catch (e) {
+      e.should.be.an.instanceOf(Error);
+      e.message.should.equal('Invalid version "0.12"');
+    }
+  });
+
+  it('should not throw an error if version is valid', async () => {
+    await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoind)).getInfo();
+    await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).getInfo();
+  });
+
   it('should throw an error if version does not support a given method', async () => {
     try {
       await new Client({ version: '0.12.0' }).getHashesPerSec();

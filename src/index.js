@@ -78,6 +78,13 @@ class Client {
     let unsupported = [];
 
     if (version) {
+      // Convert to semver (removing pathes).
+      if (!/[0-9]+\.[0-9]+\.[0-9]+/.test(version)) {
+        throw new Error(`Invalid version "${version}"`, { version });
+      }
+
+      [version] = /[0-9]+\.[0-9]+\.[0-9]+/.exec(version);
+
       this.hasNamedParametersSupport = semver.satisfies(version, '>=0.14.0');
       unsupported = _.chain(methods)
         .pickBy(method => !semver.satisfies(version, method.version))
