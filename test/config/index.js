@@ -16,21 +16,27 @@ function getHost(name) {
  */
 
 const config = {
-  bitcoind: {
-    host: getHost('bitcoind'),
+  bitcoin: {
+    host: getHost('bitcoin-core'),
     password: 'bar',
-    port: 18333,
+    port: 18443,
     username: 'foo'
   },
-  bitcoindSsl: {
-    host: getHost('bitcoind-ssl'),
+  bitcoinMultiWallet: {
+    host: getHost('bitcoin-core-multi-wallet'),
     password: 'bar',
-    port: 18334,
+    port: 18453,
     username: 'foo'
   },
-  bitcoindUsernameOnly: {
-    host: getHost('bitcoind-username-only'),
-    port: 18335,
+  bitcoinSsl: {
+    host: getHost('bitcoin-core-ssl'),
+    password: 'bar',
+    port: 18463,
+    username: 'foo'
+  },
+  bitcoinUsernameOnly: {
+    host: getHost('bitcoin-core-username-only'),
+    port: 18473,
     username: 'foo'
   }
 };

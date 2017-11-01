@@ -11,29 +11,106 @@ import { map, set } from 'lodash';
  */
 
 export default {
-  abandonTransaction: { version: '>=0.12.0' },
-  abortRescan: { version: '>=0.15.0' },
-  addMultiSigAddress: { version: '>=0.1.0' },
-  addNode: { version: '>=0.8.0' },
-  addWitnessAddress: { version: '>=0.13.0' },
-  backupWallet: { version: '>=0.3.12' },
-  bumpFee: { version: '>=0.14.0' },
-  clearBanned: { version: '>=0.12.0' },
-  combineRawTransaction: { version: '>=0.15.0' },
-  createMultiSig: { version: '>=0.1.0' },
-  createRawTransaction: { version: '>=0.7.0' },
-  createWitnessAddress: { version: '=0.13.0' },
-  decodeRawTransaction: { version: '>=0.7.0' },
-  decodeScript: { version: '>=0.9.0' },
-  disconnectNode: { version: '>=0.12.0' },
+  abandonTransaction: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.12.0'
+  },
+  abortRescan: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.15.0'
+  },
+  addMultiSigAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  addNode: {
+    category: 'network',
+    version: '>=0.8.0'
+  },
+  addWitnessAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.13.0'
+  },
+  backupWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.12'
+  },
+  bumpFee: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.14.0'
+  },
+  clearBanned: {
+    category: 'network',
+    version: '>=0.12.0'
+  },
+  combineRawTransaction: {
+    category: 'rawtransactions',
+    version: '>=0.15.0'
+  },
+  createMultiSig: {
+    category: 'util',
+    version: '>=0.1.0'
+  },
+  createRawTransaction: {
+    category: 'rawtransactions',
+    version: '>=0.7.0'
+  },
+  createWitnessAddress: {
+    category: 'wallet',
+    version: '=0.13.0'
+  },
+  decodeRawTransaction: {
+    category: 'rawtransactions',
+    version: '>=0.7.0'
+  },
+  decodeScript: {
+    category: 'rawtransactions',
+    version: '>=0.9.0'
+  },
+  disconnectNode: {
+    category: 'network',
+    version: '>=0.12.0'
+  },
   dumpPrivKey: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
     obfuscate: {
       response: () => '******'
     },
     version: '>=0.6.0'
   },
-  dumpWallet: { version: '>=0.9.0' },
+  dumpWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.9.0'
+  },
   encryptWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
     obfuscate: {
       request: {
         default: params => set([...params], '[0]', '******'),
@@ -42,58 +119,254 @@ export default {
     },
     version: '>=0.1.0'
   },
-  estimateFee: { version: '>=0.10.0' },
-  estimatePriority: { version: '>=0.10.0 <0.15.0' },
-  estimateSmartFee: { version: '>=0.12.0' },
-  estimateSmartPriority: { version: '>=0.12.0 <0.15.0' },
-  fundRawTransaction: { version: '>=0.12.0' },
-  generate: { version: '>=0.11.0' },
-  generateToAddress: { version: '>=0.13.0' },
-  getAccount: { version: '>=0.1.0' },
-  getAccountAddress: { version: '>=0.3.18' },
-  getAddedNodeInfo: { version: '>=0.8.0' },
-  getAddressesByAccount: { version: '>=0.1.0' },
-  getBalance: { version: '>=0.3.18' },
-  getBestBlockHash: { version: '>=0.9.0' },
-  getBlock: { version: '>=0.6.0' },
-  getBlockCount: { version: '>=0.1.0' },
-  getBlockHash: { version: '>=0.6.0' },
-  getBlockHeader: { version: '>=0.12.0' },
-  getBlockTemplate: { version: '>=0.7.0' },
-  getBlockchainInfo: { version: '>=0.9.2' },
-  getChainTips: { version: '>=0.10.0' },
-  getChainTxStats: { version: '>=0.15.0' },
-  getConnectionCount: { version: '>=0.1.0' },
-  getDifficulty: { version: '>=0.1.0' },
-  getGenerate: { version: '<0.13.0' },
-  getHashesPerSec: { version: '<0.10.0' },
-  getInfo: { version: '>=0.1.0' },
-  getMemoryInfo: { version: '>=0.14.0' },
-  getMempoolAncestors: { version: '>=0.13.0' },
-  getMempoolDescendants: { version: '>=0.13.0' },
-  getMempoolEntry: { version: '>=0.13.0' },
-  getMempoolInfo: { version: '>=0.10.0' },
-  getMiningInfo: { version: '>=0.6.0' },
-  getNetTotals: { version: '>=0.1.0' },
-  getNetworkHashPs: { version: '>=0.9.0' },
-  getNetworkInfo: { version: '>=0.9.2' },
-  getNewAddress: { version: '>=0.1.0' },
-  getPeerInfo: { version: '>=0.7.0' },
-  getRawChangeAddress: { version: '>=0.9.0' },
-  getRawMempool: { version: '>=0.7.0' },
-  getRawTransaction: { version: '>=0.7.0' },
-  getReceivedByAccount: { version: '>=0.1.0' },
-  getReceivedByAddress: { version: '>=0.1.0' },
-  getTransaction: { version: '>=0.1.0' },
-  getTxOut: { version: '>=0.7.0' },
-  getTxOutProof: { version: '>=0.11.0' },
-  getTxOutSetInfo: { version: '>=0.7.0' },
-  getUnconfirmedBalance: { version: '>=0.9.0' },
-  getWalletInfo: { version: '>=0.9.2' },
-  getWork: { version: '<0.10.0' },
-  help: { version: '>=0.1.0' },
-  importAddress: { version: '>=0.10.0' },
+  estimateFee: {
+    category: 'util',
+    version: '>=0.10.0'
+  },
+  estimatePriority: {
+    category: 'util',
+    version: '>=0.10.0 <0.15.0'
+  },
+  estimateSmartFee: {
+    category: 'util',
+    version: '>=0.12.0'
+  },
+  estimateSmartPriority: {
+    category: 'util',
+    version: '>=0.12.0 <0.15.0'
+  },
+  fundRawTransaction: {
+    category: 'rawtransactions',
+    version: '>=0.12.0'
+  },
+  generate: {
+    category: 'generating',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.11.0'
+  },
+  generateToAddress: {
+    category: 'generating',
+    version: '>=0.13.0'
+  },
+  getAccount: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  getAccountAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.18'
+  },
+  getAddedNodeInfo: {
+    category: 'network',
+    version: '>=0.8.0'
+  },
+  getAddressesByAccount: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  getBalance: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.18'
+  },
+  getBestBlockHash: {
+    category: 'blockchain',
+    version: '>=0.9.0'
+  },
+  getBlock: {
+    category: 'blockchain',
+    version: '>=0.6.0'
+  },
+  getBlockCount: {
+    category: 'blockchain',
+    version: '>=0.1.0'
+  },
+  getBlockHash: {
+    category: 'blockchain',
+    version: '>=0.6.0'
+  },
+  getBlockHeader: {
+    category: 'blockchain',
+    version: '>=0.12.0'
+  },
+  getBlockTemplate: {
+    category: 'mining',
+    version: '>=0.7.0'
+  },
+  getBlockchainInfo: {
+    category: 'blockchain',
+    version: '>=0.9.2'
+  },
+  getChainTips: {
+    category: 'blockchain',
+    version: '>=0.10.0'
+  },
+  getChainTxStats: {
+    category: 'blockchain',
+    version: '>=0.15.0'
+  },
+  getConnectionCount: {
+    category: 'network',
+    version: '>=0.1.0'
+  },
+  getDifficulty: {
+    category: 'blockchain',
+    version: '>=0.1.0'
+  },
+  getGenerate: {
+    category: 'generating',
+    version: '<0.13.0'
+  },
+  getHashesPerSec: {
+    category: 'blockchain',
+    version: '<0.10.0'
+  },
+  getInfo: {
+    category: 'control',
+    version: '>=0.1.0'
+  },
+  getMemoryInfo: {
+    category: 'control',
+    version: '>=0.14.0'
+  },
+  getMempoolAncestors: {
+    category: 'blockchain',
+    version: '>=0.13.0'
+  },
+  getMempoolDescendants: {
+    category: 'blockchain',
+    version: '>=0.13.0'
+  },
+  getMempoolEntry: {
+    category: 'blockchain',
+    version: '>=0.13.0'
+  },
+  getMempoolInfo: {
+    category: 'blockchain',
+    version: '>=0.10.0'
+  },
+  getMiningInfo: {
+    category: 'mining',
+    version: '>=0.6.0'
+  },
+  getNetTotals: {
+    category: 'network',
+    version: '>=0.1.0'
+  },
+  getNetworkHashPs: {
+    category: 'mining',
+    version: '>=0.9.0'
+  },
+  getNetworkInfo: {
+    category: 'network',
+    version: '>=0.9.2'
+  },
+  getNewAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  getPeerInfo: {
+    category: 'network',
+    version: '>=0.7.0'
+  },
+  getRawChangeAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.9.0'
+  },
+  getRawMempool: {
+    category: 'blockchain',
+    version: '>=0.7.0'
+  },
+  getRawTransaction: {
+    category: 'rawtransactions',
+    version: '>=0.7.0'
+  },
+  getReceivedByAccount: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  getReceivedByAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  getTransaction: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  getTxOut: {
+    category: 'blockchain',
+    version: '>=0.7.0'
+  },
+  getTxOutProof: {
+    category: 'blockchain',
+    version: '>=0.11.0'
+  },
+  getTxOutSetInfo: {
+    category: 'blockchain',
+    version: '>=0.7.0'
+  },
+  getUnconfirmedBalance: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.9.0'
+  },
+  getWalletInfo: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.9.2'
+  },
+  getWork: {
+    category: 'blockchain',
+    version: '<0.10.0'
+  },
+  help: {
+    category: 'control',
+    version: '>=0.1.0'
+  },
+  importAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.10.0'
+  },
   importMulti: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
     obfuscate: {
       request: {
         default: params => set(params, '[0]', map(params[0], request => set(request, 'keys', map(request.keys, () => '******')))),
@@ -103,6 +376,10 @@ export default {
     version: '>=0.14.0'
   },
   importPrivKey: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
     obfuscate: {
       request: {
         default: () => ['******'],
@@ -111,38 +388,198 @@ export default {
     },
     version: '>=0.6.0'
   },
-  importPrunedFunds: { version: '>=0.13.0' },
-  importPubKey: { version: '>=0.12.0' },
-  importWallet: { version: '>=0.9.0' },
-  keypoolRefill: { version: '>=0.1.0' },
-  listAccounts: { version: '>=0.1.0' },
-  listAddressGroupings: { version: '>=0.7.0' },
-  listBanned: { version: '>=0.12.0' },
-  listLockUnspent: { version: '>=0.8.0' },
-  listReceivedByAccount: { version: '>=0.1.0' },
-  listReceivedByAddress: { version: '>=0.1.0' },
-  listSinceBlock: { version: '>=0.5.0' },
-  listTransactions: { version: '>=0.3.18' },
-  listUnspent: { version: '>=0.7.0' },
-  listWallets: { version: '>=0.15.0' },
-  lockUnspent: { version: '>=0.8.0' },
-  move: { version: '>=0.3.18' },
-  ping: { version: '>=0.9.0' },
-  preciousBlock: { version: '>=0.14.0' },
-  prioritiseTransaction: { version: '>=0.10.0' },
-  pruneBlockchain: { version: '>=0.14.0' },
-  removePrunedFunds: { version: '>=0.13.0' },
-  sendFrom: { version: '>=0.3.18' },
-  sendMany: { version: '>=0.3.21' },
-  sendRawTransaction: { version: '>=0.7.0' },
-  sendToAddress: { version: '>=0.1.0' },
-  setAccount: { version: '>=0.1.0' },
-  setBan: { version: '>=0.12.0' },
-  setGenerate: { version: '<0.13.0' },
-  setNetworkActive: { version: '>=0.14.0' },
-  setTxFee: { version: '>=0.3.22' },
-  signMessage: { version: '>=0.5.0' },
+  importPrunedFunds: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.13.0'
+  },
+  importPubKey: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.12.0'
+  },
+  importWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.9.0'
+  },
+  keypoolRefill: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  listAccounts: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  listAddressGroupings: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.7.0'
+  },
+  listBanned: {
+    category: 'network',
+    version: '>=0.12.0'
+  },
+  listLockUnspent: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.8.0'
+  },
+  listReceivedByAccount: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  listReceivedByAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  listSinceBlock: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.5.0'
+  },
+  listTransactions: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.18'
+  },
+  listUnspent: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.7.0'
+  },
+  listWallets: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.15.0'
+  },
+  lockUnspent: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.8.0'
+  },
+  move: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.18'
+  },
+  ping: {
+    category: 'network',
+    version: '>=0.9.0'
+  },
+  preciousBlock: {
+    category: 'blockchain',
+    version: '>=0.14.0'
+  },
+  prioritiseTransaction: {
+    category: 'mining',
+    version: '>=0.10.0'
+  },
+  pruneBlockchain: {
+    category: 'blockchain',
+    version: '>=0.14.0'
+  },
+  removePrunedFunds: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.13.0'
+  },
+  sendFrom: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.18'
+  },
+  sendMany: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.21'
+  },
+  sendRawTransaction: {
+    category: 'rawtransactions',
+    version: '>=0.7.0'
+  },
+  sendToAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  setAccount: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.1.0'
+  },
+  setBan: {
+    category: 'network',
+    version: '>=0.12.0'
+  },
+  setGenerate: {
+    category: 'generating',
+    version: '<0.13.0'
+  },
+  setNetworkActive: {
+    category: 'network',
+    version: '>=0.14.0'
+  },
+  setTxFee: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.3.22'
+  },
+  signMessage: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
+    version: '>=0.5.0'
+  },
   signMessageWithPrivKey: {
+    category: 'util',
     obfuscate: {
       request: {
         default: params => set([...params], '[0]', '******'),
@@ -152,6 +589,7 @@ export default {
     version: '>=0.13.0'
   },
   signRawTransaction: {
+    category: 'rawtransactions',
     obfuscate: {
       request: {
         default: params => set([...params], '[2]', map(params[2], () => '******')),
@@ -160,15 +598,40 @@ export default {
     },
     version: '>=0.7.0'
   },
-  stop: { version: '>=0.1.0' },
-  submitBlock: { version: '>=0.7.0' },
-  upTime: { version: '>=0.15.0' },
-  validateAddress: { version: '>=0.3.14' },
-  verifyChain: { version: '>=0.9.0' },
-  verifyMessage: { version: '>=0.5.0' },
-  verifyTxOutProof: { version: '>0.11.0' },
-  walletLock: { version: '>=0.1.0' },
+  stop: {
+    category: 'control',
+    version: '>=0.1.0'
+  },
+  submitBlock: {
+    category: 'mining',
+    version: '>=0.7.0'
+  },
+  upTime: {
+    category: 'control',
+    version: '>=0.15.0'
+  },
+  validateAddress: {
+    category: 'util',
+    version: '>=0.3.14'
+  },
+  verifyChain: {
+    category: 'blockchain',
+    version: '>=0.9.0'
+  },
+  verifyMessage: {
+    category: 'util',
+    version: '>=0.5.0'
+  },
+  verifyTxOutProof: {
+    category: 'blockchain',
+    version: '>0.11.0'
+  },
+  walletLock: {
+    category: 'wallet',
+    version: '>=0.1.0'
+  },
   walletPassphrase: {
+    category: 'wallet',
     obfuscate: {
       request: {
         default: params => set([...params], '[0]', '******'),
@@ -178,6 +641,7 @@ export default {
     version: '>=0.1.0'
   },
   walletPassphraseChange: {
+    category: 'wallet',
     obfuscate: {
       request: {
         default: params => set(set([...params], '[0]', '******'), '[1]', '******'),
