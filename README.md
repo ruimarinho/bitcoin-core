@@ -1,10 +1,19 @@
 # bitcoin-core
-A modern Bitcoin Core REST and RPC client to execute administrative tasks, wallet operations and queries about network and the blockchain.
+A modern Bitcoin Core REST and RPC client to execute administrative tasks, [multiwallet](https://bitcoincore.org/en/2017/09/01/release-0.15.0/#multiwallet) operations and queries about network and the blockchain.
 
 ## Status
 [![npm version][npm-image]][npm-url] [![build status][travis-image]][travis-url]
 
 ## Installation
+
+Install the package via `yarn`:
+
+```sh
+yarn add bitcoin-core
+```
+
+or via `npm`:
+
 Install the package via `npm`:
 
 ```sh
@@ -27,6 +36,7 @@ npm install bitcoin-core --save
 11. `[timeout=30000]` _(number)_: How long until the request times out (ms).
 12. `[username]` _(number)_: The RPC server user name.
 13. `[version]` _(string)_: Which version to check methods for ([read more](#versionchecking)).
+14. `[wallet]` _(string)_: Which wallet to manage ([read more](#multiwallet)).
 
 ### Examples
 #### Using network mode
@@ -121,6 +131,57 @@ This feature is available to all JSON-RPC methods that accept arguments.
 
 Due to [JavaScript's limited floating point precision](http://floating-point-gui.de/), all big numbers (numbers with more than 15 significant digits) are returned as strings to prevent precision loss. This includes both the RPC and REST APIs.
 
+## Multiwallet
+
+Since Bitcoin Core v0.15.0, it's possible to manage multiple wallets using a single daemon. This enables use-cases such as managing a personal and a business wallet simultaneously in order to simplify accounting and accidental misuse of funds.
+
+Historically, the _accounts_ feature was supposed to offer similar functionality, but it has now been replaced by this more powerful feature.
+
+To enable Multi Wallet support, start by specifying the number of added wallets you would like to have available and loaded on the server using the `-wallet` argument multiple times. For convenience, the bitcoin-core docker image will be used, but it's not a requirement:
+
+```sh
+docker run --rm -it -p 18332:18332 ruimarinho/bitcoin-core:0.15-alpine \
+  -printtoconsole \
+  -server \
+  -rpcauth='foo:e1fcea9fb59df8b0388f251984fe85$26431097d48c5b6047df8dee64f387f63835c01a2a463728ad75087d0133b8e6' \
+  -regtest \
+  -wallet=wallet1.dat \
+  -wallet=wallet2.dat \
+  -rpcallowip=172.17.0.0/16
+```
+
+Notice the `rpcauth` hash which has been previously generated for the password `j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y=`. Do **not** copy and paste this hash **ever** beyond this exercise.
+
+Instantiate a client for each wallet and execute commands targeted at each wallet:
+
+```js
+const Client = require('bitcoin-core');
+
+const wallet1 = new Client({
+  network: 'regtest',
+  wallet: 'wallet1.dat',
+  username: 'foo',
+  password: 'j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y='
+});
+
+const wallet2 = new Client({
+  network: 'regtest',
+  wallet: 'wallet2.dat',
+  username: 'foo',
+  password: 'j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y='
+});
+
+(async function() {
+  await wallet2.generate(100);
+
+  console.log(await wallet1.getBalance());
+  // => 0
+  console.log(await wallet2.getBalance());
+  // => 50
+}());
+```
+
+
 ### Version Checking
 By default, all methods are exposed on the client independently of the version it is connecting to. This is the most flexible option as defining methods for unavailable RPC calls does not cause any harm and the library is capable of handling a `Method not found` response error correctly.
 
@@ -160,7 +221,7 @@ docker run --rm -it ruimarinho/bitcoin-core:0.12-alpine -printtoconsole -rpcuser
 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation.
 
-By default, port `8332` is used to listen for requests in `mainnet` mode, or `18332` in `testnet` or `regtest` modes. Use the `network` property to initialize the client on the desired mode and automatically set the respective default port. You can optionally set a custom port of your choice too.
+By default, port `8332` is used to listen for requests in `mainnet` mode, or `18332` in `testnet` and `regtest` modes (the regtest change will be changed to `18443` in [0.16](https://github.com/bitcoin/bitcoin/pull/10825)). Use the `network` property to initialize the client on the desired mode and automatically set the respective default port. You can optionally set a custom port of your choice too.
 
 The RPC services binds to the localhost loopback network interface, so use `rpcbind` to change where to bind to and `rpcallowip` to whitelist source IP access.
 
@@ -178,7 +239,7 @@ client.sendToAddress('mmXgiR6KAhZCyQ8ndr2BCfEq1wNG2UnyG6', 0.1,  'sendtoaddress 
 ```
 
 #### Batch requests
-Batched requests are support by passing an array to the `command` method with a `method` and optionally, `parameters`. The return value will be an array with all the responses.
+Batch requests are support by passing an array to the `command` method with a `method` and optionally, `parameters`. The return value will be an array with all the responses.
 
 ```js
 const batch = [

@@ -55,7 +55,8 @@ class Client {
     ssl = false,
     timeout = 30000,
     username,
-    version
+    version,
+    wallet
   } = {}) {
     if (!_.has(networks, network)) {
       throw new Error(`Invalid network name "${network}"`, { network });
@@ -68,15 +69,14 @@ class Client {
     this.host = host;
     this.password = password;
     this.port = port || networks[network];
-    this.timeout = timeout;
     this.ssl = {
       enabled: _.get(ssl, 'enabled', ssl),
       strict: _.get(ssl, 'strict', _.get(ssl, 'enabled', ssl))
     };
+    this.timeout = timeout;
+    this.wallet = wallet;
 
-    // Find unsupported methods according to version.
-    let unsupported = [];
-
+    // Version handling.
     if (version) {
       // Capture X.Y.Z when X.Y.Z.A is passed to support oddly formatted Bitcoin Core
       // versions such as 0.15.0.1.
@@ -89,12 +89,19 @@ class Client {
       [version] = result;
 
       this.hasNamedParametersSupport = semver.satisfies(version, '>=0.14.0');
-      unsupported = _.chain(methods)
-        .pickBy(method => !semver.satisfies(version, method.version))
-        .keys()
-        .invokeMap(String.prototype.toLowerCase)
-        .value();
     }
+
+    this.version = version;
+    this.methods = _.transform(methods, (result, method, name) => {
+      result[_.toLower(name)] = {
+        features: _.transform(method.features, (result, constraint, name) => {
+          result[name] = {
+            supported: version ? semver.satisfies(version, constraint) : true
+          };
+        }, {}),
+        supported: version ? semver.satisfies(version, method.version) : true
+      };
+    }, {});
 
     const request = requestLogger(logger);
 
@@ -104,7 +111,7 @@ class Client {
       strictSSL: this.ssl.strict,
       timeout: this.timeout
     }), { multiArgs: true });
-    this.requester = new Requester({ unsupported, version });
+    this.requester = new Requester({ methods: this.methods, version });
     this.parser = new Parser({ headers: this.headers });
   }
 
@@ -115,30 +122,40 @@ class Client {
   command(...args) {
     let body;
     let callback;
-    let parameters = _.tail(args);
-    const input = _.head(args);
-    const lastArg = _.last(args);
+    let multiwallet;
+    let [input, ...parameters] = args; // eslint-disable-line prefer-const
+    const lastArg = _.last(parameters);
+    const isBatch = Array.isArray(input);
 
     if (_.isFunction(lastArg)) {
       callback = lastArg;
       parameters = _.dropRight(parameters);
     }
 
-    if (this.hasNamedParametersSupport && parameters.length === 1 && _.isPlainObject(parameters[0])) {
-      parameters = parameters[0];
+    if (isBatch) {
+      multiwallet = _.some(input, command => {
+        return _.get(this.methods[command.method], 'features.multiwallet.supported', false) === true;
+      });
+
+      body = input.map((method, index) => this.requester.prepare({
+        method: method.method,
+        parameters: method.parameters,
+        suffix: index
+      }));
+    } else {
+      if (this.hasNamedParametersSupport && parameters.length === 1 && _.isPlainObject(parameters[0])) {
+        parameters = parameters[0];
+      }
+
+      multiwallet = _.get(this.methods[input], 'features.multiwallet.supported', false) === true;
+      body = this.requester.prepare({ method: input, parameters });
     }
 
     return Promise.try(() => {
-      if (Array.isArray(input)) {
-        body = input.map((method, index) => this.requester.prepare({ method: method.method, parameters: method.parameters, suffix: index }));
-      } else {
-        body = this.requester.prepare({ method: input, parameters });
-      }
-
       return this.request.postAsync({
         auth: _.pickBy(this.auth, _.identity),
         body: JSON.stringify(body),
-        uri: '/'
+        uri: `${multiwallet && this.wallet ? `/wallet/${this.wallet}` : '/'}`
       }).bind(this)
         .then(this.parser.rpc);
     }).asCallback(callback);
@@ -270,7 +287,7 @@ class Client {
  * Add all known RPC methods.
  */
 
-_.forOwn(methods, (range, method) => {
+_.forOwn(methods, (options, method) => {
   Client.prototype[method] = _.partial(Client.prototype.command, method.toLowerCase());
 });
 
