@@ -50,7 +50,7 @@ By default, when `ssl` is enabled, strict checking is implicitly enabled.
 const fs = require('fs');
 const client = new Client({
   agentOptions: {
-    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')),
+    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')
   },
   ssl: true
 });
@@ -346,7 +346,7 @@ const Client = require('bitcoin-core');
 const fs = require('fs');
 const client = new Client({
   agentOptions: {
-    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')),
+    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')
   },
   port: 28332,
   ssl: true
