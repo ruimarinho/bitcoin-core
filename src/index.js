@@ -55,7 +55,8 @@ class Client {
     ssl = false,
     timeout = 30000,
     username,
-    version
+    version,
+    connection = 'close'
   } = {}) {
     if (!_.has(networks, network)) {
       throw new Error(`Invalid network name "${network}"`, { network });
@@ -72,6 +73,7 @@ class Client {
       enabled: _.get(ssl, 'enabled', ssl),
       strict: _.get(ssl, 'strict', _.get(ssl, 'enabled', ssl))
     };
+    this.connection = connection;
 
     // Find unsupported methods according to version.
     let unsupported = [];
@@ -123,6 +125,9 @@ class Client {
       return this.request.postAsync({
         auth: _.pickBy(this.auth, _.identity),
         body: JSON.stringify(body),
+        headers: {
+          Connection: this.connection
+        },
         json: false,
         uri: '/'
       }).bind(this)
