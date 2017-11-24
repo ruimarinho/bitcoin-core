@@ -2,15 +2,16 @@
   "env": {
     "test": {
       "plugins": [
-        "add-module-exports",
-          ["transform-async-to-module-method", {
-            "module": "bluebird",
-            "method": "coroutine"
-          }],
-          "istanbul"
-        ]
+        "@babel/transform-async-to-generator",
+        "istanbul"
+      ]
     }
   },
-  "plugins": ["add-module-exports"],
-  "presets": ["es2015-node4"]
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ]
 }

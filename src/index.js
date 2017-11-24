@@ -261,7 +261,13 @@ _.forOwn(methods, (range, method) => {
 });
 
 /**
- * Export Client class.
+ * Export Client class (ESM).
  */
 
 export default Client;
+
+/**
+ * Export Client class (CJS) for compatibility with require('bitcoin-core').
+ */
+
+module.exports = Client;
