@@ -31,6 +31,10 @@ function obfuscateResponseBody(body, method) {
  */
 
 function obfuscateResponse(request, instance) {
+  if (request.type !== 'response') {
+    return;
+  }
+
   if (!get(request, 'response.body')) {
     return;
   }
@@ -79,6 +83,10 @@ function obfuscateRequestBody(body) {
  */
 
 function obfuscateRequest(request) {
+  if (request.type !== 'request') {
+    return;
+  }
+
   if (!isString(request.body)) {
     return;
   }
@@ -99,6 +107,10 @@ function obfuscateRequest(request) {
  */
 
 function obfuscateHeaders(request) {
+  if (request.type !== 'request') {
+    return;
+  }
+
   if (!has(request, 'headers.authorization')) {
     return;
   }

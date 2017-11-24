@@ -457,11 +457,10 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@uphold/request-logger@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@uphold/request-logger/-/request-logger-1.2.0.tgz#e406893711e3de0369553155075890bec064a073"
+"@uphold/request-logger@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@uphold/request-logger/-/request-logger-2.0.0.tgz#c585c0bdb94210198945c6597e4fe23d6e63e084"
   dependencies:
-    lodash.clonedeep "^4.5.0"
     uuid "^3.0.1"
 
 abbrev@1:
@@ -2010,10 +2009,6 @@ locate-path@^2.0.0:
   dependencies:
     p-locate "^2.0.0"
     path-exists "^3.0.0"
-
-lodash.clonedeep@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
 
 lodash@^4.0.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@~4.17.2:
   version "4.17.4"
