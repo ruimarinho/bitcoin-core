@@ -89,7 +89,6 @@ class Client {
     this.request = Promise.promisifyAll(request.defaults({
       agentOptions: this.agentOptions,
       baseUrl: `${this.ssl.enabled ? 'https' : 'http'}://${this.host}:${this.port}`,
-      json: true,
       strictSSL: this.ssl.strict,
       timeout: this.timeout
     }), { multiArgs: true });
@@ -123,7 +122,6 @@ class Client {
       return this.request.postAsync({
         auth: _.pickBy(this.auth, _.identity),
         body: JSON.stringify(body),
-        json: false,
         uri: '/'
       }).bind(this)
         .then(this.parser.rpc);
@@ -142,7 +140,7 @@ class Client {
         encoding: extension === 'bin' ? null : undefined,
         url: `/rest/tx/${hash}.${extension}`
       }).bind(this)
-        .then(this.parser.rest);
+        .then(_.partial(this.parser.rest, extension));
     }).asCallback(callback);
   }
 
@@ -160,7 +158,7 @@ class Client {
         encoding: extension === 'bin' ? null : undefined,
         url: `/rest/block${summary ? '/notxdetails/' : '/'}${hash}.${extension}`
       }).bind(this)
-        .then(this.parser.rest);
+        .then(_.partial(this.parser.rest, extension));
     }).asCallback(callback);
   }
 
@@ -180,7 +178,7 @@ class Client {
         encoding: extension === 'bin' ? null : undefined,
         url: `/rest/headers/${count}/${hash}.${extension}`
       }).bind(this)
-        .then(this.parser.rest);
+        .then(_.partial(this.parser.rest, extension));
     }).asCallback(callback);
   }
 
@@ -194,7 +192,7 @@ class Client {
 
     return this.request.getAsync(`/rest/chaininfo.json`)
       .bind(this)
-      .then(this.parser.rest)
+      .then(_.partial(this.parser.rest, 'json'))
       .asCallback(callback);
   }
 
@@ -215,7 +213,7 @@ class Client {
       encoding: extension === 'bin' ? null : undefined,
       url: `/rest/getutxos/checkmempool/${sets}.${extension}`
     }).bind(this)
-      .then(this.parser.rest)
+      .then(_.partial(this.parser.rest, extension))
       .asCallback(callback);
   }
 
@@ -229,7 +227,7 @@ class Client {
 
     return this.request.getAsync('/rest/mempool/contents.json')
       .bind(this)
-      .then(this.parser.rest)
+      .then(_.partial(this.parser.rest, 'json'))
       .asCallback(callback);
   }
 
@@ -247,7 +245,7 @@ class Client {
 
     return this.request.getAsync('/rest/mempool/info.json')
       .bind(this)
-      .then(this.parser.rest)
+      .then(_.partial(this.parser.rest, 'json'))
       .asCallback(callback);
   }
 }
