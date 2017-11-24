@@ -63,6 +63,7 @@ class Client {
 
     this.agentOptions = agentOptions;
     this.auth = (password || username) && { pass: password, user: username };
+    this.hasNamedParametersSupport = false;
     this.headers = headers;
     this.host = host;
     this.password = password;
@@ -77,6 +78,14 @@ class Client {
     let unsupported = [];
 
     if (version) {
+      // Convert to semver (removing pathes).
+      if (!/[0-9]+\.[0-9]+\.[0-9]+/.test(version)) {
+        throw new Error(`Invalid version "${version}"`, { version });
+      }
+
+      [version] = /[0-9]+\.[0-9]+\.[0-9]+/.exec(version);
+
+      this.hasNamedParametersSupport = semver.satisfies(version, '>=0.14.0');
       unsupported = _.chain(methods)
         .pickBy(method => !semver.satisfies(version, method.version))
         .keys()
@@ -111,6 +120,10 @@ class Client {
     if (_.isFunction(lastArg)) {
       callback = lastArg;
       parameters = _.dropRight(parameters);
+    }
+
+    if (this.hasNamedParametersSupport && parameters.length === 1 && _.isPlainObject(parameters[0])) {
+      parameters = parameters[0];
     }
 
     return Promise.try(() => {

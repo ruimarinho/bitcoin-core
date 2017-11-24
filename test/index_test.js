@@ -191,6 +191,15 @@ describe('Client', () => {
 
         balance.should.be.a.Number();
       });
+
+      it('should support named parameters', async () => {
+        const balance = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).getBalance({
+          account: '*',
+          minconf: 0
+        });
+
+        balance.should.be.a.Number();
+      });
     });
 
     describe('getDifficulty()', () => {
@@ -237,6 +246,16 @@ describe('Client', () => {
 
       it('should return the most recent list of transactions from all accounts using default count', async () => {
         const transactions = await new Client(config.bitcoind).listTransactions('test');
+
+        transactions.should.be.an.Array().and.empty();
+      });
+
+      it('should support named parameters', async () => {
+        let transactions = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).listTransactions({ account: 'test' });
+
+        transactions.should.be.an.Array().and.empty();
+
+        transactions = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).listTransactions({ account: 'test', count: 15 });
 
         transactions.should.be.an.Array().and.empty();
       });
@@ -318,6 +337,22 @@ describe('Client', () => {
       e.should.be.an.instanceOf(Error);
       e.code.should.match(/(ETIMEDOUT|ESOCKETTIMEDOUT)/);
     }
+  });
+
+  it('should throw an error if version is invalid', async () => {
+    try {
+      await new Client({ version: '0.12' }).getHashesPerSec();
+
+      should.fail();
+    } catch (e) {
+      e.should.be.an.instanceOf(Error);
+      e.message.should.equal('Invalid version "0.12"');
+    }
+  });
+
+  it('should not throw an error if version is valid', async () => {
+    await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoind)).getInfo();
+    await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).getInfo();
   });
 
   it('should throw an error if version does not support a given method', async () => {
