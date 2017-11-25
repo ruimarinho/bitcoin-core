@@ -92,6 +92,27 @@ client.getInfo().then(([body, headers]) => console.log(body, headers));
 const [body, headers] = await client.getInfo();
 ```
 
+## Named parameters
+
+Since version v0.14.0, it is possible to send commands via the JSON-RPC interface using named parameters instead of positional ones. This comes with the advantage of making the order of arguments irrelevant. It also helps improving the readability of certain function calls when leaving out arguments for their default value.
+
+For instance, take the `getBalance()` call written using positional arguments:
+
+```js
+const balance = await new Client().getBalance('*', 0);
+```
+
+It is functionally equivalent to using the named arguments `account` and `minconf`, leaving out `include_watchonly` (defaults to `false`):
+
+```js
+const balance = await new Client().getBalance({
+  account: '*',
+  minconf: 0
+});
+```
+
+This feature is available to all JSON-RPC methods that accept arguments.
+
 ### Floating point number precision in JavaScript
 
 Due to [Javascript's limited floating point precision](http://floating-point-gui.de/), all big numbers (numbers with more than 15 significant digits) are returned as strings to prevent precision loss.
