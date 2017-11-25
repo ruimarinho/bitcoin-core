@@ -18,6 +18,17 @@ import should from 'should';
  * Test `Client`.
  */
 
+before(async () => {
+  const client = new Client(config.bitcoind);
+  const [tip] = await client.getChainTips();
+
+  if (tip.height === 200) {
+    return null;
+  }
+
+  await client.generate(200);
+});
+
 afterEach(() => {
   if (nock.pendingMocks().length) {
     throw new Error('Unexpected pending mocks');
@@ -191,6 +202,20 @@ describe('Client', () => {
 
         balance.should.be.a.Number();
       });
+
+      it('should support named parameters', async () => {
+        const client = new Client(_.defaults({ version: '0.15.0' }, config.bitcoind));
+
+        // Make sure that the balance on the main wallet is always higher than the one on the test wallet.
+        await client.generate(51);
+
+        const mainWalletBalance = await client.getBalance({ account: '*', minconf: 0 });
+        const mainWalletBalanceWithoutParameters = await client.getBalance('*', 0);
+        const testWalletBalance = await client.getBalance({ account: 'test', minconf: 0 });
+
+        mainWalletBalance.should.not.equal(testWalletBalance);
+        mainWalletBalanceWithoutParameters.should.equal(mainWalletBalance);
+      });
     });
 
     describe('getDifficulty()', () => {
@@ -230,15 +255,60 @@ describe('Client', () => {
 
     describe('listTransactions()', () => {
       it('should return the most recent list of transactions from all accounts using specific count', async () => {
-        const transactions = await new Client(config.bitcoind).listTransactions('test', 15);
+        const address = await client.getNewAddress('test');
 
-        transactions.should.be.an.Array().and.empty();
+        // Generate 5 transactions.
+        for (let i = 0; i < 5; i++) {
+          await client.sendToAddress(address, 0.1);
+        }
+
+        const transactions = await new Client(config.bitcoind).listTransactions('test', 5);
+
+        transactions.should.be.an.Array();
+        transactions.length.should.be.greaterThanOrEqual(5);
       });
 
       it('should return the most recent list of transactions from all accounts using default count', async () => {
         const transactions = await new Client(config.bitcoind).listTransactions('test');
 
-        transactions.should.be.an.Array().and.empty();
+        transactions.should.be.an.Array();
+        transactions.should.matchEach(value => {
+          value.should.have.keys(
+            'account',
+            'address',
+            'amount',
+            'bip125-replaceable',
+            'category',
+            'confirmations',
+            'label',
+            'time',
+            'timereceived',
+            'trusted',
+            'txid',
+            'vout',
+            'walletconflicts'
+          );
+        });
+      });
+
+      it('should support named parameters', async () => {
+        const address = await client.getNewAddress('test');
+
+        // Generate 5 transactions.
+        for (let i = 0; i < 5; i++) {
+          await client.sendToAddress(address, 0.1);
+        }
+
+        let transactions = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).listTransactions({ account: 'test' });
+
+        transactions.should.be.an.Array();
+        transactions.length.should.be.greaterThanOrEqual(5);
+
+        // Make sure `count` is read correctly.
+        transactions = await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).listTransactions({ account: 'test', count: 1 });
+
+        transactions.should.be.an.Array();
+        transactions.should.have.length(1);
       });
     });
   });
@@ -320,6 +390,22 @@ describe('Client', () => {
     }
   });
 
+  it('should throw an error if version is invalid', async () => {
+    try {
+      await new Client({ version: '0.12' }).getHashesPerSec();
+
+      should.fail();
+    } catch (e) {
+      e.should.be.an.instanceOf(Error);
+      e.message.should.equal('Invalid Version "0.12"');
+    }
+  });
+
+  it('should accept valid versions', async () => {
+    await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoind)).getInfo();
+    await new Client(_.defaults({ version: '0.15.0' }, config.bitcoind)).getInfo();
+  });
+
   it('should throw an error if version does not support a given method', async () => {
     try {
       await new Client({ version: '0.12.0' }).getHashesPerSec();
@@ -376,16 +462,6 @@ describe('Client', () => {
   });
 
   describe('rest', () => {
-    before(async () => {
-      const [tip] = await client.getChainTips();
-
-      if (tip.height === 200) {
-        return null;
-      }
-
-      await client.generate(200);
-    });
-
     describe('getTransactionByHash()', () => {
       it('should return a transaction json-encoded by default', async () => {
         const [{ txid }] = await client.listUnspent();
@@ -521,8 +597,9 @@ describe('Client', () => {
     describe('getMemoryPoolContent()', () => {
       it('should return memory pool content json-encoded by default', async () => {
         const content = await new Client(config.bitcoind).getMemoryPoolContent();
+        const transactions = await new Client(config.bitcoind).listTransactions('test');
 
-        content.should.eql({});
+        Object.keys(content).length.should.be.greaterThanOrEqual(transactions.length);
       });
     });
 
@@ -530,13 +607,12 @@ describe('Client', () => {
       it('should return memory pool information json-encoded by default', async () => {
         const information = await new Client(config.bitcoind).getMemoryPoolInformation();
 
-        information.should.eql({
-          bytes: 0,
-          maxmempool: 300000000,
-          mempoolminfee: 0,
-          size: 0,
-          usage: 0
-        });
+        information.should.have.keys('bytes', 'maxmempool', 'mempoolminfee', 'size', 'usage');
+        information.bytes.should.be.a.Number();
+        information.maxmempool.should.be.a.Number();
+        information.mempoolminfee.should.be.a.Number();
+        information.size.should.be.a.Number();
+        information.usage.should.be.a.Number();
       });
     });
   });

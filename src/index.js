@@ -63,6 +63,7 @@ class Client {
 
     this.agentOptions = agentOptions;
     this.auth = (password || username) && { pass: password, user: username };
+    this.hasNamedParametersSupport = false;
     this.headers = headers;
     this.host = host;
     this.password = password;
@@ -77,6 +78,17 @@ class Client {
     let unsupported = [];
 
     if (version) {
+      // Capture X.Y.Z when X.Y.Z.A is passed to support oddly formatted Bitcoin Core
+      // versions such as 0.15.0.1.
+      const result = /[0-9]+\.[0-9]+\.[0-9]+/.exec(version);
+
+      if (!result) {
+        throw new Error(`Invalid Version "${version}"`, { version });
+      }
+
+      [version] = result;
+
+      this.hasNamedParametersSupport = semver.satisfies(version, '>=0.14.0');
       unsupported = _.chain(methods)
         .pickBy(method => !semver.satisfies(version, method.version))
         .keys()
@@ -111,6 +123,10 @@ class Client {
     if (_.isFunction(lastArg)) {
       callback = lastArg;
       parameters = _.dropRight(parameters);
+    }
+
+    if (this.hasNamedParametersSupport && parameters.length === 1 && _.isPlainObject(parameters[0])) {
+      parameters = parameters[0];
     }
 
     return Promise.try(() => {
