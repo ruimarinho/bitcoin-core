@@ -1,7 +1,24 @@
 # Changelog
 
-## [1.2.0](https://github.com/ruimarinho/bitcoin-core/tree/1.2.0) (2017-02-12)
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.1.0...1.2.0)
+## [2.0.0](https://github.com/ruimarinho/bitcoin-core/tree/2.0.0) (2017-11-27)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.2.0...2.0.0)
+
+**Merged pull requests:**
+
+- Add support for named parameters when using the JSON-RPC interface [\#51](https://github.com/ruimarinho/bitcoin-core/pull/51) ([ruimarinho](https://github.com/ruimarinho))
+- Improve response handling [\#50](https://github.com/ruimarinho/bitcoin-core/pull/50) ([ruimarinho](https://github.com/ruimarinho))
+- Update dependencies [\#49](https://github.com/ruimarinho/bitcoin-core/pull/49) ([ruimarinho](https://github.com/ruimarinho))
+- Update references [\#44](https://github.com/ruimarinho/bitcoin-core/pull/44) ([ruimarinho](https://github.com/ruimarinho))
+- Fix bug when calling REST method with extension `bin` [\#43](https://github.com/ruimarinho/bitcoin-core/pull/43) ([pedrobranco](https://github.com/pedrobranco))
+- Fix bug in rpc error class [\#42](https://github.com/ruimarinho/bitcoin-core/pull/42) ([pedrobranco](https://github.com/pedrobranco))
+- Obfuscate private keys from importmulti request logging [\#38](https://github.com/ruimarinho/bitcoin-core/pull/38) ([pedrobranco](https://github.com/pedrobranco))
+- Add support for bitcoin@0.15.0 methods [\#36](https://github.com/ruimarinho/bitcoin-core/pull/36) ([joaopaulofonseca](https://github.com/joaopaulofonseca))
+- Add support for bitcoin 0.13.2 [\#24](https://github.com/ruimarinho/bitcoin-core/pull/24) ([pedrobranco](https://github.com/pedrobranco))
+- Fix mempool naming inconsistency in getRawMempool method name [\#22](https://github.com/ruimarinho/bitcoin-core/pull/22) ([ruimarinho](https://github.com/ruimarinho))
+- Add support for bignumbers [\#17](https://github.com/ruimarinho/bitcoin-core/pull/17) ([pedrobranco](https://github.com/pedrobranco))
+
+## [v1.2.0](https://github.com/ruimarinho/bitcoin-core/tree/v1.2.0) (2017-02-12)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.1.0...v1.2.0)
 
 **Merged pull requests:**
 

@@ -1,27 +1,25 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _http = require('http');
+var _http = require("http");
 
-var _standardError = require('./standard-error');
-
-var _standardError2 = _interopRequireDefault(_standardError);
+var _standardError = _interopRequireDefault(require("./standard-error"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Export `RpcError` class.
- */
 
 /**
  * Module dependencies.
  */
 
-class RpcError extends _standardError2.default {
-  constructor(code, msg, props) {
+/**
+ * Export `RpcError` class.
+ */
+class RpcError extends _standardError.default {
+  constructor(code, msg, props = {}) {
     if (typeof code != 'number') {
       throw new TypeError(`Non-numeric HTTP code`);
     }
@@ -31,9 +29,8 @@ class RpcError extends _standardError2.default {
       msg = null;
     }
 
+    props.code = code;
     super(msg || _http.STATUS_CODES[code], props);
-
-    this.code = code;
   }
 
   get status() {
@@ -44,7 +41,7 @@ class RpcError extends _standardError2.default {
     Object.defineProperty(this, 'status', {
       configurable: true,
       enumerable: true,
-      value: value,
+      value,
       writable: true
     });
   }
@@ -52,6 +49,7 @@ class RpcError extends _standardError2.default {
   toString() {
     return `${this.name}: ${this.code} ${this.message}`;
   }
+
 }
+
 exports.default = RpcError;
-module.exports = exports['default'];
