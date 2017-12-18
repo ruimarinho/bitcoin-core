@@ -165,7 +165,7 @@ By default, port `8332` is used to listen for requests in `mainnet` mode, or `18
 The RPC services binds to the localhost loopback network interface, so use `rpcbind` to change where to bind to and `rpcallowip` to whitelist source IP access.
 
 #### Methods
-All RPC [methods](src/methods.js) are exposed on the client interface as a camelcase'd version of those available on `bitcoind`.
+All RPC [methods](src/methods.js) are exposed on the client interface as a camelcase'd version of those available on `bitcoind` (see examples below).
 
 For a more complete reference about which methods are available, check the [RPC documentation](https://bitcoin.org/en/developer-reference#remote-procedure-calls-rpcs) on the [Bitcoin Core Developer Reference website](https://bitcoin.org/en/developer-reference).
 
@@ -218,6 +218,17 @@ docker run --rm -it ruimarinho/bitcoin-core:0.12-alpine -printtoconsole -server 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation. Use `txindex=1` if you'd like to enable full transaction query support (note: this will take a considerable amount of time on the first run).
 
 ### Methods
+
+Unlike RPC methods which are automatically exposed on the client, REST ones are handled individually as each method has its own specificity. The following methods are supported:
+
+- [getBlockByHash](#getblockbyhashhash-options-callback)
+- [getBlockHeadersByHash](#getblockheadersbyhashhash-count-options-callback)
+- [getBlockchainInformation](#getblockchaininformationcallback)
+- [getMemoryPoolContent](#getmemorypoolcontent)
+- [getMemoryPoolInformation](#getmemorypoolinformationcallback)
+- [getTransactionByHash](#gettransactionbyhashhash-options-callback)
+- [getUnspentTransactionOutputs](#getunspenttransactionoutputsoutpoints-options-callback)
+
 #### getBlockByHash(hash, [options], [callback])
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
 
@@ -304,7 +315,7 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe', { extension: 'json', summary: false });
 ```
 
-### getUnspentTransactionOutputs(outpoints, [options], [callback])
+#### getUnspentTransactionOutputs(outpoints, [options], [callback])
 Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
 
 #### Arguments
