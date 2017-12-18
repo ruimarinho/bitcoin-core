@@ -96,8 +96,11 @@ const [body, headers] = await client.getInfo();
 
 Since version v0.14.0, it is possible to send commands via the JSON-RPC interface using named parameters instead of positional ones. This comes with the advantage of making the order of arguments irrelevant. It also helps improving the readability of certain function calls when leaving out arguments for their default value.
 
+Note: *You must provide a version in the client arguments to enable name parameters*. 
+```js
+const client = new Client({ version: '0.15.1' });
+```
 For instance, take the `getBalance()` call written using positional arguments:
-
 ```js
 const balance = await new Client().getBalance('*', 0);
 ```
@@ -105,7 +108,7 @@ const balance = await new Client().getBalance('*', 0);
 It is functionally equivalent to using the named arguments `account` and `minconf`, leaving out `include_watchonly` (defaults to `false`):
 
 ```js
-const balance = await new Client().getBalance({
+const balance = await new Client({ version: '0.15.1' }).getBalance({
   account: '*',
   minconf: 0
 });
