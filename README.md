@@ -215,13 +215,13 @@ These configuration values may also be set on the `bitcoin.conf` file of your pl
 
 ### Methods
 
-- [getBlockByHash](#getBlockByHashhash-options-callback)
-- [getBlockHeadersByHash](#getBlockHeadersByHashhash-count-options-callback)
-- [getBlockchainInformation](#getBlockchainInformationcallback)
-- [getMemoryPoolContent](#getMemoryPoolContent)
-- [getMemoryPoolInformation](#getMemoryPoolInformationcallback)
-- [getTransactionByHash](#getTransactionByHashhash-options-callback)
-- [getUnspentTransactionOutputs](#getUnspentTransactionOutputsoutpoints-options-callback)
+- [getBlockByHash](#getblockbyhashhash-options-callback)
+- [getBlockHeadersByHash](#getblockheadersbyhashhash-count-options-callback)
+- [getBlockchainInformation](#getblockchaininformationcallback)
+- [getMemoryPoolContent](#getmemorypoolcontent)
+- [getMemoryPoolInformation](#getmemorypoolinformationcallback)
+- [getTransactionByHash](#gettransactionbyhashhash-options-callback)
+- [getUnspentTransactionOutputs](#getunspenttransactionoutputsoutpoints-options-callback)
 - [command](#commandcommand-arguments)
 
 #### getBlockByHash(hash, [options], [callback])
