@@ -218,6 +218,16 @@ docker run --rm -it ruimarinho/bitcoin-core:0.12-alpine -printtoconsole -server 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation. Use `txindex=1` if you'd like to enable full transaction query support (note: this will take a considerable amount of time on the first run).
 
 ### Methods
+
+- [getBlockByHash](#getblockbyhashhash-options-callback)
+- [getBlockHeadersByHash](#getblockheadersbyhashhash-count-options-callback)
+- [getBlockchainInformation](#getblockchaininformationcallback)
+- [getMemoryPoolContent](#getmemorypoolcontent)
+- [getMemoryPoolInformation](#getmemorypoolinformationcallback)
+- [getTransactionByHash](#gettransactionbyhashhash-options-callback)
+- [getUnspentTransactionOutputs](#getunspenttransactionoutputsoutpoints-options-callback)
+- [command](#commandcommand-arguments)
+
 #### getBlockByHash(hash, [options], [callback])
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
 
@@ -323,6 +333,15 @@ client.getUnspentTransactionOutputs([{
   id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
   index: 1
 }], { extension: 'json' }, [callback])
+```
+
+### command(command, [arguments...])
+Allows you to directly call bitcoind's [RPC methods](https://bitcoin.org/en/developer-reference#remote-procedure-calls-rpcs).
+
+##### Example
+
+```js
+client.command('getBlockHeader', '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
 ```
 
 ### SSL
