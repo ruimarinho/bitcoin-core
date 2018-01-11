@@ -337,7 +337,7 @@ Allows you to directly call bitcoind's [RPC methods](https://bitcoin.org/en/deve
 ##### Example
 
 ```js
-client.command('getBlockHeadersByHash', '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
+client.command('getBlockHeader', '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
 ```
 
 ### SSL
