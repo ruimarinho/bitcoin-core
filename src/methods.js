@@ -35,7 +35,10 @@ export default {
   dumpWallet: { version: '>=0.9.0' },
   encryptWallet: {
     obfuscate: {
-      request: params => set([...params], '[0]', '******')
+      request: {
+        default: params => set([...params], '[0]', '******'),
+        named: params => set(params, 'passphrase', '******')
+      }
     },
     version: '>=0.1.0'
   },
@@ -92,13 +95,19 @@ export default {
   importAddress: { version: '>=0.10.0' },
   importMulti: {
     obfuscate: {
-      request: params => set(params, '[0]', map(params[0], request => set(request, 'keys', map(request.keys, () => '******'))))
+      request: {
+        default: params => set(params, '[0]', map(params[0], request => set(request, 'keys', map(request.keys, () => '******')))),
+        named: params => set(params, 'requests', map(params.requests, request => set(request, 'keys', map(request.keys, () => '******'))))
+      }
     },
     version: '>=0.14.0'
   },
   importPrivKey: {
     obfuscate: {
-      request: () => ['******']
+      request: {
+        default: () => ['******'],
+        named: params => set(params, 'privkey', '******')
+      }
     },
     version: '>=0.6.0'
   },
@@ -135,13 +144,19 @@ export default {
   signMessage: { version: '>=0.5.0' },
   signMessageWithPrivKey: {
     obfuscate: {
-      request: params => set([...params], '[0]', '******')
+      request: {
+        default: params => set([...params], '[0]', '******'),
+        named: params => set(params, 'privkey', '******')
+      }
     },
     version: '>=0.13.0'
   },
   signRawTransaction: {
     obfuscate: {
-      request: params => set([...params], '[2]', map(params[2], () => '******'))
+      request: {
+        default: params => set([...params], '[2]', map(params[2], () => '******')),
+        named: params => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
+      }
     },
     version: '>=0.7.0'
   },
@@ -155,9 +170,20 @@ export default {
   walletLock: { version: '>=0.1.0' },
   walletPassphrase: {
     obfuscate: {
-      request: params => set([...params], '[0]', '******')
+      request: {
+        default: params => set([...params], '[0]', '******'),
+        named: params => set(params, 'passphrase', '******')
+      }
     },
     version: '>=0.1.0'
   },
-  walletPassphraseChange: { version: '>=0.1.0' }
+  walletPassphraseChange: {
+    obfuscate: {
+      request: {
+        default: params => set(set([...params], '[0]', '******'), '[1]', '******'),
+        named: params => set(set(params, 'oldpassphrase', '******'), 'newpassphrase', '******')
+      }
+    },
+    version: '>=0.1.0'
+  }
 };
