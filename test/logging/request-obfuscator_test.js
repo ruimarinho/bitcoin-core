@@ -150,11 +150,11 @@ describe('RequestObfuscator', () => {
     });
 
     it('should obfuscate the private key from `body` when `method` is `dumpprivkey`', () => {
-      const request = { body: { id: '1485369469422-0', result: 'foobiz' }, type: 'response' };
+      const request = { body: '{"id":"1485369469422-0","result":"foobiz"}', type: 'response' };
 
       obfuscate(request, { body: '{"id":"1485369469422","method":"dumpprivkey","params":["foobar"]}' });
 
-      request.body.should.eql({ id: '1485369469422-0', result: '******' });
+      JSON.parse(request.body).should.eql({ id: '1485369469422-0', result: '******' });
     });
 
     it('should obfuscate the `body` when `headers.content-type` is `application/octet-stream`', () => {
@@ -167,24 +167,21 @@ describe('RequestObfuscator', () => {
 
     it('should obfuscate the `request.body` of a batch request', () => {
       const request = {
-        body: [
+        body: JSON.stringify([
           { id: '1485369469422-0', result: 'foobar' },
           { id: '1485369469422-2', result: 'foobiz' },
           { id: '1485369469422-1', result: 'foo' }
-        ],
+        ]),
         type: 'response'
       };
 
       obfuscate(request, { body: '[{"id":"1485369469422-0","method":"dumpprivkey","params":["foobar"]},{"id":"1485369469422-2","method":"getnewaddress","params":["foobiz"]},{"id":"1485369469422-1","method":"dumpprivkey","params":["foobiz"]}]' });
 
-      request.should.eql({
-        body: [
-          { id: '1485369469422-0', result: '******' },
-          { id: '1485369469422-2', result: 'foobiz' },
-          { id: '1485369469422-1', result: '******' }
-        ],
-        type: 'response'
-      });
+      JSON.parse(request.body).should.eql([
+        { id: '1485369469422-0', result: '******' },
+        { id: '1485369469422-2', result: 'foobiz' },
+        { id: '1485369469422-1', result: '******' }
+      ]);
     });
   });
 });

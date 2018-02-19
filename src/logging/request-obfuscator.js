@@ -49,17 +49,19 @@ function obfuscateResponse(request, instance) {
     return;
   }
 
+  request.body = JSON.parse(request.body);
+
   const requestBody = JSON.parse(instance.body);
 
   if (isArray(request.body)) {
     const methodsById = mapKeys(requestBody, method => method.id);
 
     request.body = map(request.body, request => obfuscateResponseBody(request, methodsById[request.id].method));
-
-    return;
+  } else {
+    request.body = obfuscateResponseBody(request.body, requestBody.method);
   }
 
-  request.body = obfuscateResponseBody(request.body, requestBody.method);
+  request.body = JSON.stringify(request.body);
 }
 
 /**
