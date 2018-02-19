@@ -149,44 +149,40 @@ describe('RequestObfuscator', () => {
       request.body.should.eql('[{"id":"1485369469422","method":"walletpassphrase","params":["******"]},{"id":"1485369469423","method":"walletpassphrase","params":["******"]}]');
     });
 
-    it('should obfuscate the private key from `response.body` when `method` is `dumpprivkey`', () => {
-      const request = { response: { body: { id: '1485369469422-0', result: 'foobiz' } }, type: 'response' };
+    it('should obfuscate the private key from `body` when `method` is `dumpprivkey`', () => {
+      const request = { body: { id: '1485369469422-0', result: 'foobiz' }, type: 'response' };
 
       obfuscate(request, { body: '{"id":"1485369469422","method":"dumpprivkey","params":["foobar"]}' });
 
-      request.response.body.should.eql({ id: '1485369469422-0', result: '******' });
+      request.body.should.eql({ id: '1485369469422-0', result: '******' });
     });
 
-    it('should obfuscate the `response.body` when `headers.content-type` is `application/octet-stream`', () => {
-      const request = { response: { body: new Buffer('foobar'), headers: { 'content-type': 'application/octet-stream' } }, type: 'response' };
+    it('should obfuscate the `body` when `headers.content-type` is `application/octet-stream`', () => {
+      const request = { body: new Buffer('foobar'), headers: { 'content-type': 'application/octet-stream' }, type: 'response' };
 
       obfuscate(request, { uri: 'foobar.bin' });
 
-      request.response.should.eql({ body: '******', headers: { 'content-type': 'application/octet-stream' } });
+      request.should.eql({ body: '******', headers: { 'content-type': 'application/octet-stream' }, type: 'response' });
     });
 
-    it('should obfuscate the `request.response.body` of a batch request', () => {
+    it('should obfuscate the `request.body` of a batch request', () => {
       const request = {
-        response: {
-          body: [
-            { id: '1485369469422-0', result: 'foobar' },
-            { id: '1485369469422-2', result: 'foobiz' },
-            { id: '1485369469422-1', result: 'foo' }
-          ]
-        },
+        body: [
+          { id: '1485369469422-0', result: 'foobar' },
+          { id: '1485369469422-2', result: 'foobiz' },
+          { id: '1485369469422-1', result: 'foo' }
+        ],
         type: 'response'
       };
 
       obfuscate(request, { body: '[{"id":"1485369469422-0","method":"dumpprivkey","params":["foobar"]},{"id":"1485369469422-2","method":"getnewaddress","params":["foobiz"]},{"id":"1485369469422-1","method":"dumpprivkey","params":["foobiz"]}]' });
 
       request.should.eql({
-        response: {
-          body: [
-            { id: '1485369469422-0', result: '******' },
-            { id: '1485369469422-2', result: 'foobiz' },
-            { id: '1485369469422-1', result: '******' }
-          ]
-        },
+        body: [
+          { id: '1485369469422-0', result: '******' },
+          { id: '1485369469422-2', result: 'foobiz' },
+          { id: '1485369469422-1', result: '******' }
+        ],
         type: 'response'
       });
     });

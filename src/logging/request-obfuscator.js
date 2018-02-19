@@ -35,12 +35,12 @@ function obfuscateResponse(request, instance) {
     return;
   }
 
-  if (!get(request, 'response.body')) {
+  if (!request.body) {
     return;
   }
 
-  if (get(request, `response.headers['content-type']`) === 'application/octet-stream') {
-    request.response.body = '******';
+  if (get(request, `headers['content-type']`) === 'application/octet-stream') {
+    request.body = '******';
 
     return;
   }
@@ -51,15 +51,15 @@ function obfuscateResponse(request, instance) {
 
   const requestBody = JSON.parse(instance.body);
 
-  if (isArray(request.response.body)) {
+  if (isArray(request.body)) {
     const methodsById = mapKeys(requestBody, method => method.id);
 
-    request.response.body = map(request.response.body, request => obfuscateResponseBody(request, methodsById[request.id].method));
+    request.body = map(request.body, request => obfuscateResponseBody(request, methodsById[request.id].method));
 
     return;
   }
 
-  request.response.body = obfuscateResponseBody(request.response.body, requestBody.method);
+  request.body = obfuscateResponseBody(request.body, requestBody.method);
 }
 
 /**
