@@ -18,6 +18,7 @@
     "email": "ruipmarinho@gmail.com"
   },
   "main": "dist/src/index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/ruimarinho/bitcoin-core.git"
@@ -50,6 +51,7 @@
     "@babel/polyfill": "^7.0.0-beta.32",
     "@babel/preset-env": "^7.0.0-beta.32",
     "@babel/register": "^7.0.0-beta.32",
+    "@types/request": "^2.47.0",
     "babel-eslint": "^8.0.0",
     "babel-plugin-istanbul": "^4.1.5",
     "eslint": "4.11.0",
