@@ -3,10 +3,9 @@
 // Definitions by: Joe Miyamoto <joemphilps@gmail.com>
 
 declare module 'bitcoin-core' {
-  import * as request from 'request';
 
-  interface ClientConstructorOption {
-    agentOptions?: request.Options,
+  export interface ClientConstructorOption {
+    agentOptions?: any,
     headers?: boolean,
     host?: string,
     logger?: Function,
@@ -25,7 +24,132 @@ declare module 'bitcoin-core' {
   }
 
   interface Parser {
-    headers: any;
+    headers: boolean;
+  }
+
+  type ScriptDecoded = {
+    asm: string,
+    hex: string,
+    type: string,
+    reqSigs: number,
+    addresses: string[],
+    ps2h?: string
+  }
+  type FundRawTxOptions = {
+    changeAddress?: string,
+    chnagePosition?: number,
+    includeWatching?: boolean,
+    lockUnspents?: boolean,
+    feeRate?: number,
+    subtractFeeFromOutputs?: number[],
+    replaceable?: boolean,
+    conf_target?: number,
+    estimate_mode: FeeEstimateMode,
+  }
+
+  type FeeEstimateMode = "UNSET" | "ECONOMICAL" | "CONSERVATIVE"
+
+  type TxStats = {
+    time: number,
+    txcount: number,
+    window_final_block_hash?: string,
+    window_block_count?: number,
+    window_tx_count?: number,
+    window_interval?: number,
+    txrate: number
+  }
+
+  type AddedNodeInfo = {
+    addednode: string,
+    connected: boolean,
+    addresses: {
+      address: string,
+      connected: "inbound" | "outbound"
+    }[]
+  }
+
+  type MemoryStats = {
+    locked: {
+      used: number,
+      free: number,
+      total: number,
+      locked: number,
+      chunks_used: number,
+      chunks_free: number
+    }
+  }
+
+  type NetworkInfo = {
+    version: number,
+    subversion: string,
+    protocolversion: number,
+    localservices: string,
+    localrelay: boolean,
+    timeoffset: number,
+    connections: number,
+    networkactive: boolean,
+    networks: {
+      name: string,
+      limited: boolean,
+      reachable: boolean,
+      proxy: string,
+      proxy_randomize_credentials: boolean
+    }[],
+    relayfee: number,
+    incrementalfee: number,
+    localaddresses: {
+      address: string,
+      port: number,
+      score: number
+    }[],
+    warnings?: string
+  }
+
+  type PeerInfo = {
+    id: number,
+    addr: string,
+    addrbind: string,
+    addrlocal: string,
+    services: string,
+    relaytxs: boolean,
+    lastsend: number,
+    lastrecv: number,
+    bytessent: number,
+    bytesrecv: number,
+    conntime: number,
+    timeoffset: number,
+    pingtime: number,
+    minping: number,
+    version: number,
+    subver: string,
+    inbound: boolean,
+    addnode: boolean,
+    startinheight: number,
+    banscore: number,
+    synced_headers: number,
+    synced_blocks: number,
+    inflight: number[],
+    whitelisted: boolean,
+    bytessent_per_msg: {
+      [key: string]: number
+    },
+    byterecv_per_msg: {
+      [key: string]: number
+    }
+  }
+
+  type NetTotals = {
+    totalbytesrecv: number,
+    totalbytessent: number,
+    timemlillis: number,
+    uploadtarget: {
+      timeframe: number,
+      target: number,
+      target_reached: boolean,
+      save_historical_blocks: boolean,
+      bytes_left_in_cycle: number
+      time_lef_in_cycle: number,
+    }
   }
 
   type ChainInfo = {
@@ -43,13 +167,25 @@ declare module 'bitcoin-core' {
     pruneheight: number,
     automatic_pruning: boolean,
     prune_target_size: number,
-    softforks: {id: string, version: number, reject: {status: boolean}}[],
+    softforks: {
+      id: string,
+      version: number,
+      reject: {
+        status: boolean
+      }
+    }[],
     bip9_softforks: {
       [key: string]: {
         status: "defined" | "started" | "locked_in" | "active" | "failed"
       }
     }[]
-    warnings: string
+    warnings?: string
+  }
+  type ChainTip = {
+    height: number,
+    hash: string,
+    branchlen: number,
+    status: "active" | "valid-fork" | "valid-headers" | "headers-only" | "invalid"
   }
   type Outpoint = {id: string, index: number}
   type UTXO = {
@@ -63,6 +199,39 @@ declare module 'bitcoin-core' {
       addresses: string[]
     },
   }
+
+  type UnspentTxInfo = {
+    txid: string,
+    vout: number,
+    address: string,
+    acount: string,
+    scriptPubKey: string,
+    amount: number,
+    confirmations: number,
+    redeemScript: string,
+    spendable: boolean,
+    solvable: boolean,
+    safe: boolean,
+  }
+
+  type PrevOut = {
+    txid: string,
+    vout: number,
+    scriptPubKey: string,
+    redeemScript?: string,
+    amount: number
+  }
+
+  type UTXOStats = {
+    height: number,
+    bestblock: string,
+    transactions: number,
+    txouts: number,
+    bogosize: number,
+    hash_serialized_2: string,
+    disk_size: number,
+    total_amount: number
+  }
   type MempoolContent = {
     [key: string]: {
       size: number,
@@ -75,10 +244,42 @@ declare module 'bitcoin-core' {
       descendantfees: number,
       ancestorcount: number,
       ancestorsize: number,
+      ancestorfees: number,
       wtxid: string,
       depends: string[]
     }
   }
+
+  type DecodedRawTransaction = {
+    txid: string,
+    hash: string,
+    size: number,
+    vsize: number,
+    version: number,
+    locktime: number,
+    vin: TxIn[],
+    vout: TxOut[],
+  }
+
+  interface FetchedRawTransaction extends DecodedRawTransaction {
+    hex: string,
+    blockhash: string,
+    confirmations: number,
+    time: number,
+    blocktime: number
+  }
+
+  type MiningInfo = {
+    blocks: number,
+    currentblockweight: number,
+    currentblocktx: number,
+    difficulty: number,
+    networkhashps: number,
+    pooledtx: number,
+    chain: "main" | "test" | "regtest",
+    warnings?: string
+  }
+
   type MempoolInfo = {
     size: number,
     bytes: number,
@@ -112,7 +313,7 @@ declare module 'bitcoin-core' {
     version: number,
     verxionHex: string,
     merkleroot: string,
-    tx: Transaction[],
+    tx: Transaction[] | string,
     hex: string,
     time: number,
     mediantime: number,
@@ -121,7 +322,7 @@ declare module 'bitcoin-core' {
     difficulty: number,
     chainwork: string,
     previousblockhash: string,
-    nextblockchash: string
+    nextblockchash?: string
   }
   type Transaction = {
     txid: string,
@@ -141,7 +342,14 @@ declare module 'bitcoin-core' {
       asm: string,
       hex: string
     },
+    txinwitness?: string[]
     sequence: number
+  }
+
+  type TxInForCreateRaw = {
+    txid: string,
+    vout: number,
+    sequence?: number
   }
 
   type TxOut = {
@@ -156,266 +364,654 @@ declare module 'bitcoin-core' {
     }
   }
 
-  type scriptPubkeyType = "pubkey" |
-    "pubkeyhash" |
-    "scripthash" |
-    "witnesspubkeyhash" |
-    "witnessscripthash" |
-    "witnesscommitment" |
-    "nonstandard"
+  type TxOutForCreateRaw = {
+    address: string,
+    data: string
+  }
+
+  type TxOutInBlock = {
+    bestblock: string,
+    confirmations: number,
+    value: number,
+    scriptPubKey: {
+      asm: string,
+      hex: string,
+      reqSigs: number,
+      type: scriptPubkeyType,
+      addresses: string[]
+    },
+    coinbase: boolean
+  }
+
+  type DecodedScript = {
+    asm: string,
+    hex: string,
+    type: string,
+    reqSigs: number,
+    addresses: string[]
+    p2sh: string
+  }
+
+  type WalletTransaction = {
+    amount: number,
+    fee: number,
+    confirmations: number,
+    blockhash: string,
+    blockindex: number,
+    blocktime: number,
+    txid: string,
+    time: number,
+    timereceived: number,
+    "bip125-replaceable": "yes" | "no" | "unknown",
+    details: {
+      account: string,
+      address: string,
+      category: "send" | "receive",
+      amount: number,
+      label?: string,
+      vout: number,
+      fee: number,
+      abandoned: number,
+    }[],
+    hex: string
+  }
+
+  type WalletInfo = {
+    walletname: string,
+    walletversion: number,
+    balance: number,
+    unconfirmed_balance: number,
+    immature_balance: number,
+    txcount: number,
+    keypoololdest: number,
+    keypoolsize: number,
+    paytxfee: number,
+    hdmasterkeyid: string
+  }
+
+  type scriptPubkeyType = string
+
+  type SigHashType = "ALL" | "NONE" | "SINGLE" | "ALL|ANYONECANPAY" | "NONE|ANYONECANPAY" | "SINGLE|ANYONECANPAY"
+
+  type SignRawTxResult = {
+    hex: string,
+    complete: boolean,
+    errors?: {
+      txid: string,
+      vout: number,
+      scriptSig: string,
+      sequence: number,
+      error: string
+    }[]
+  }
+
+  type ValidateAddressResult = {
+    isvalid: boolean,
+    address?: string,
+    scriptPubKey?: string,
+    ismine?: boolean,
+    iswatchonly?: boolean,
+    isscript?: boolean,
+    script?: string,
+    hex?: string,
+    addresses?: string[],
+    sigsrequired?: number,
+    pubkey?: string,
+    iscompressed?: boolean,
+    account?: string,
+    timestamp?: number,
+    hdkeypath?: string,
+    hdmasterkeyid?: string,
+  }
+
+  type ImportMultiRequest = {
+    scriptPubKey: string | {address: string},
+    timestamp: number | "now",
+    redeemScript?: string,
+    pubkeys?: string[],
+    keys?: string[],
+    internal?: boolean,
+    watchonly?: boolean,
+    label?: string
+  }
+
+  type Received = {
+    involvesWatchonly?: boolean,
+    account: string,
+    amount: number,
+    confirmations: number,
+    label: string
+  }
+
+  type ListUnspentOptions = {
+    minimumAmount: number | string,
+    maximumAmount: number | string,
+    maximumCount: number | string,
+    minimumSumAmount: number | string,
+  }
+
+  type ReceivedByAccount = Received
+
+  type ReceivedByAddress = {
+    address: string,
+    txids: string[]
+  } & Received
 
   type RestExtension = "json" | "bin" | "hex"
 
-  export class Client {
+  type MethodNameInLowerCase = "getbestblockhash" |
+  "getblock" |
+  "getblockchaininfo" |
+  "getblockcount" |
+  "getblockhash" |
+  "getblockheader" |
+  "getchaintips" |
+  "getchaintxstats" |
+  "getdifficulty" |
+  "getmempoolancestors" |
+  "getmempooldescendants" |
+  "getmempoolentry"|
+  "getmempoolinfo" |
+  "getrawmempool" |
+  "gettxout" |
+  "gettxoutproof" |
+  "gettxoutsetinfo" |
+  "preciousblock" |
+  "pruneblockchain" |
+  "verifychain" |
+  "verifytxoutproof" |
+  "getinfo" |
+  "getmemoryinfo" |
+  "help" |
+  "stop" |
+  "uptime" |
+  "generate" |
+  "generatetoaddress" |
+  "getblocktemplate" |
+  "getmininginfo" |
+  "getnetworkhashps" |
+  "prioritisetransaction" |
+  "submitblock" |
+  "addnode" |
+  "clearbanned" |
+  "disconnectnode" |
+  "getaddednodeinfo" |
+  "getconnectioncount" |
+  "getnettotals" |
+  "getnetworkinfo" |
+  "getpeerinfo" |
+  "istbanned" |
+  "ping" |
+  "setban" |
+  "setnetworkactive" |
+  "combinerawtransaction" |
+  "createrawtransaction" |
+  "decoderawtransaction" |
+  "decodescript" |
+  "fundrawtransaction" |
+  "getrawtransaction" |
+  "sendrawtransaction" |
+  "signrawtransaction" |
+  "createmultisig" |
+  "estimatefee" |
+  "estimatesmartfee" |
+  "signmessagewithprivkey" |
+  "validateaddress" |
+  "verifymessage" |
+  "abandontransaction" |
+  "abortrescan" |
+  "addmultisigaddress" |
+  "addwitnessaddress" |
+  "backupwallet" |
+  "bumpfee" |
+  "dumpprivkey" |
+  "dumpwallet" |
+  "encryptwallet" |
+  "getaccount" |
+  "getaccountaddress" |
+  "getaddressesbyaccount" |
+  "getbalance" |
+  "getnewaddress" |
+  "getrawchangeaddress" |
+  "getreceivedbyaccount" |
+  "getreceivedbyaddress" |
+  "gettransaction" |
+  "getunconfirmedbalance" |
+  "getwalletinfo" |
+  "importaddress" |
+  "importmulti" |
+  "importprivkey" |
+  "importprunedfunds" |
+  "importpubkey" |
+  "importwallet" |
+  "keypoolrefill" |
+  "listaccounts" |
+  "listaddressgroupings" |
+  "listlockunspent" |
+  "listreceivedbyaccount" |
+  "listreceivedbyaddress" |
+  "listsinceblock" |
+  "listtransactions" |
+  "listunspent" |
+  "listwallets" |
+  "lockunspent" |
+  "move" |
+  "removeprunedfunds" |
+  "sendfrom" |
+  "sendmany" |
+  "sendtoaddress" |
+  "setaccount" |
+  "settxfee" |
+  "signmessage"
+
+  type BatchOption = {
+    method: MethodNameInLowerCase,
+    parameters: any[],
+  }
+
+  type BumpFeeOption = {
+    confTarget?: number,
+    totalFee?: number,
+    replaceable?: boolean,
+    estimate_mode?: FeeEstimateMode
+  }
+
+  type WalletTxBase = {
+    account: string,
+    address: string,
+    category: "send" | "receive",
+    amount: number,
+    vout: number,
+    fee: number,
+    confirmations: number,
+    blockhash: string,
+    blockindex: number,
+    blocktime: number,
+    txid: string,
+    time: number,
+    timereceived: number,
+    walletconflicts: string[]
+    "bip125-replaceable": "yes" | "no" | "unknown",
+    abandoned?: boolean,
+    comment?: string,
+    label: string,
+    to?: string,
+  }
+
+  type TransactionInListSinceBlock = {
+
+  } & WalletTxBase
+
+  type ListSinceBlockResult = {
+    transactions: TransactionInListSinceBlock[],
+    removed?: TransactionInListSinceBlock[],
+    lastblock: string
+  }
+
+  type ListTransactionsResult = {
+    trusted: boolean,
+    otheraccount?: string,
+    abandoned?: boolean
+  } & WalletTxBase
+
+  type AddressGrouping = [string, number] | [string, number, string]
+
+  export default class Client {
     private readonly request: any;
     private readonly requests: Requester;
     private readonly parser: Parser;
 
     constructor(clientOption: ClientConstructorOption);
 
-    abandonTransaction(...args: any[]): void;
+    abandonTransaction(txid: string): Promise<void>;
 
-    abortRescan(...args: any[]): void;
+    abortRescan(): Promise<void>;
 
-    addMultiSigAddress(...args: any[]): void;
+    addMultiSigAddress(nrequired: number, keys: string[], account?: string): Promise<string>;
 
-    addNode(...args: any[]): void;
+    addNode(node: string, command: "add" | "remove" | "onentry"): Promise<void>;
 
-    addWitnessAddress(...args: any[]): void;
+    addWitnessAddress(address: string): Promise<void>;
 
-    backupWallet(...args: any[]): void;
+    backupWallet(destination: string): Promise<void>;
 
-    bumpFee(...args: any[]): void;
+    bumpFee(txid: string, options?: BumpFeeOption): Promise<{txid: string, origfee: number, fee: number, error?: string[]}>;
 
-    clearBanned(...args: any[]): void;
+    clearBanned(): Promise<void>;
 
-    combineRawTransaction(...args: any[]): void;
+    combineRawTransaction(txs: string[]): Promise<string>;
 
-    command(...args: any[]): void;
+    command(methods: BatchOption[]): Promise<any[]>;
 
-    createMultiSig(...args: any[]): void;
+    createMultiSig(nrequired: number, keys: string[]): Promise<{address: string, redeemScript: string}>;
 
-    createRawTransaction(...args: any[]): void;
+    createRawTransaction(inputs: TxInForCreateRaw[],
+                         outputs: TxOutForCreateRaw,
+                         locktime: number,
+                         replacable: boolean): Promise<string>;
 
+    /**
+     * @deprecated
+     */
     createWitnessAddress(...args: any[]): void;
 
-    decodeRawTransaction(...args: any[]): void;
+    decodeRawTransaction(hexstring: string): Promise<DecodedRawTransaction>;
 
-    decodeScript(...args: any[]): void;
+    decodeScript(hexstring: string): Promise<ScriptDecoded>;
 
-    disconnectNode(...args: any[]): void;
+    disconnectNode(address?: string, nodeid?: number): Promise<void>;
 
-    dumpPrivKey(...args: any[]): void;
+    dumpPrivKey(address: string): Promise<string>;
 
-    dumpWallet(...args: any[]): void;
+    dumpWallet(filename: string): Promise<{filename: string}>;
 
-    encryptWallet(...args: any[]): void;
+    encryptWallet(passphrase: string): Promise<void>;
 
-    estimateFee(...args: any[]): void;
+    estimateFee(nblock: number): Promise<number>;
 
+    /**
+     * @deprecated
+     */
     estimatePriority(...args: any[]): void;
 
-    estimateSmartFee(...args: any[]): void;
+    estimateSmartFee(conf_target: number,
+                     estimate_mode: FeeEstimateMode): Promise<{feerate?: number, errors?: string[], blocks?: number}>;
 
+    /**
+     * @deprecated
+     */
     estimateSmartPriority(...args: any[]): void;
 
-    fundRawTransaction(...args: any[]): void;
+    fundRawTransaction(hexstring: string, options: FundRawTxOptions): Promise<{hex: string, fee: number, changepos: number}>;
 
-    generate(...args: any[]): void;
+    generate(nblocks: number, maxtries?: number): Promise<string[]>;
 
-    generateToAddress(...args: any[]): void;
+    generateToAddress(nblock: number, address: string, maxtries?: number): Promise<string[]>;
 
-    getAccount(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} address
+     * @returns {Promise<string>}
+     */
+    getAccount(address: string): Promise<string>;
 
-    getAccountAddress(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} account
+     * @returns {Promise<string>}
+     */
+    getAccountAddress(account: string): Promise<string>;
 
-    getAddedNodeInfo(...args: any[]): void;
+    getAddedNodeInfo(node?: string): Promise<AddedNodeInfo[]>;
 
-    getAddressesByAccount(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} account
+     * @returns {Promise<string[]>}
+     */
+    getAddressesByAccount(account: string): Promise<string[]>;
 
-    getBalance(...args: any[]): void;
+    getBalance(account?: string, minconf?: number, include_watchonly?: boolean): Promise<number>;
 
-    getBestBlockHash(...args: any[]): void;
+    getBestBlockHash(): Promise<string>;
 
-    getBlock(...args: any[]): void;
+    getBlock(blockhash: string, verbosity?: number): Promise<string | Block>;
 
     getBlockByHash(hash: string, extension: RestExtension): Promise<Block>;
 
-    getBlockCount(...args: any[]): void;
+    getBlockCount(): Promise<number>;
 
-    getBlockHash(...args: any[]): void;
+    getBlockHash(height: number): Promise<string>;
 
-    getBlockHeader(...args: any[]): void;
+    getBlockHeader(hash: string, verbose?: boolean): Promise<string | BlockHeader>;
 
     getBlockHeadersByHash(hash: string, extension: RestExtension): Promise<BlockHeader[]>;
 
     getBlockTemplate(...args: any[]): void;
 
-    getBlockchainInfo(...args: any[]): void;
+    getBlockchainInfo(): Promise<ChainInfo>;
 
     getBlockchainInformation(): Promise<ChainInfo>;
 
-    getChainTips(...args: any[]): void;
+    getChainTips(): Promise<ChainTip[]>;
 
-    getChainTxStats(...args: any[]): void;
+    getChainTxStats(nblocks?: number, blockchash?: string): Promise<TxStats>;
 
-    getConnectionCount(...args: any[]): void;
+    getConnectionCount(): Promise<number>;
 
-    getDifficulty(...args: any[]): void;
+    getDifficulty(): Promise<number>;
 
+    /**
+     * @deprecated
+     */
     getGenerate(...args: any[]): void;
 
+    /**
+     * @deprecated
+     */
     getHashesPerSec(...args: any[]): void;
 
+    /**
+     * @deprecated
+     */
     getInfo(...args: any[]): void;
 
-    getMemoryInfo(...args: any[]): void;
+    getMemoryInfo(mode?: "stats" | "mallocinfo"): Promise<MemoryStats | string>;
 
     getMemoryPoolContent(): Promise<MempoolContent>;
 
     getMemoryPoolInformation(): Promise<MempoolInfo>;
 
-    getMempoolAncestors(...args: any[]): void;
+    getMempoolAncestors(txid: string, verbose?: boolean): Promise<MempoolContent[] | string[] | null[]>;
 
-    getMempoolDescendants(...args: any[]): void;
+    getMempoolDescendants(txid: string, verbose?: boolean): Promise<MempoolContent[] | string[] | null[]>;
 
-    getMempoolEntry(...args: any[]): void;
+    getMempoolEntry(txid: string): Promise<MempoolContent>;
 
-    getMempoolInfo(...args: any[]): void;
+    getMempoolInfo(): Promise<MempoolInfo>;
 
-    getMiningInfo(...args: any[]): void;
+    getMiningInfo(): Promise<MiningInfo>;
 
-    getNetTotals(...args: any[]): void;
+    getNetTotals(): Promise<NetTotals>;
 
-    getNetworkHashPs(...args: any[]): void;
+    getNetworkHashPs(nblocks?: number, height?: number): Promise<number>;
 
     getNetworkInfo(): Promise<NetworkInfo>;
 
-    getNewAddress(...args: any[]): void;
+    getNewAddress(account?: string): Promise<string>;
 
-    getPeerInfo(): Promise<PeerInfo>;
+    getPeerInfo(): Promise<PeerInfo[]>;
 
-    getRawChangeAddress(...args: any[]): void;
+    getRawChangeAddress(): Promise<string>;
 
-    getRawMempool(...args: any[]): void;
+    getRawMempool(verbose?: boolean): Promise<MempoolContent[] | string[] | null[]>;
 
-    getRawTransaction(...args: any[]): void;
+    getRawTransaction(txid: string, verbose?: boolean): Promise<FetchedRawTransaction | string>;
 
-    getReceivedByAccount(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} account
+     * @param {number} minconf
+     * @returns {Promise<number>}
+     */
+    getReceivedByAccount(account: string, minconf?: number): Promise<number>;
 
-    getReceivedByAddress(...args: any[]): void;
+    getReceivedByAddress(address: string, minconf?: number): Promise<number>;
 
-    getTransaction(...args: any[]): void;
+    getTransaction(txid: string, include_watchonly?: boolean): Promise<WalletTransaction>;
 
     getTransactionByHash(hash: string, extension?: RestExtension): Promise<string>;
 
-    getTxOut(...args: any[]): void;
+    getTxOut(txid: string, index: number, include_mempool?: boolean): Promise<TxOutInBlock>;
 
-    getTxOutProof(...args: any[]): void;
+    getTxOutProof(txids: string[], blockchash?: string): Promise<string>;
 
-    getTxOutSetInfo(...args: any[]): void;
+    getTxOutSetInfo(): Promise<UTXOStats>;
 
-    getUnconfirmedBalance(...args: any[]): void;
+    getUnconfirmedBalance(): Promise<number>;
 
     getUnspentTransactionOutputs(outpoints: Outpoint[]):
       Promise<{chainHeight: number, chaintipHash: string, bipmap: string, utxos: UTXO[]}>;
 
-    getWalletInfo(...args: any[]): void;
+    getWalletInfo(): Promise<WalletInfo>;
 
+    /**
+     * @deprecated
+     */
     getWork(...args: any[]): void;
 
-    help(...args: any[]): void;
+    help(arg: void | MethodNameInLowerCase): Promise<string>;
 
-    importAddress(...args: any[]): void;
+    importAddress(script: string, label?: string, rescan?: boolean, p2sh?: boolean): Promise<void>;
 
-    importMulti(...args: any[]): void;
+    importMulti(requests: ImportMultiRequest[], options?: {rescan?: boolean}): Promise<{success: boolean, error?: {code: string, message: string}}[]>;
 
-    importPrivKey(...args: any[]): void;
+    importPrivKey(bitcoinprivkey: string, label?: string, rescan?: boolean): Promise<void>;
 
-    importPrunedFunds(...args: any[]): void;
+    importPrunedFunds(rawtransaction: string, txoutproof: string): Promise<void>;
 
-    importPubKey(...args: any[]): void;
+    importPubKey(pubkey: string, label?: string, rescan?: boolean): Promise<void>;
 
-    importWallet(...args: any[]): void;
+    importWallet(filename: string): Promise<void>;
 
-    keypoolRefill(...args: any[]): void;
+    keypoolRefill(newsize?: number): Promise<void>;
 
-    listAccounts(...args: any[]): void;
+    listAccounts(minconf?: number, include_watchonlly?: boolean): Promise<{[key: string]: number}>;
 
-    listAddressGroupings(...args: any[]): void;
+    listAddressGroupings(): Promise<AddressGrouping[][]>;
 
     listBanned(): Promise<any>;
 
-    listLockUnspent(...args: any[]): void;
+    listLockUnspent(): Promise<{txid: string, vout: number}[]>;
 
-    listReceivedByAccount(...args: any[]): void;
+    listReceivedByAccount(minconf?: number, include_empty?: boolean, include_watchonly?: boolean):
+      Promise<ReceivedByAccount[]>;
 
-    listReceivedByAddress(...args: any[]): void;
+    listReceivedByAddress(minconf?: number, include_empty?: boolean, include_watchonly?: boolean):
+      Promise<ReceivedByAddress[]>;
 
-    listSinceBlock(...args: any[]): void;
+    listSinceBlock(blockhash?: string,
+                   target_confirmations?: number,
+                   include_watchonly?: boolean,
+                   include_removed?: boolean): Promise<ListSinceBlockResult>;
 
-    listTransactions(...args: any[]): void;
+    listTransactions(account?: string,
+                     count?: number,
+                     skip?: number,
+                     include_watchonly?: boolean): Promise<ListTransactionsResult[]>;
 
-    listUnspent(...args: any[]): void;
+    listUnspent(minconf?: number,
+                maxconf?: number,
+                address?: string[],
+                include_unsafe?: boolean,
+                query_options?: ListUnspentOptions): Promise<UnspentTxInfo[]>
 
-    listWallets(...args: any[]): void;
+    listWallets(): Promise<string[]>;
 
-    lockUnspent(...args: any[]): void;
+    lockUnspent(unlock: boolean, transactions?: {txid: string, vout: number}[]): Promise<boolean>;
 
-    move(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} fromaccout
+     * @param {string} toaccount
+     * @param {number} amount
+     * @param {number} dummy
+     * @param {string} comment
+     * @returns {Promise<boolean>}
+     */
+    move(fromaccout: string, toaccount: string, amount: number, dummy?: number, comment?: string): Promise<boolean>;
 
     ping(): Promise<void>;
 
-    preciousBlock(...args: any[]): void;
+    preciousBlock(blockhash: string): Promise<void>;
 
-    prioritiseTransaction(...args: any[]): void;
+    prioritiseTransaction(txid: string, dummy: 0, fee_delta: number): Promise<boolean>;
 
-    pruneBlockchain(...args: any[]): void;
+    pruneBlockchain(height: number): Promise<number>;
 
-    removePrunedFunds(...args: any[]): void;
+    removePrunedFunds(txid: string): Promise<void>;
 
-    sendFrom(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} fromaccount
+     * @param {string} toaddress
+     * @param {number | string} amount
+     * @param {number} minconf
+     * @param {string} comment
+     * @param {string} comment_to
+     * @returns {Promise<string>}
+     */
+    sendFrom(fromaccount: string,
+             toaddress: string,
+             amount: number | string,
+             minconf?: number,
+             comment?: string,
+             comment_to?: string): Promise<string>;
 
-    sendMany(...args: any[]): void;
+    sendMany(fromaccount: string,
+             amounts: {address: string},
+             minconf?: number,
+             comment?: string,
+             subtractfeefrom?: string[],
+             replaeable?: boolean,
+             conf_target?: number,
+             estimate_mode?: FeeEstimateMode): Promise<string>;
 
-    sendRawTransaction(...args: any[]): void;
+    sendRawTransaction(hexstring: string, allowhighfees?: boolean): Promise<void>;
 
-    sendToAddress(...args: any[]): void;
+    sendToAddress(address: string,
+                  amount: number,
+                  comment?: string,
+                  comment_to?: string,
+                  subtreactfeefromamount?: boolean,
+                  replaceable?: boolean,
+                  conf_target?: number,
+                  estimate_mode?: FeeEstimateMode): Promise<string>;
 
-    setAccount(...args: any[]): void;
+    /**
+     * @deprecated
+     * @param {string} address
+     * @param {string} account
+     * @returns {Promise<void>}
+     */
+    setAccount(address: string, account: string): Promise<void>;
 
-    setBan(...args: any[]): void;
+    setBan(subnet: string, command: "add" | "remove", bantime?: number, absolute?: boolean): Promise<void>;
 
+    /**
+     * @deprecated
+     * @param args
+     */
     setGenerate(...args: any[]): void;
 
-    setNetworkActive(...args: any[]): void;
+    setNetworkActive(state: boolean): Promise<void>;
 
-    setTxFee(...args: any[]): void;
+    setTxFee(amount: number | string): Promise<boolean>;
 
-    signMessage(...args: any[]): void;
+    signMessage(address: string, message: string): Promise<string>;
 
-    signMessageWithPrivKey(...args: any[]): void;
+    signMessageWithPrivKey(privkey: string, message: string): Promise<{signature: string}>;
 
-    signRawTransaction(...args: any[]): void;
+    signRawTransaction(hexstring: string, prevtxs?: PrevOut[], privkeys?: string[], sighashtype?: SigHashType): Promise<SignRawTxResult>;
 
-    stop(...args: any[]): void;
+    stop(): Promise<void>;
 
-    submitBlock(...args: any[]): void;
+    submitBlock(hexdata: string, dummy?: any): Promise<void>;
 
-    upTime(...args: any[]): void;
+    upTime(): Promise<number>;
 
-    validateAddress(...args: any[]): void;
+    validateAddress(address: string): Promise<ValidateAddressResult>;
 
-    verifyChain(...args: any[]): void;
+    verifyChain(checklevel?: number, nblocks?: number): Promise<boolean>;
 
-    verifyMessage(...args: any[]): void;
+    verifyMessage(address: string, signature: string, message: string): Promise<boolean>;
 
-    verifyTxOutProof(...args: any[]): void;
+    verifyTxOutProof(proof: string): Promise<string[]>;
 
-    walletLock(...args: any[]): void;
+    walletLock(passphrase: string, timeout: number): Promise<void>;
 
-    walletPassphrase(...args: any[]): void;
+    walletPassphrase(passphrase: string, timeout: number): Promise<void>;
 
-    walletPassphraseChange(...args: any[]): void;
+    walletPassphraseChange(oldpassphrase: string, newpassphrase: string): Promise<string>;
   }
 }
