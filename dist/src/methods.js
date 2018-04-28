@@ -73,7 +73,10 @@ var _default = {
   },
   encryptWallet: {
     obfuscate: {
-      request: params => (0, _lodash.set)([...params], '[0]', '******')
+      request: {
+        default: params => (0, _lodash.set)([...params], '[0]', '******'),
+        named: params => (0, _lodash.set)(params, 'passphrase', '******')
+      }
     },
     version: '>=0.1.0'
   },
@@ -232,13 +235,19 @@ var _default = {
   },
   importMulti: {
     obfuscate: {
-      request: params => (0, _lodash.set)(params, '[0]', (0, _lodash.map)(params[0], request => (0, _lodash.set)(request, 'keys', (0, _lodash.map)(request.keys, () => '******'))))
+      request: {
+        default: params => (0, _lodash.set)(params, '[0]', (0, _lodash.map)(params[0], request => (0, _lodash.set)(request, 'keys', (0, _lodash.map)(request.keys, () => '******')))),
+        named: params => (0, _lodash.set)(params, 'requests', (0, _lodash.map)(params.requests, request => (0, _lodash.set)(request, 'keys', (0, _lodash.map)(request.keys, () => '******'))))
+      }
     },
     version: '>=0.14.0'
   },
   importPrivKey: {
     obfuscate: {
-      request: () => ['******']
+      request: {
+        default: () => ['******'],
+        named: params => (0, _lodash.set)(params, 'privkey', '******')
+      }
     },
     version: '>=0.6.0'
   },
@@ -337,13 +346,19 @@ var _default = {
   },
   signMessageWithPrivKey: {
     obfuscate: {
-      request: params => (0, _lodash.set)([...params], '[0]', '******')
+      request: {
+        default: params => (0, _lodash.set)([...params], '[0]', '******'),
+        named: params => (0, _lodash.set)(params, 'privkey', '******')
+      }
     },
     version: '>=0.13.0'
   },
   signRawTransaction: {
     obfuscate: {
-      request: params => (0, _lodash.set)([...params], '[2]', (0, _lodash.map)(params[2], () => '******'))
+      request: {
+        default: params => (0, _lodash.set)([...params], '[2]', (0, _lodash.map)(params[2], () => '******')),
+        named: params => (0, _lodash.set)(params, 'privkeys', (0, _lodash.map)(params.privkeys || [], () => '******'))
+      }
     },
     version: '>=0.7.0'
   },
@@ -373,11 +388,20 @@ var _default = {
   },
   walletPassphrase: {
     obfuscate: {
-      request: params => (0, _lodash.set)([...params], '[0]', '******')
+      request: {
+        default: params => (0, _lodash.set)([...params], '[0]', '******'),
+        named: params => (0, _lodash.set)(params, 'passphrase', '******')
+      }
     },
     version: '>=0.1.0'
   },
   walletPassphraseChange: {
+    obfuscate: {
+      request: {
+        default: params => (0, _lodash.set)((0, _lodash.set)([...params], '[0]', '******'), '[1]', '******'),
+        named: params => (0, _lodash.set)((0, _lodash.set)(params, 'oldpassphrase', '******'), 'newpassphrase', '******')
+      }
+    },
     version: '>=0.1.0'
   }
 };
