@@ -499,7 +499,7 @@ declare module 'bitcoin-core' {
 
   type RestExtension = "json" | "bin" | "hex"
 
-  type MethodNameInLowerCase = "getbestblockhash" |
+  export type MethodNameInLowerCase = "getbestblockhash" |
   "getblock" |
   "getblockchaininfo" |
   "getblockcount" |
