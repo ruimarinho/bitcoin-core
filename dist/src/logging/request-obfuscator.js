@@ -79,8 +79,15 @@ function obfuscateRequestBody(body) {
     return body;
   }
 
-  body.params = method(body.params);
-  return body;
+  if ((0, _lodash.isPlainObject)(body.params)) {
+    return (0, _lodash.assign)(body, {
+      params: method.named(body.params)
+    });
+  }
+
+  return (0, _lodash.assign)(body, {
+    params: method.default(body.params)
+  });
 }
 /**
  * Obfuscate the request.

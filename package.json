@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@uphold/request-logger": "^2.0.0",
+    "async": "^2.6.1",
     "bluebird": "^3.4.1",
     "debugnyan": "^1.0.0",
     "json-bigint": "^0.2.0",

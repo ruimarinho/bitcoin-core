@@ -7,6 +7,7 @@ import Parser from './parser';
 import Promise from 'bluebird';
 import Requester from './requester';
 import _ from 'lodash';
+import async from 'async';
 import debugnyan from 'debugnyan';
 import methods from './methods';
 import requestLogger from './logging/request-logger';
@@ -52,6 +53,7 @@ class Client {
     network = 'mainnet',
     password,
     port,
+    rpcworkqueue,
     ssl = false,
     timeout = 30000,
     username,
@@ -68,11 +70,23 @@ class Client {
     this.host = host;
     this.password = password;
     this.port = port || networks[network];
+    this.rpcworkqueue = rpcworkqueue;
     this.timeout = timeout;
     this.ssl = {
       enabled: _.get(ssl, 'enabled', ssl),
       strict: _.get(ssl, 'strict', _.get(ssl, 'enabled', ssl))
     };
+
+    if (this.rpcworkqueue) {
+      this.queue = async.queue((args, callback) => {
+        const res = args.this.runCommand(...args.args);
+
+        res.then(result => {
+          args.resolve(result);
+          callback();
+        }).catch(args.reject);
+      }, this.rpcworkqueue);
+    }
 
     // Find unsupported methods according to version.
     let unsupported = [];
@@ -112,7 +126,7 @@ class Client {
    * Execute `rpc` command.
    */
 
-  command(...args) {
+  runCommand(...args) {
     let body;
     let callback;
     let parameters = _.tail(args);
@@ -142,6 +156,16 @@ class Client {
       }).bind(this)
         .then(this.parser.rpc);
     }).asCallback(callback);
+  }
+
+  command(...args) {
+    if (this.queue) {
+      return new Promise((resolve, reject) => {
+        this.queue.push({ args, reject, resolve, this: this });
+      });
+    }
+
+    return this.runCommand(...args);
   }
 
   /**

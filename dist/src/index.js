@@ -13,6 +13,8 @@ var _requester = _interopRequireDefault(require("./requester"));
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
+var _async = _interopRequireDefault(require("async"));
+
 var _debugnyan = _interopRequireDefault(require("debugnyan"));
 
 var _methods = _interopRequireDefault(require("./methods"));
@@ -65,6 +67,7 @@ class Client {
     network = 'mainnet',
     password,
     port,
+    rpcworkqueue,
     ssl = false,
     timeout = 30000,
     username,
@@ -86,11 +89,23 @@ class Client {
     this.host = host;
     this.password = password;
     this.port = port || networks[network];
+    this.rpcworkqueue = rpcworkqueue;
     this.timeout = timeout;
     this.ssl = {
       enabled: _lodash.default.get(ssl, 'enabled', ssl),
       strict: _lodash.default.get(ssl, 'strict', _lodash.default.get(ssl, 'enabled', ssl))
-    }; // Find unsupported methods according to version.
+    };
+
+    if (this.rpcworkqueue) {
+      this.queue = _async.default.queue((args, callback) => {
+        const res = args.this.runCommand(...args.args);
+        res.then(result => {
+          args.resolve(result);
+          callback();
+        }).catch(args.reject);
+      }, this.rpcworkqueue);
+    } // Find unsupported methods according to version.
+
 
     let unsupported = [];
 
@@ -132,7 +147,7 @@ class Client {
    */
 
 
-  command(...args) {
+  runCommand(...args) {
     let body;
     let callback;
 
@@ -171,6 +186,21 @@ class Client {
         uri: '/'
       }).bind(this).then(this.parser.rpc);
     }).asCallback(callback);
+  }
+
+  command(...args) {
+    if (this.queue) {
+      return new _bluebird.default((resolve, reject) => {
+        this.queue.push({
+          args,
+          reject,
+          resolve,
+          this: this
+        });
+      });
+    }
+
+    return this.runCommand(...args);
   }
   /**
    * Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
