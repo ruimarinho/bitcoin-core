@@ -1,1 +1,3 @@
 extends: uphold
+rules:
+        no-underscore-dangle: off

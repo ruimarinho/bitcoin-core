@@ -168,6 +168,15 @@ class Client {
     return this.runCommand(...args);
   }
 
+  flushQueue(reason) {
+    let task = this.queue._tasks.pop();
+
+    while (task) {
+      task.data.reject(reason);
+      task = this.queue._tasks.pop();
+    }
+  }
+
   /**
    * Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
    */
