@@ -204,11 +204,11 @@ class Client {
   }
 
   flushQueue(reason) {
-    let task = this.queue['_tasks'].pop();
+    let task = this.queue._tasks.pop();
 
     while (task) {
       task.data.reject(reason);
-      task = this.queue['_tasks'].pop();
+      task = this.queue._tasks.pop();
     }
   }
   /**
