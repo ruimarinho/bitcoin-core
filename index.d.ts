@@ -187,7 +187,7 @@ declare module 'bitcoin-core' {
     branchlen: number,
     status: "active" | "valid-fork" | "valid-headers" | "headers-only" | "invalid"
   }
-  type Outpoint = {id: string, index: number}
+  type Outpoint = { id: string, index: number }
   type UTXO = {
     height: number,
     value: number,
@@ -465,7 +465,7 @@ declare module 'bitcoin-core' {
   }
 
   type ImportMultiRequest = {
-    scriptPubKey: string | {address: string},
+    scriptPubKey: string | { address: string },
     timestamp: number | "now",
     redeemScript?: string,
     pubkeys?: string[],
@@ -500,114 +500,115 @@ declare module 'bitcoin-core' {
   type RestExtension = "json" | "bin" | "hex"
 
   export type MethodNameInLowerCase = "getbestblockhash" |
-  "getblock" |
-  "getblockchaininfo" |
-  "getblockcount" |
-  "getblockhash" |
-  "getblockheader" |
-  "getchaintips" |
-  "getchaintxstats" |
-  "getdifficulty" |
-  "getmempoolancestors" |
-  "getmempooldescendants" |
-  "getmempoolentry"|
-  "getmempoolinfo" |
-  "getrawmempool" |
-  "gettxout" |
-  "gettxoutproof" |
-  "gettxoutsetinfo" |
-  "preciousblock" |
-  "pruneblockchain" |
-  "verifychain" |
-  "verifytxoutproof" |
-  "getinfo" |
-  "getmemoryinfo" |
-  "help" |
-  "stop" |
-  "uptime" |
-  "generate" |
-  "generatetoaddress" |
-  "getblocktemplate" |
-  "getmininginfo" |
-  "getnetworkhashps" |
-  "prioritisetransaction" |
-  "submitblock" |
-  "addnode" |
-  "clearbanned" |
-  "disconnectnode" |
-  "getaddednodeinfo" |
-  "getconnectioncount" |
-  "getnettotals" |
-  "getnetworkinfo" |
-  "getpeerinfo" |
-  "istbanned" |
-  "ping" |
-  "setban" |
-  "setnetworkactive" |
-  "combinerawtransaction" |
-  "createrawtransaction" |
-  "decoderawtransaction" |
-  "decodescript" |
-  "fundrawtransaction" |
-  "getrawtransaction" |
-  "sendrawtransaction" |
-  "signrawtransaction" |
-  "createmultisig" |
-  "estimatefee" |
-  "estimatesmartfee" |
-  "signmessagewithprivkey" |
-  "validateaddress" |
-  "verifymessage" |
-  "abandontransaction" |
-  "abortrescan" |
-  "addmultisigaddress" |
-  "addwitnessaddress" |
-  "backupwallet" |
-  "bumpfee" |
-  "dumpprivkey" |
-  "dumpwallet" |
-  "encryptwallet" |
-  "getaccount" |
-  "getaccountaddress" |
-  "getaddressesbyaccount" |
-  "getbalance" |
-  "getnewaddress" |
-  "getrawchangeaddress" |
-  "getreceivedbyaccount" |
-  "getreceivedbyaddress" |
-  "gettransaction" |
-  "getunconfirmedbalance" |
-  "getwalletinfo" |
-  "importaddress" |
-  "importmulti" |
-  "importprivkey" |
-  "importprunedfunds" |
-  "importpubkey" |
-  "importwallet" |
-  "keypoolrefill" |
-  "listaccounts" |
-  "listaddressgroupings" |
-  "listlockunspent" |
-  "listreceivedbyaccount" |
-  "listreceivedbyaddress" |
-  "listsinceblock" |
-  "listtransactions" |
-  "listunspent" |
-  "listwallets" |
-  "lockunspent" |
-  "move" |
-  "removeprunedfunds" |
-  "sendfrom" |
-  "sendmany" |
-  "sendtoaddress" |
-  "setaccount" |
-  "settxfee" |
-  "signmessage"
+    "getblock" |
+    "getblockchaininfo" |
+    "getblockcount" |
+    "getblockhash" |
+    "getblockheader" |
+    "getchaintips" |
+    "getchaintxstats" |
+    "getdifficulty" |
+    "getmempoolancestors" |
+    "getmempooldescendants" |
+    "getmempoolentry" |
+    "getmempoolinfo" |
+    "getrawmempool" |
+    "gettxout" |
+    "gettxoutproof" |
+    "gettxoutsetinfo" |
+    "preciousblock" |
+    "pruneblockchain" |
+    "verifychain" |
+    "verifytxoutproof" |
+    "getinfo" |
+    "getmemoryinfo" |
+    "help" |
+    "stop" |
+    "uptime" |
+    "generate" |
+    "generatetoaddress" |
+    "getblocktemplate" |
+    "getmininginfo" |
+    "getnetworkhashps" |
+    "prioritisetransaction" |
+    "submitblock" |
+    "addnode" |
+    "clearbanned" |
+    "disconnectnode" |
+    "getaddednodeinfo" |
+    "getconnectioncount" |
+    "getnettotals" |
+    "getnetworkinfo" |
+    "getpeerinfo" |
+    "istbanned" |
+    "ping" |
+    "setban" |
+    "setnetworkactive" |
+    "combinerawtransaction" |
+    "createrawtransaction" |
+    "decoderawtransaction" |
+    "decodescript" |
+    "fundrawtransaction" |
+    "getrawtransaction" |
+    "sendrawtransaction" |
+    "signrawtransaction" |
+    "createmultisig" |
+    "estimatefee" |
+    "estimatesmartfee" |
+    "signmessagewithprivkey" |
+    "validateaddress" |
+    "verifymessage" |
+    "abandontransaction" |
+    "abortrescan" |
+    "addmultisigaddress" |
+    "addwitnessaddress" |
+    "backupwallet" |
+    "bumpfee" |
+    "dumpprivkey" |
+    "dumpwallet" |
+    "encryptwallet" |
+    "getaccount" |
+    "getaccountaddress" |
+    "getaddressesbyaccount" |
+    "getbalance" |
+    "getnewaddress" |
+    "getrawchangeaddress" |
+    "getreceivedbyaccount" |
+    "getreceivedbyaddress" |
+    "gettransaction" |
+    "getunconfirmedbalance" |
+    "getwalletinfo" |
+    "importaddress" |
+    "importmulti" |
+    "importprivkey" |
+    "importprunedfunds" |
+    "importpubkey" |
+    "importwallet" |
+    "keypoolrefill" |
+    "listaccounts" |
+    "listaddressgroupings" |
+    "listlockunspent" |
+    "listreceivedbyaccount" |
+    "listreceivedbyaddress" |
+    "listsinceblock" |
+    "listtransactions" |
+    "listunspent" |
+    "listwallets" |
+    "lockunspent" |
+    "move" |
+    "removeprunedfunds" |
+    "sendfrom" |
+    "sendmany" |
+    "sendtoaddress" |
+    "setaccount" |
+    "settxfee" |
+    "signmessage"
 
   type BatchOption = {
     method: MethodNameInLowerCase,
-    parameters: any[],
+    parameters: any,
   }
+  export type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
 
   type BumpFeeOption = {
     confTarget?: number,
@@ -675,20 +676,20 @@ declare module 'bitcoin-core' {
 
     backupWallet(destination: string): Promise<void>;
 
-    bumpFee(txid: string, options?: BumpFeeOption): Promise<{txid: string, origfee: number, fee: number, error?: string[]}>;
+    bumpFee(txid: string, options?: BumpFeeOption): Promise<{ txid: string, origfee: number, fee: number, error?: string[] }>;
 
     clearBanned(): Promise<void>;
 
     combineRawTransaction(txs: string[]): Promise<string>;
 
-    command(methods: BatchOption[]): Promise<any[]>;
+    command<R extends ReturnType<keyof Client>>(methods: BatchOption[]): Promise<ReadonlyArray<R>>;
 
-    createMultiSig(nrequired: number, keys: string[]): Promise<{address: string, redeemScript: string}>;
+    createMultiSig(nrequired: number, keys: string[]): Promise<{ address: string, redeemScript: string }>;
 
     createRawTransaction(inputs: TxInForCreateRaw[],
-                         outputs: TxOutForCreateRaw,
-                         locktime: number,
-                         replacable: boolean): Promise<string>;
+      outputs: TxOutForCreateRaw,
+      locktime: number,
+      replacable: boolean): Promise<string>;
 
     /**
      * @deprecated
@@ -703,7 +704,7 @@ declare module 'bitcoin-core' {
 
     dumpPrivKey(address: string): Promise<string>;
 
-    dumpWallet(filename: string): Promise<{filename: string}>;
+    dumpWallet(filename: string): Promise<{ filename: string }>;
 
     encryptWallet(passphrase: string): Promise<void>;
 
@@ -715,14 +716,14 @@ declare module 'bitcoin-core' {
     estimatePriority(...args: any[]): void;
 
     estimateSmartFee(conf_target: number,
-                     estimate_mode: FeeEstimateMode): Promise<{feerate?: number, errors?: string[], blocks?: number}>;
+      estimate_mode: FeeEstimateMode): Promise<{ feerate?: number, errors?: string[], blocks?: number }>;
 
     /**
      * @deprecated
      */
     estimateSmartPriority(...args: any[]): void;
 
-    fundRawTransaction(hexstring: string, options: FundRawTxOptions): Promise<{hex: string, fee: number, changepos: number}>;
+    fundRawTransaction(hexstring: string, options: FundRawTxOptions): Promise<{ hex: string, fee: number, changepos: number }>;
 
     generate(nblocks: number, maxtries?: number): Promise<string[]>;
 
@@ -851,7 +852,7 @@ declare module 'bitcoin-core' {
     getUnconfirmedBalance(): Promise<number>;
 
     getUnspentTransactionOutputs(outpoints: Outpoint[]):
-      Promise<{chainHeight: number, chaintipHash: string, bipmap: string, utxos: UTXO[]}>;
+      Promise<{ chainHeight: number, chaintipHash: string, bipmap: string, utxos: UTXO[] }>;
 
     getWalletInfo(): Promise<WalletInfo>;
 
@@ -864,7 +865,7 @@ declare module 'bitcoin-core' {
 
     importAddress(script: string, label?: string, rescan?: boolean, p2sh?: boolean): Promise<void>;
 
-    importMulti(requests: ImportMultiRequest[], options?: {rescan?: boolean}): Promise<{success: boolean, error?: {code: string, message: string}}[]>;
+    importMulti(requests: ImportMultiRequest[], options?: { rescan?: boolean }): Promise<{ success: boolean, error?: { code: string, message: string } }[]>;
 
     importPrivKey(bitcoinprivkey: string, label?: string, rescan?: boolean): Promise<void>;
 
@@ -876,13 +877,13 @@ declare module 'bitcoin-core' {
 
     keypoolRefill(newsize?: number): Promise<void>;
 
-    listAccounts(minconf?: number, include_watchonlly?: boolean): Promise<{[key: string]: number}>;
+    listAccounts(minconf?: number, include_watchonlly?: boolean): Promise<{ [key: string]: number }>;
 
     listAddressGroupings(): Promise<AddressGrouping[][]>;
 
     listBanned(): Promise<any>;
 
-    listLockUnspent(): Promise<{txid: string, vout: number}[]>;
+    listLockUnspent(): Promise<{ txid: string, vout: number }[]>;
 
     listReceivedByAccount(minconf?: number, include_empty?: boolean, include_watchonly?: boolean):
       Promise<ReceivedByAccount[]>;
@@ -891,24 +892,24 @@ declare module 'bitcoin-core' {
       Promise<ReceivedByAddress[]>;
 
     listSinceBlock(blockhash?: string,
-                   target_confirmations?: number,
-                   include_watchonly?: boolean,
-                   include_removed?: boolean): Promise<ListSinceBlockResult>;
+      target_confirmations?: number,
+      include_watchonly?: boolean,
+      include_removed?: boolean): Promise<ListSinceBlockResult>;
 
     listTransactions(account?: string,
-                     count?: number,
-                     skip?: number,
-                     include_watchonly?: boolean): Promise<ListTransactionsResult[]>;
+      count?: number,
+      skip?: number,
+      include_watchonly?: boolean): Promise<ListTransactionsResult[]>;
 
     listUnspent(minconf?: number,
-                maxconf?: number,
-                address?: string[],
-                include_unsafe?: boolean,
-                query_options?: ListUnspentOptions): Promise<UnspentTxInfo[]>
+      maxconf?: number,
+      address?: string[],
+      include_unsafe?: boolean,
+      query_options?: ListUnspentOptions): Promise<UnspentTxInfo[]>
 
     listWallets(): Promise<string[]>;
 
-    lockUnspent(unlock: boolean, transactions?: {txid: string, vout: number}[]): Promise<boolean>;
+    lockUnspent(unlock: boolean, transactions?: { txid: string, vout: number }[]): Promise<boolean>;
 
     /**
      * @deprecated
@@ -942,31 +943,31 @@ declare module 'bitcoin-core' {
      * @returns {Promise<string>}
      */
     sendFrom(fromaccount: string,
-             toaddress: string,
-             amount: number | string,
-             minconf?: number,
-             comment?: string,
-             comment_to?: string): Promise<string>;
+      toaddress: string,
+      amount: number | string,
+      minconf?: number,
+      comment?: string,
+      comment_to?: string): Promise<string>;
 
     sendMany(fromaccount: string,
-             amounts: {address: string},
-             minconf?: number,
-             comment?: string,
-             subtractfeefrom?: string[],
-             replaeable?: boolean,
-             conf_target?: number,
-             estimate_mode?: FeeEstimateMode): Promise<string>;
+      amounts: { address: string },
+      minconf?: number,
+      comment?: string,
+      subtractfeefrom?: string[],
+      replaeable?: boolean,
+      conf_target?: number,
+      estimate_mode?: FeeEstimateMode): Promise<string>;
 
     sendRawTransaction(hexstring: string, allowhighfees?: boolean): Promise<void>;
 
     sendToAddress(address: string,
-                  amount: number,
-                  comment?: string,
-                  comment_to?: string,
-                  subtreactfeefromamount?: boolean,
-                  replaceable?: boolean,
-                  conf_target?: number,
-                  estimate_mode?: FeeEstimateMode): Promise<string>;
+      amount: number,
+      comment?: string,
+      comment_to?: string,
+      subtreactfeefromamount?: boolean,
+      replaceable?: boolean,
+      conf_target?: number,
+      estimate_mode?: FeeEstimateMode): Promise<string>;
 
     /**
      * @deprecated
@@ -990,7 +991,7 @@ declare module 'bitcoin-core' {
 
     signMessage(address: string, message: string): Promise<string>;
 
-    signMessageWithPrivKey(privkey: string, message: string): Promise<{signature: string}>;
+    signMessageWithPrivKey(privkey: string, message: string): Promise<{ signature: string }>;
 
     signRawTransaction(hexstring: string, prevtxs?: PrevOut[], privkeys?: string[], sighashtype?: SigHashType): Promise<SignRawTxResult>;
 
