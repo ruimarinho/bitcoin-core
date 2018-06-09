@@ -662,7 +662,7 @@ declare module 'bitcoin-core' {
     private readonly requests: Requester;
     private readonly parser: Parser;
 
-    constructor(clientOption: ClientConstructorOption | null);
+    constructor(clientOption?: ClientConstructorOption);
 
     abandonTransaction(txid: string): Promise<void>;
 
