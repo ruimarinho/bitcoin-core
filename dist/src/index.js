@@ -102,6 +102,7 @@ class Client {
         res.then(result => {
           args.resolve(result);
           callback();
+          return result;
         }).catch(args.reject);
       }, this.rpcworkqueue);
     } // Find unsupported methods according to version.
