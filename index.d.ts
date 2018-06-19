@@ -716,7 +716,7 @@ declare module 'bitcoin-core' {
     estimatePriority(...args: any[]): void;
 
     estimateSmartFee(conf_target: number,
-      estimate_mode: FeeEstimateMode): Promise<{ feerate?: number, errors?: string[], blocks?: number }>;
+      estimate_mode?: FeeEstimateMode): Promise<{ feerate?: number, errors?: string[], blocks?: number }>;
 
     /**
      * @deprecated
