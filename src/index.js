@@ -54,6 +54,7 @@ class Client {
     password,
     port,
     rpcworkqueue,
+    maxqueuesize,
     ssl = false,
     timeout = 30000,
     username,
@@ -71,6 +72,7 @@ class Client {
     this.password = password;
     this.port = port || networks[network];
     this.rpcworkqueue = rpcworkqueue;
+    this.maxqueuesize = maxqueuesize;
     this.timeout = timeout;
     this.ssl = {
       enabled: _.get(ssl, 'enabled', ssl),
@@ -162,9 +164,14 @@ class Client {
 
   command(...args) {
     if (this.queue) {
-      return new Promise((resolve, reject) => {
+      const promisefn = async (resolve, reject) => {
+        while (this.maxqueuesize && this.queue.length() >= this.maxqueuesize) {
+          await new Promise(res => setTimeout(res, 1000));
+        }
         this.queue.push({ args, reject, resolve, this: this });
-      });
+      };
+
+      return new Promise(promisefn);
     }
 
     return this.runCommand(...args);

@@ -23,6 +23,8 @@ var _requestLogger = _interopRequireDefault(require("./logging/request-logger"))
 
 var _semver = _interopRequireDefault(require("semver"));
 
+var _sleep = _interopRequireDefault(require("sleep"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -68,6 +70,7 @@ class Client {
     password,
     port,
     rpcworkqueue,
+    maxqueuesize,
     ssl = false,
     timeout = 30000,
     username,
@@ -90,6 +93,7 @@ class Client {
     this.password = password;
     this.port = port || networks[network];
     this.rpcworkqueue = rpcworkqueue;
+    this, maxqueuesize = maxqueuesize;
     this.timeout = timeout;
     this.ssl = {
       enabled: _lodash.default.get(ssl, 'enabled', ssl),
@@ -192,6 +196,10 @@ class Client {
   command(...args) {
     if (this.queue) {
       return new _bluebird.default((resolve, reject) => {
+        while (this.maxqueuesize && this.queue.length() >= this.maxqueuesize) {
+          _sleep.default.sleep(1);
+        }
+
         this.queue.push({
           args,
           reject,
