@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
+import { defaults } from 'lodash';
 import Client from '../src/index';
 import RpcError from '../src/errors/rpc-error';
 import config from './config';
-import { defaults } from 'lodash';
 import nock from 'nock';
 import should from 'should';
 
