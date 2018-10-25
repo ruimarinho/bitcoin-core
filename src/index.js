@@ -203,10 +203,6 @@ class Client {
     const [[hash, count, { extension = 'json' } = {}], callback] = source(...args);
 
     return Promise.try(() => {
-      if (!_.includes(['bin', 'hex'], extension)) {
-        throw new Error(`Extension "${extension}" is not supported`);
-      }
-
       return this.request.getAsync({
         encoding: extension === 'bin' ? null : undefined,
         url: `/rest/headers/${count}/${hash}.${extension}`
