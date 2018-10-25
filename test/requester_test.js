@@ -3,9 +3,9 @@
  * Module dependencies.
  */
 
+import { defaults } from 'lodash';
 import Client from '../src/index';
 import config from './config';
-import { defaults } from 'lodash';
 import should from 'should';
 
 /**

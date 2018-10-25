@@ -22,7 +22,6 @@ describe('REST', () => {
   before(async () => {
     const [tip] = await client.getChainTips();
 
-
     if (tip.height >= 200) {
       return null;
     }
