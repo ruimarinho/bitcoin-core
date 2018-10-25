@@ -113,14 +113,11 @@ describe('REST', () => {
 
   describe('getBlockHeadersByHash()', () => {
     it('should return a block json-encoded by default', async () => {
-      try {
-        await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
+      const headers = await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
 
-        should.fail();
-      } catch (e) {
-        e.should.be.an.instanceOf(Error);
-        e.message.should.equal('Extension "json" is not supported');
-      }
+      headers.should.have.length(1);
+      headers[0].should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'time', 'version', 'versionHex');
+      headers[0].hash.should.equal('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
     });
 
     it('should return block headers hex-encoded if extension is `hex`', async () => {
