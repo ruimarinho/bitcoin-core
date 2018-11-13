@@ -93,6 +93,32 @@ describe('RequestObfuscator', () => {
       })}}`);
     });
 
+    it('should obfuscate all private keys from `request.body` when `method` is `signrawtransactionwithkey`', () => {
+      const request = { body: '{"id":"1485369469422","method":"signrawtransactionwithkey","params":["foo",["biz", "boz"], "bar"]}', type: 'request' };
+
+      obfuscate(request);
+
+      request.body.should.eql('{"id":"1485369469422","method":"signrawtransactionwithkey","params":["foo",["******","******"],"bar"]}');
+    });
+
+    it('should obfuscate all private keys from `request.body` when `method` is `signrawtransactionwithkey` and RPC is called with named parameters', () => {
+      const request = { body: `{"id":"1485369469422","method":"signrawtransactionwithkey","params":${JSON.stringify({
+        hexstring: 'foo',
+        prevtxs: [],
+        privkeys: ['foo', 'bar'],
+        sighashtype: 'bar'
+      })}}`, type: 'request' };
+
+      obfuscate(request);
+
+      request.body.should.eql(`{"id":"1485369469422","method":"signrawtransactionwithkey","params":${JSON.stringify({
+        hexstring: 'foo',
+        prevtxs: [],
+        privkeys: ['******', '******'],
+        sighashtype: 'bar'
+      })}}`);
+    });
+
     it('should obfuscate the passphrase from `request.body` when `method` is `encryptwallet`', () => {
       const request = { body: '{"id":"1485369469422","method":"encryptwallet","params":["foobar"]}', type: 'request' };
 
