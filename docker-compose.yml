@@ -29,7 +29,7 @@ bitcoin-core:
     - 18443:18443
 
 bitcoin-core-multi-wallet:
-  image: ruimarinho/bitcoin-core:0.15-alpine
+  image: ruimarinho/bitcoin-core:0.17-alpine
   command:
     -printtoconsole
     -regtest=1

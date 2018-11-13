@@ -137,6 +137,9 @@ export default {
   },
   fundRawTransaction: {
     category: 'rawtransactions',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
     version: '>=0.12.0'
   },
   generate: {
@@ -597,6 +600,23 @@ export default {
       }
     },
     version: '>=0.7.0'
+  },
+  signRawTransactionWithKey: {
+    category: 'rawtransactions',
+    obfuscate: {
+      request: {
+        default: params => set([...params], '[1]', map(params[1], () => '******')),
+        named: params => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
+      }
+    },
+    version: '>=0.17.0'
+  },
+  signRawTransactionWithWallet: {
+    category: 'rawtransactions',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   },
   stop: {
     category: 'control',

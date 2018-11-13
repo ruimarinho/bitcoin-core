@@ -12,7 +12,7 @@ import config from './config';
  * Test instance.
  */
 
-const client = new Client(defaults({ version: '0.15.0', wallet: 'wallet1' }, config.bitcoinMultiWallet));
+const client = new Client(defaults({ version: '0.17.0', wallet: 'wallet1' }, config.bitcoinMultiWallet));
 
 /**
  * Test `Client`.
@@ -56,15 +56,6 @@ describe('Multi Wallet', () => {
   });
 
   describe('wallet-level requests', () => {
-    describe('getAccountAddress()', () => {
-      it('should retrieve an account address', async () => {
-        const address = await client.getAccountAddress('test');
-        const account = await client.getAccount(address);
-
-        account.should.equal('test');
-      });
-    });
-
     describe('getBalance()', () => {
       it('should return the total server\'s balance', async () => {
         const balance = await client.getBalance();
@@ -73,22 +64,20 @@ describe('Multi Wallet', () => {
       });
 
       it('should support named parameters', async () => {
-        const mainWalletBalance = await client.getBalance({ account: '*', minconf: 0 });
+        const mainWalletBalance = await client.getBalance({ minconf: 0 });
         const mainWalletBalanceWithoutParameters = await client.getBalance('*', 0);
-        const testWalletBalance = await client.getBalance({ account: 'test', minconf: 0 });
 
-        mainWalletBalance.should.not.equal(testWalletBalance);
         mainWalletBalanceWithoutParameters.should.equal(mainWalletBalance);
       });
     });
 
     describe('getNewAddress()', () => {
       it('should return a new bitcoin address', async () => {
-        await client.getNewAddress('test');
+        const address = await client.getNewAddress('test', 'legacy');
 
-        const addresses = await client.getAddressesByAccount('test');
+        const output = await client.validateAddress(address);
 
-        addresses.length.should.be.above(1);
+        output.isvalid.should.be.true();
       });
     });
 
@@ -101,14 +90,13 @@ describe('Multi Wallet', () => {
           await client.sendToAddress(address, 0.1);
         }
 
-        const transactions = await client.listTransactions('test', 5);
+        const transactions = await client.listTransactions('*', 5);
 
         transactions.should.be.an.Array();
         transactions.should.matchEach(value => {
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
-            'account',
             'address',
             'amount',
             'category',
@@ -129,14 +117,13 @@ describe('Multi Wallet', () => {
           await client.sendToAddress(address, 0.1);
         }
 
-        const transactions = await client.listTransactions('test');
+        const transactions = await client.listTransactions('*');
 
         transactions.should.be.an.Array();
         transactions.should.matchEach(value => {
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
-            'account',
             'address',
             'amount',
             'category',
@@ -156,13 +143,13 @@ describe('Multi Wallet', () => {
           await client.sendToAddress(address, 0.1);
         }
 
-        let transactions = await client.listTransactions({ account: 'test' });
+        let transactions = await client.listTransactions({ account: '*' });
 
         transactions.should.be.an.Array();
         transactions.length.should.be.greaterThanOrEqual(5);
 
         // Make sure `count` is read correctly.
-        transactions = await client.listTransactions({ account: 'test', count: 1 });
+        transactions = await client.listTransactions({ account: '*', count: 1 });
 
         transactions.should.be.an.Array();
         transactions.should.have.length(1);
@@ -170,7 +157,6 @@ describe('Multi Wallet', () => {
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
-            'account',
             'address',
             'amount',
             'category',
@@ -180,6 +166,28 @@ describe('Multi Wallet', () => {
             'vout'
           );
         });
+      });
+    });
+
+    describe('signRawTransactionWithWallet()', () => {
+      it('should sign a funded raw transaction and return the hex', async () => {
+        const address = await client.getNewAddress('test', 'legacy');
+        const rawTransaction = await client.createRawTransaction([], [{ [address]: 1 }]);
+        const fundedTransaction = await client.fundRawTransaction(rawTransaction);
+        const signedTransaction = await client.signRawTransactionWithWallet(fundedTransaction.hex);
+
+        signedTransaction.should.have.keys('hex');
+        signedTransaction.hex.should.be.a.String();
+      });
+
+      it('should support named parameters', async () => {
+        const address = await client.getNewAddress('test', 'legacy');
+        const rawTransaction = await client.createRawTransaction([], [{ [address]: 1 }]);
+        const fundedTransaction = await client.fundRawTransaction(rawTransaction);
+        const signedTransaction = await client.signRawTransactionWithWallet({ hexstring: fundedTransaction.hex });
+
+        signedTransaction.should.have.keys('hex');
+        signedTransaction.hex.should.be.a.String();
       });
     });
   });

@@ -22,11 +22,11 @@ describe('REST', () => {
   before(async () => {
     const [tip] = await client.getChainTips();
 
-    if (tip.height >= 200) {
+    if (tip.height >= 432) {
       return null;
     }
 
-    await client.generate(200);
+    await client.generate(432);
   });
 
   describe('getTransactionByHash()', () => {
