@@ -89,12 +89,13 @@ describe('Client', () => {
     it('should have all the methods listed by `help`', async () => {
       const help = await new Client(config.bitcoin).help();
 
-      _.difference(parse(help), _.invokeMap(Object.keys(methods), String.prototype.toLowerCase)).should.be.empty();
+      _.difference(_.without(parse(help), 'getaddressbyaccount'), _.invokeMap(Object.keys(methods), String.prototype.toLowerCase)).should.be.empty();
     });
 
     it('should accept valid versions', async () => {
-      await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoin)).getInfo();
-      await new Client(_.defaults({ version: '0.15.0' }, config.bitcoin)).getInfo();
+      await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoin)).getNetworkInfo();
+      await new Client(_.defaults({ version: '0.15.0' }, config.bitcoin)).getNetworkInfo();
+      await new Client(_.defaults({ version: '0.17.0' }, config.bitcoin)).getNetworkInfo();
     });
   });
 

@@ -22,11 +22,11 @@ describe('Single Wallet', () => {
   before(async () => {
     const [tip] = await client.getChainTips();
 
-    if (tip.height >= 200) {
+    if (tip.height >= 432) {
       return null;
     }
 
-    await client.generate(200);
+    await client.generate(432);
   });
 
   describe('node-level requests', () => {
@@ -51,18 +51,21 @@ describe('Single Wallet', () => {
         const client = new Client(config.bitcoin);
         const wallets = await client.listWallets();
 
-        wallets.should.eql(['wallet.dat']);
+        // wallet is shown as '' unless -wallet set in config
+        wallets.should.eql(['']);
       });
     });
   });
 
   describe('wallet-level requests', () => {
-    describe('getAccountAddress()', () => {
-      it('should retrieve an account address', async () => {
-        const address = await client.getAccountAddress('test');
-        const account = await client.getAccount(address);
+    describe('getNewAddressesWithLabel()', () => {
+      it('should retrieve an address with a set label', async () => {
+        const address = await client.getNewAddress('testlabelsingle');
+        const labelList = await client.listLabels();
 
-        account.should.equal('test');
+        labelList.should.be.an.Array();
+        labelList.should.containEql('testlabelsingle');
+        address.should.be.a.String();
       });
     });
 
@@ -74,51 +77,47 @@ describe('Single Wallet', () => {
       });
 
       it('should support named parameters', async () => {
-        const client = new Client(defaults({ version: '0.15.0' }, config.bitcoin));
+        const client = new Client(defaults({ version: '0.17.0' }, config.bitcoin));
 
-        const mainWalletBalance = await client.getBalance({ account: '*', minconf: 0 });
-        const mainWalletBalanceWithoutParameters = await client.getBalance('*', 0);
-        const testWalletBalance = await client.getBalance({ account: 'test', minconf: 0 });
+        const mainWalletBalance = await client.getBalance({ dummy: '*', minconf: 0 });
+        const mainWalletBalanceWithoutNamedParameters = await client.getBalance('*', 0);
 
-        mainWalletBalance.should.not.equal(testWalletBalance);
-        mainWalletBalanceWithoutParameters.should.equal(mainWalletBalance);
+        mainWalletBalance.should.equal(mainWalletBalanceWithoutNamedParameters);
       });
     });
 
     describe('getNewAddress()', () => {
       it('should return a new bitcoin address', async () => {
-        await client.getNewAddress('test');
+        const address = await client.getNewAddress('test');
 
-        const addresses = await client.getAddressesByAccount('test');
-
-        addresses.length.should.be.above(1);
+        address.should.be.a.String();
       });
     });
 
     describe('listTransactions()', () => {
-      it('should return the most recent list of transactions from all accounts using specific count', async () => {
-        const address = await client.getNewAddress('test');
+      it('should return the most recent list of transactions using specific count', async () => {
+        const address = await client.getNewAddress('listspecificcount');
 
         // Generate 5 transactions.
         for (let i = 0; i < 5; i++) {
           await client.sendToAddress(address, 0.1);
         }
 
-        const transactions = await client.listTransactions('test', 5);
+        const transactions = await client.listTransactions('*', 5);
 
         transactions.should.be.an.Array();
         transactions.length.should.be.greaterThanOrEqual(5);
       });
 
-      it('should return the most recent list of transactions from all accounts using default count', async () => {
-        const transactions = await client.listTransactions('test');
+      it('should return the most recent list of transactions using default count', async () => {
+        const transactions = await client.listTransactions();
 
         transactions.should.be.an.Array();
         transactions.should.matchEach(value => {
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
-            'account',
+            'label',
             'address',
             'amount',
             'category',
@@ -131,20 +130,20 @@ describe('Single Wallet', () => {
       });
 
       it('should support named parameters', async () => {
-        const address = await client.getNewAddress('test');
+        const address = await client.getNewAddress('testlistwithparams');
 
         // Generate 5 transactions.
         for (let i = 0; i < 5; i++) {
           await client.sendToAddress(address, 0.1);
         }
 
-        let transactions = await new Client(defaults({ version: '0.15.0' }, config.bitcoin)).listTransactions({ account: 'test' });
+        let transactions = await new Client(defaults({ version: '0.17.0' }, config.bitcoin)).listTransactions();
 
         transactions.should.be.an.Array();
         transactions.length.should.be.greaterThanOrEqual(5);
 
         // Make sure `count` is read correctly.
-        transactions = await new Client(defaults({ version: '0.15.0' }, config.bitcoin)).listTransactions({ account: 'test', count: 1 });
+        transactions = await new Client(defaults({ version: '0.17.0' }, config.bitcoin)).listTransactions({ count: 1 });
 
         transactions.should.be.an.Array();
         transactions.should.have.length(1);
@@ -161,7 +160,9 @@ describe('Single Wallet', () => {
       ];
       const response = await client.command(batch);
 
-      response.should.eql([['wallet.dat'], ['wallet.dat'], ['wallet.dat']]);
+      // 0.17 for some reason has wallets shown as ''
+      // I'm guessing if you load a wallet specifically it will show it
+      response.should.eql([[''], [''], ['']]);
     });
 
     it('should support request parameters in batched requests', async () => {
@@ -169,7 +170,7 @@ describe('Single Wallet', () => {
 
       const [newAddress, addressValidation] = await client.command(batch);
 
-      addressValidation.should.have.properties('address', 'ismine', 'isvalid', 'scriptPubKey');
+      addressValidation.should.have.properties('address', 'isvalid', 'scriptPubKey', 'isscript', 'iswitness');
       newAddress.should.be.a.String();
     });
 
@@ -178,7 +179,7 @@ describe('Single Wallet', () => {
 
       const [validateAddressError, validateAddress] = await client.command(batch);
 
-      validateAddress.should.have.properties('address', 'ismine', 'isvalid', 'scriptPubKey');
+      validateAddress.should.have.properties('address', 'isvalid', 'scriptPubKey');
       validateAddressError.should.be.an.instanceOf(RpcError);
       validateAddressError.code.should.equal(-1);
     });

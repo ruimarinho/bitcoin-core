@@ -22,11 +22,11 @@ describe('Multi Wallet', () => {
   before(async () => {
     const [tip] = await client.getChainTips();
 
-    if (tip.height >= 200) {
+    if (tip.height >= 432) {
       return null;
     }
 
-    await client.generate(200);
+    await client.generate(432);
   });
 
   describe('node-level requests', () => {
@@ -56,6 +56,17 @@ describe('Multi Wallet', () => {
   });
 
   describe('wallet-level requests', () => {
+    describe('getNewAddressesWithLabel()', () => {
+      it('should retrieve an address with a set label', async () => {
+        await client.getNewAddress('testlabelmulti');
+
+        const labelList = await client.listLabels();
+
+        labelList.should.be.an.Array();
+        labelList.should.containEql('testlabelmulti');
+      });
+    });
+
     describe('getBalance()', () => {
       it('should return the total server\'s balance', async () => {
         const balance = await client.getBalance();
@@ -64,39 +75,50 @@ describe('Multi Wallet', () => {
       });
 
       it('should support named parameters', async () => {
-        const mainWalletBalance = await client.getBalance({ minconf: 0 });
-        const mainWalletBalanceWithoutParameters = await client.getBalance('*', 0);
+        const mainWalletBalance = await client.getBalance({ dummy: '*', minconf: 0 });
+        const mainWalletBalanceWithoutNamedParameters = await client.getBalance('*', 0);
 
-        mainWalletBalanceWithoutParameters.should.equal(mainWalletBalance);
+        mainWalletBalance.should.equal(mainWalletBalanceWithoutNamedParameters);
       });
     });
 
     describe('getNewAddress()', () => {
       it('should return a new bitcoin address', async () => {
         const address = await client.getNewAddress('test', 'legacy');
+        const amount = await client.getReceivedByAddress({ address, minconf: 0 });
 
-        const output = await client.validateAddress(address);
+        amount.should.equal(0);
+      });
+    });
 
-        output.isvalid.should.be.true();
+    describe('createPsbt()', () => {
+      it('should create a Psbt', async () => {
+        const inputs = [{ txid: '4fcfa1a5c6864c9783d9474566488cf3d0ae43087ae66618715f10a0dd7997e9', vout: 0 }];
+        const dest = [{ mkteeBFmGkraJaWN5WzqHCjmbQWVrPo5X3: 1000 }];
+        const pbst = await client.createPsbt(inputs, dest);
+
+        pbst.should.be.a.String();
       });
     });
 
     describe('listTransactions()', () => {
-      it('should return the most recent list of transactions from all accounts using specific count', async () => {
-        const address = await client.getNewAddress('test');
+      it('should return the most recent list of transactions using specific count', async () => {
+        const address = await client.getNewAddress('listspecificcount');
 
         // Generate 5 transactions.
         for (let i = 0; i < 5; i++) {
           await client.sendToAddress(address, 0.1);
         }
 
-        const transactions = await client.listTransactions('*', 5);
+        const transactions = await client.listTransactions({ count: 5 });
 
         transactions.should.be.an.Array();
         transactions.should.matchEach(value => {
+          value.label.should.equal('listspecificcount');
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
+            'label',
             'address',
             'amount',
             'category',
@@ -109,21 +131,24 @@ describe('Multi Wallet', () => {
         transactions.length.should.be.greaterThanOrEqual(5);
       });
 
-      it('should return the most recent list of transactions from all accounts using default count', async () => {
-        const address = await client.getNewAddress('test');
+      it('should return the most recent list of transactions using default count', async () => {
+        const address = await client.getNewAddress('listdefaultcount');
 
         // Generate 5 transactions.
         for (let i = 0; i < 5; i++) {
           await client.sendToAddress(address, 0.1);
         }
 
-        const transactions = await client.listTransactions('*');
+        const transactions = await client.listTransactions();
 
         transactions.should.be.an.Array();
         transactions.should.matchEach(value => {
+          value.label.should.equal('listdefaultcount');
+
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
+            'label',
             'address',
             'amount',
             'category',
@@ -136,27 +161,29 @@ describe('Multi Wallet', () => {
       });
 
       it('should support named parameters', async () => {
-        const address = await client.getNewAddress('test');
+        const address = await client.getNewAddress('testlistwithparams');
 
         // Generate 5 transactions.
         for (let i = 0; i < 5; i++) {
           await client.sendToAddress(address, 0.1);
         }
 
-        let transactions = await client.listTransactions({ account: '*' });
+        let transactions = await client.listTransactions();
 
         transactions.should.be.an.Array();
         transactions.length.should.be.greaterThanOrEqual(5);
 
         // Make sure `count` is read correctly.
-        transactions = await client.listTransactions({ account: '*', count: 1 });
+        transactions = await client.listTransactions({ count: 1 });
 
         transactions.should.be.an.Array();
         transactions.should.have.length(1);
         transactions.should.matchEach(value => {
+          value.label.should.equal('testlistwithparams');
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
           value.should.have.keys(
+            'label',
             'address',
             'amount',
             'category',
