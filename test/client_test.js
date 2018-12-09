@@ -93,8 +93,9 @@ describe('Client', () => {
     });
 
     it('should accept valid versions', async () => {
-      await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoin)).getInfo();
-      await new Client(_.defaults({ version: '0.15.0' }, config.bitcoin)).getInfo();
+      await new Client(_.defaults({ version: '0.15.0.1' }, config.bitcoin)).getNetworkInfo();
+      await new Client(_.defaults({ version: '0.15.0' }, config.bitcoin)).getNetworkInfo();
+      await new Client(_.defaults({ version: '0.17.0' }, config.bitcoin)).getNetworkInfo();
     });
   });
 

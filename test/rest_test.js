@@ -22,11 +22,11 @@ describe('REST', () => {
   before(async () => {
     const [tip] = await client.getChainTips();
 
-    if (tip.height >= 200) {
+    if (tip.height >= 432) {
       return null;
     }
 
-    await client.generate(200);
+    await client.generate(432);
   });
 
   describe('getTransactionByHash()', () => {
@@ -85,7 +85,7 @@ describe('REST', () => {
     it('should return a block json-encoded by default', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
 
-      block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
+      block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
       block.tx.should.matchEach(value => value.should.be.an.Object());
     });
 
@@ -105,7 +105,7 @@ describe('REST', () => {
     it('should return a block summary json-encoded if `summary` is enabled', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json', summary: true });
 
-      block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
+      block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
       block.tx.should.matchEach(value => value.should.be.a.String());
     });
   });
@@ -115,7 +115,7 @@ describe('REST', () => {
       const headers = await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
 
       headers.should.have.length(1);
-      headers[0].should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nextblockhash', 'nonce', 'time', 'version', 'versionHex');
+      headers[0].should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'time', 'version', 'versionHex');
       headers[0].hash.should.equal('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
     });
 
@@ -194,7 +194,7 @@ describe('REST', () => {
         await client.sendToAddress(address, 0.1);
       }
 
-      const transactions = await client.listTransactions('test');
+      const transactions = await client.listTransactions();
 
       Object.keys(content).length.should.not.equal(transactions.length);
     });
