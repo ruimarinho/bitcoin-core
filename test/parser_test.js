@@ -67,14 +67,14 @@ describe('Parser', () => {
 
   describe('headers', () => {
     it('should return the response headers if `headers` is enabled', async () => {
-      const [info, headers] = await new Client(defaults({ headers: true }, config.bitcoin)).getInfo();
+      const [info, headers] = await new Client(defaults({ headers: true }, config.bitcoin)).getNetworkInfo();
 
       info.should.be.an.Object();
       headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
     });
 
     it('should return the response headers if `headers` is enabled using callbacks', done => {
-      new Client(defaults({ headers: true }, config.bitcoin)).getInfo((err, [info, headers]) => {
+      new Client(defaults({ headers: true }, config.bitcoin)).getNetworkInfo((err, [info, headers]) => {
         should.not.exist(err);
 
         info.should.be.an.Object();
