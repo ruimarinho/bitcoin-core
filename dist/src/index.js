@@ -68,7 +68,8 @@ class Client {
     ssl = false,
     timeout = 30000,
     username,
-    version
+    version,
+    wallet
   } = {}) {
     if (!_lodash.default.has(networks, network)) {
       throw new Error(`Invalid network name "${network}"`, {
@@ -86,13 +87,12 @@ class Client {
     this.host = host;
     this.password = password;
     this.port = port || networks[network];
-    this.timeout = timeout;
     this.ssl = {
       enabled: _lodash.default.get(ssl, 'enabled', ssl),
       strict: _lodash.default.get(ssl, 'strict', _lodash.default.get(ssl, 'enabled', ssl))
-    }; // Find unsupported methods according to version.
-
-    let unsupported = [];
+    };
+    this.timeout = timeout;
+    this.wallet = wallet; // Version handling.
 
     if (version) {
       // Capture X.Y.Z when X.Y.Z.A is passed to support oddly formatted Bitcoin Core
@@ -107,9 +107,19 @@ class Client {
 
       [version] = result;
       this.hasNamedParametersSupport = _semver.default.satisfies(version, '>=0.14.0');
-      unsupported = _lodash.default.chain(_methods.default).pickBy(method => !_semver.default.satisfies(version, method.version)).keys().invokeMap(String.prototype.toLowerCase).value();
     }
 
+    this.version = version;
+    this.methods = _lodash.default.transform(_methods.default, (result, method, name) => {
+      result[_lodash.default.toLower(name)] = {
+        features: _lodash.default.transform(method.features, (result, constraint, name) => {
+          result[name] = {
+            supported: version ? _semver.default.satisfies(version, constraint) : true
+          };
+        }, {}),
+        supported: version ? _semver.default.satisfies(version, method.version) : true
+      };
+    }, {});
     const request = (0, _requestLogger.default)(logger);
     this.request = _bluebird.default.promisifyAll(request.defaults({
       agentOptions: this.agentOptions,
@@ -120,7 +130,7 @@ class Client {
       multiArgs: true
     });
     this.requester = new _requester.default({
-      unsupported,
+      methods: this.methods,
       version
     });
     this.parser = new _parser.default({
@@ -135,40 +145,44 @@ class Client {
   command(...args) {
     let body;
     let callback;
+    let multiwallet;
+    let [input, ...parameters] = args; // eslint-disable-line prefer-const
 
-    let parameters = _lodash.default.tail(args);
+    const lastArg = _lodash.default.last(parameters);
 
-    const input = _lodash.default.head(args);
-
-    const lastArg = _lodash.default.last(args);
+    const isBatch = Array.isArray(input);
 
     if (_lodash.default.isFunction(lastArg)) {
       callback = lastArg;
       parameters = _lodash.default.dropRight(parameters);
     }
 
-    if (this.hasNamedParametersSupport && parameters.length === 1 && _lodash.default.isPlainObject(parameters[0])) {
-      parameters = parameters[0];
+    if (isBatch) {
+      multiwallet = _lodash.default.some(input, command => {
+        return _lodash.default.get(this.methods[command.method], 'features.multiwallet.supported', false) === true;
+      });
+      body = input.map((method, index) => this.requester.prepare({
+        method: method.method,
+        parameters: method.parameters,
+        suffix: index
+      }));
+    } else {
+      if (this.hasNamedParametersSupport && parameters.length === 1 && _lodash.default.isPlainObject(parameters[0])) {
+        parameters = parameters[0];
+      }
+
+      multiwallet = _lodash.default.get(this.methods[input], 'features.multiwallet.supported', false) === true;
+      body = this.requester.prepare({
+        method: input,
+        parameters
+      });
     }
 
     return _bluebird.default.try(() => {
-      if (Array.isArray(input)) {
-        body = input.map((method, index) => this.requester.prepare({
-          method: method.method,
-          parameters: method.parameters,
-          suffix: index
-        }));
-      } else {
-        body = this.requester.prepare({
-          method: input,
-          parameters
-        });
-      }
-
       return this.request.postAsync({
         auth: _lodash.default.pickBy(this.auth, _lodash.default.identity),
         body: JSON.stringify(body),
-        uri: '/'
+        uri: `${multiwallet && this.wallet ? `/wallet/${this.wallet}` : '/'}`
       }).bind(this).then(this.parser.rpc);
     }).asCallback(callback);
   }
@@ -217,10 +231,6 @@ class Client {
       extension = 'json'
     } = {}], callback] = source(...args);
     return _bluebird.default.try(() => {
-      if (!_lodash.default.includes(['bin', 'hex'], extension)) {
-        throw new Error(`Extension "${extension}" is not supported`);
-      }
-
       return this.request.getAsync({
         encoding: extension === 'bin' ? null : undefined,
         url: `/rest/headers/${count}/${hash}.${extension}`
@@ -289,7 +299,7 @@ class Client {
  */
 
 
-_lodash.default.forOwn(_methods.default, (range, method) => {
+_lodash.default.forOwn(_methods.default, (options, method) => {
   Client.prototype[method] = _lodash.default.partial(Client.prototype.command, method.toLowerCase());
 });
 /**

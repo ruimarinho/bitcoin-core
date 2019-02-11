@@ -1,7 +1,17 @@
 # Changelog
 
-## [2.0.0](https://github.com/ruimarinho/bitcoin-core/tree/2.0.0) (2017-11-27)
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.2.0...2.0.0)
+## [2.1.0](https://github.com/ruimarinho/bitcoin-core/tree/2.1.0) (2019-02-11)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.0.0...2.1.0)
+
+**Merged pull requests:**
+
+- Add support for json extension in rest endpoint [\#78](https://github.com/ruimarinho/bitcoin-core/pull/78) ([pedrobranco](https://github.com/pedrobranco))
+- Fix response log obfuscation [\#64](https://github.com/ruimarinho/bitcoin-core/pull/64) ([pedrobranco](https://github.com/pedrobranco))
+- Fix obfuscator with named parameters [\#62](https://github.com/ruimarinho/bitcoin-core/pull/62) ([pedrobranco](https://github.com/pedrobranco))
+- Add support for multiwallet [\#45](https://github.com/ruimarinho/bitcoin-core/pull/45) ([ruimarinho](https://github.com/ruimarinho))
+
+## [v2.0.0](https://github.com/ruimarinho/bitcoin-core/tree/v2.0.0) (2017-11-27)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.2.0...v2.0.0)
 
 **Merged pull requests:**
 
@@ -15,7 +25,6 @@
 - Add support for bitcoin@0.15.0 methods [\#36](https://github.com/ruimarinho/bitcoin-core/pull/36) ([joaopaulofonseca](https://github.com/joaopaulofonseca))
 - Add support for bitcoin 0.13.2 [\#24](https://github.com/ruimarinho/bitcoin-core/pull/24) ([pedrobranco](https://github.com/pedrobranco))
 - Fix mempool naming inconsistency in getRawMempool method name [\#22](https://github.com/ruimarinho/bitcoin-core/pull/22) ([ruimarinho](https://github.com/ruimarinho))
-- Add support for bignumbers [\#17](https://github.com/ruimarinho/bitcoin-core/pull/17) ([pedrobranco](https://github.com/pedrobranco))
 
 ## [v1.2.0](https://github.com/ruimarinho/bitcoin-core/tree/v1.2.0) (2017-02-12)
 [Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.1.0...v1.2.0)
@@ -24,6 +33,7 @@
 
 - Pin docker image to 0.13.0 to avoid failing tests on newer versions [\#21](https://github.com/ruimarinho/bitcoin-core/pull/21) ([pedrobranco](https://github.com/pedrobranco))
 - Add logging to all requests [\#19](https://github.com/ruimarinho/bitcoin-core/pull/19) ([pedrobranco](https://github.com/pedrobranco))
+- Add support for bignumbers [\#17](https://github.com/ruimarinho/bitcoin-core/pull/17) ([pedrobranco](https://github.com/pedrobranco))
 
 ## [v1.1.0](https://github.com/ruimarinho/bitcoin-core/tree/v1.1.0) (2016-09-19)
 [Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.0.0...v1.1.0)
