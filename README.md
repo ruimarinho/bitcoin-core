@@ -85,8 +85,10 @@ client.getInfo().then((help) => console.log(help));
 
 #### Using callbacks to process the response
 
+Callback support was removed. Since every method returns a `Promise`, [callbackify()](https://nodejs.org/api/util.html#util_util_callbackify_original) (`>node@v8.2.0`) can be used, or for older `node` versions you can use the npm package [callbackify](https://www.npmjs.com/package/callbackify).
+
 ```js
-client.getInfo((error, help) => console.log(help));
+util.callbackify(() => client.getInfo())((error, help) => console.log(help));
 ```
 
 #### Returning headers in the response
@@ -282,22 +284,21 @@ These configuration values may also be set on the `bitcoin.conf` file of your pl
 
 Unlike RPC methods which are automatically exposed on the client, REST ones are handled individually as each method has its own specificity. The following methods are supported:
 
-- [getBlockByHash](#getblockbyhashhash-options-callback)
-- [getBlockHeadersByHash](#getblockheadersbyhashhash-count-options-callback)
-- [getBlockchainInformation](#getblockchaininformationcallback)
+- [getBlockByHash](#getblockbyhashhash-options)
+- [getBlockHeadersByHash](#getblockheadersbyhashhash-count-options)
+- [getBlockchainInformation](#getblockchaininformation)
 - [getMemoryPoolContent](#getmemorypoolcontent)
-- [getMemoryPoolInformation](#getmemorypoolinformationcallback)
-- [getTransactionByHash](#gettransactionbyhashhash-options-callback)
-- [getUnspentTransactionOutputs](#getunspenttransactionoutputsoutpoints-options-callback)
+- [getMemoryPoolInformation](#getmemorypoolinformation)
+- [getTransactionByHash](#gettransactionbyhashhash-options)
+- [getUnspentTransactionOutputs](#getunspenttransactionoutputsoutpoints-options)
 
-#### getBlockByHash(hash, [options], [callback])
+#### getBlockByHash(hash, [options])
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
 
 ##### Arguments
 1. `hash` _(string)_: The block hash.
 2. `[options]` _(Object)_: The options object.
 3. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
-4. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -305,7 +306,7 @@ Given a block hash, returns a block, in binary, hex-encoded binary or JSON forma
 client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
 ```
 
-#### getBlockHeadersByHash(hash, count, [options][, callback])
+#### getBlockHeadersByHash(hash, count, [options])
 Given a block hash, returns amount of block headers in upward direction.
 
 ##### Arguments
@@ -313,7 +314,6 @@ Given a block hash, returns amount of block headers in upward direction.
 2. `count` _(number)_: The number of blocks to count in upward direction.
 3. `[options]` _(Object)_: The options object.
 4. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
-5. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -321,23 +321,17 @@ Given a block hash, returns amount of block headers in upward direction.
 client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
 ```
 
-#### getBlockchainInformation([callback])
+#### getBlockchainInformation()
 Returns various state info regarding block chain processing.
-
-#### Arguments
-1. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
 ```js
-client.getBlockchainInformation([callback]);
+client.getBlockchainInformation();
 ```
 
 #### getMemoryPoolContent()
 Returns transactions in the transaction memory pool.
-
-#### Arguments
-1. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -345,14 +339,11 @@ Returns transactions in the transaction memory pool.
 client.getMemoryPoolContent();
 ```
 
-#### getMemoryPoolInformation([callback])
+#### getMemoryPoolInformation()
 Returns various information about the transaction memory pool. Only supports JSON as output format.
 - size: the number of transactions in the transaction memory pool.
 - bytes: size of the transaction memory pool in bytes.
 - usage: total transaction memory pool memory usage.
-
-#### Arguments
-1. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -360,7 +351,7 @@ Returns various information about the transaction memory pool. Only supports JSO
 client.getMemoryPoolInformation();
 ```
 
-#### getTransactionByHash(hash, [options], [callback])
+#### getTransactionByHash(hash, [options])
 Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
 
 #### Arguments
@@ -368,7 +359,6 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 2. `[options]` _(Object)_: The options object.
 3. `[options.summary=false]` _(boolean)_: Whether to return just the transaction hash, thus saving memory.
 4. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
-5. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -376,14 +366,13 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe', { extension: 'json', summary: false });
 ```
 
-#### getUnspentTransactionOutputs(outpoints, [options], [callback])
+#### getUnspentTransactionOutputs(outpoints, [options])
 Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
 
 #### Arguments
 1. `outpoints` _(array\<Object\>|Object)_: The outpoint to query in the format `{ id: '<txid>', index: '<index>' }`.
 2. `[options]` _(Object)_: The options object.
 3. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
-4. `[callback]` _(Function)_: An optional callback, otherwise a Promise is returned.
 
 ##### Example
 
@@ -394,7 +383,7 @@ client.getUnspentTransactionOutputs([{
 }, {
   id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
   index: 1
-}], { extension: 'json' }, [callback])
+}], { extension: 'json' })
 ```
 
 ### SSL
