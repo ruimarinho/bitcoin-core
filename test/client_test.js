@@ -205,16 +205,4 @@ describe('Client', () => {
       });
     });
   });
-
-  describe('callbacks', () => {
-    it('should support callbacks', done => {
-      new Client(config.bitcoin).help((err, help) => {
-        should.not.exist(err);
-
-        help.should.not.be.empty();
-
-        done();
-      });
-    });
-  });
 });

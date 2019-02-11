@@ -73,18 +73,6 @@ describe('Parser', () => {
       headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
     });
 
-    it('should return the response headers if `headers` is enabled using callbacks', done => {
-      new Client(defaults({ headers: true }, config.bitcoin)).getNetworkInfo((err, [info, headers]) => {
-        should.not.exist(err);
-
-        info.should.be.an.Object();
-
-        headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
-
-        done();
-      });
-    });
-
     it('should return the response headers if `headers` is enabled and batching is used', async () => {
       const batch = [
         { method: 'getbalance' },
@@ -94,23 +82,6 @@ describe('Parser', () => {
 
       addresses.should.have.length(batch.length);
       headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
-    });
-
-    it('should return the response headers if `headers` is enabled and batching is used with callbacks', done => {
-      const batch = [
-        { method: 'getbalance' },
-        { method: 'getbalance' }
-      ];
-
-      new Client(defaults({ headers: true }, config.bitcoin)).command(batch, (err, [addresses, headers]) => {
-        should.not.exist(err);
-
-        addresses.should.have.length(batch.length);
-
-        headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
-
-        done();
-      });
     });
   });
 });
