@@ -67,21 +67,41 @@ var _default = {
     category: 'network',
     version: '>=0.12.0'
   },
+  combinePsbt: {
+    category: 'rawtransactions',
+    version: '>=0.17.0'
+  },
   combineRawTransaction: {
     category: 'rawtransactions',
     version: '>=0.15.0'
+  },
+  convertToPsbt: {
+    category: 'rawtransactions',
+    version: '>=0.17.0'
   },
   createMultiSig: {
     category: 'util',
     version: '>=0.1.0'
   },
+  createPsbt: {
+    category: 'rawtransactions',
+    version: '>=0.17.0'
+  },
   createRawTransaction: {
     category: 'rawtransactions',
     version: '>=0.7.0'
   },
+  createWallet: {
+    category: 'wallet',
+    version: '>=0.17.0'
+  },
   createWitnessAddress: {
     category: 'wallet',
     version: '=0.13.0'
+  },
+  decodePsbt: {
+    category: 'rawtransactions',
+    version: '>=0.17.0'
   },
   decodeRawTransaction: {
     category: 'rawtransactions',
@@ -141,8 +161,15 @@ var _default = {
     category: 'util',
     version: '>=0.12.0 <0.15.0'
   },
+  finalizePsbt: {
+    category: 'rawtransactions',
+    version: '>=0.17.0'
+  },
   fundRawTransaction: {
     category: 'rawtransactions',
+    features: {
+      multiwallet: '>=0.15.0'
+    },
     version: '>=0.12.0'
   },
   generate: {
@@ -159,27 +186,41 @@ var _default = {
   getAccount: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.18.0'
   },
   getAccountAddress: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.3.18'
+    version: '>=0.3.18 <0.18.0'
   },
   getAddedNodeInfo: {
     category: 'network',
     version: '>=0.8.0'
   },
+  getAddressInfo: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
+  },
   getAddressesByAccount: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.18.0'
+  },
+  getAddressesByLabel: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   },
   getBalance: {
     category: 'wallet',
@@ -207,6 +248,10 @@ var _default = {
   getBlockHeader: {
     category: 'blockchain',
     version: '>=0.12.0'
+  },
+  getBlockStats: {
+    category: 'blockchain',
+    version: '>=0.17.0'
   },
   getBlockTemplate: {
     category: 'mining',
@@ -242,7 +287,7 @@ var _default = {
   },
   getInfo: {
     category: 'control',
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.16.0'
   },
   getMemoryInfo: {
     category: 'control',
@@ -309,9 +354,9 @@ var _default = {
   getReceivedByAccount: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.18.0'
   },
   getReceivedByAddress: {
     category: 'wallet',
@@ -319,6 +364,13 @@ var _default = {
       multiwallet: '>=0.15.0'
     },
     version: '>=0.1.0'
+  },
+  getReceivedByLabel: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   },
   getTransaction: {
     category: 'wallet',
@@ -356,6 +408,10 @@ var _default = {
   getWork: {
     category: 'blockchain',
     version: '<0.10.0'
+  },
+  getZmqNotifications: {
+    category: 'control',
+    version: '>=0.17.0'
   },
   help: {
     category: 'control',
@@ -425,9 +481,9 @@ var _default = {
   listAccounts: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.18.0'
   },
   listAddressGroupings: {
     category: 'wallet',
@@ -440,6 +496,13 @@ var _default = {
     category: 'network',
     version: '>=0.12.0'
   },
+  listLabels: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
+  },
   listLockUnspent: {
     category: 'wallet',
     features: {
@@ -450,9 +513,9 @@ var _default = {
   listReceivedByAccount: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.18.0'
   },
   listReceivedByAddress: {
     category: 'wallet',
@@ -460,6 +523,13 @@ var _default = {
       multiwallet: '>=0.15.0'
     },
     version: '>=0.1.0'
+  },
+  listReceivedByLabel: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   },
   listSinceBlock: {
     category: 'wallet',
@@ -489,12 +559,19 @@ var _default = {
     },
     version: '>=0.15.0'
   },
+  loadWallet: {
+    category: 'wallet',
+    version: '>=0.17.0'
+  },
   lockUnspent: {
     category: 'wallet',
     features: {
       multiwallet: '>=0.15.0'
     },
     version: '>=0.8.0'
+  },
+  logging: {
+    version: '>=0.17.0'
   },
   move: {
     category: 'wallet',
@@ -526,6 +603,18 @@ var _default = {
     },
     version: '>=0.13.0'
   },
+  rescanBlockchain: {
+    category: 'wallet',
+    version: '>=0.16.0'
+  },
+  saveMempool: {
+    category: 'blockchain',
+    version: '>=0.16.0'
+  },
+  scantxoutset: {
+    category: 'blockchain',
+    version: '=>0.17.0'
+  },
   sendFrom: {
     category: 'wallet',
     features: {
@@ -554,9 +643,9 @@ var _default = {
   setAccount: {
     category: 'wallet',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.18.0'
     },
-    version: '>=0.1.0'
+    version: '>=0.1.0 <0.18.0'
   },
   setBan: {
     category: 'network',
@@ -565,6 +654,26 @@ var _default = {
   setGenerate: {
     category: 'generating',
     version: '<0.13.0'
+  },
+  setHdSeed: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    obfuscate: {
+      request: {
+        default: params => (0, _lodash.set)([...params], '[1]', '******'),
+        named: params => (0, _lodash.set)(params, 'seed', '******')
+      }
+    },
+    version: '>=0.17.0'
+  },
+  setLabel: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   },
   setNetworkActive: {
     category: 'network',
@@ -604,6 +713,23 @@ var _default = {
     },
     version: '>=0.7.0'
   },
+  signRawTransactionWithKey: {
+    category: 'rawtransactions',
+    obfuscate: {
+      request: {
+        default: params => (0, _lodash.set)([...params], '[1]', (0, _lodash.map)(params[1], () => '******')),
+        named: params => (0, _lodash.set)(params, 'privkeys', (0, _lodash.map)(params.privkeys || [], () => '******'))
+      }
+    },
+    version: '>=0.17.0'
+  },
+  signRawTransactionWithWallet: {
+    category: 'rawtransactions',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
+  },
   stop: {
     category: 'control',
     version: '>=0.1.0'
@@ -611,6 +737,14 @@ var _default = {
   submitBlock: {
     category: 'mining',
     version: '>=0.7.0'
+  },
+  testMempoolAccept: {
+    category: 'blockchain',
+    version: '>=0.17.0'
+  },
+  unloadWallet: {
+    category: 'wallet',
+    version: '>=0.17.0'
   },
   upTime: {
     category: 'control',
@@ -631,6 +765,13 @@ var _default = {
   verifyTxOutProof: {
     category: 'blockchain',
     version: '>0.11.0'
+  },
+  walletCreateFundedPsbt: {
+    category: 'rawtransactions',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   },
   walletLock: {
     category: 'wallet',
@@ -655,6 +796,13 @@ var _default = {
       }
     },
     version: '>=0.1.0'
+  },
+  walletProcessPsbt: {
+    category: 'rawtransactions',
+    features: {
+      multiwallet: '>=0.17.0'
+    },
+    version: '>=0.17.0'
   }
 };
 exports.default = _default;
