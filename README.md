@@ -257,8 +257,8 @@ Note that batched requests will only throw an error if the batch request itself 
 
 ```js
 const batch = [
-  { method: 'foobar', params: [] },
-  { method: 'getnewaddress', params: [] }
+  { method: 'foobar', parameters: [] },
+  { method: 'getnewaddress', parameters: [] }
 ]
 
 new Client().command(batch).then(([address, error]) => console.log(address, error)));
