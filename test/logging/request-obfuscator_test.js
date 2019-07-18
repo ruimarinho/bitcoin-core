@@ -209,5 +209,15 @@ describe('RequestObfuscator', () => {
         { id: '1485369469422-1', result: '******' }
       ]);
     });
+
+    it('should not throw an error with a non-JSON body', () => {
+      const request = { body: 'Work queue depth exceeded', type: 'response' };
+
+      (() => {
+        obfuscate(request, { body: '{"id":"1485369469422","method":"dumpprivkey","params":["foobar"]}' });
+      }).should.not.throw();
+
+      request.body.should.eql('Work queue depth exceeded');
+    });
   });
 });
