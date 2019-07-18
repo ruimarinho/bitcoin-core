@@ -13,6 +13,20 @@ import methods from '../methods';
 const lowercaseMethods = mapKeys(methods, (value, key) => key.toLowerCase());
 
 /**
+ * Helper.
+ */
+
+const isJSON = data => {
+  try {
+    JSON.parse(data);
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+/**
  * Obfuscate the response body.
  */
 
@@ -46,6 +60,10 @@ function obfuscateResponse(request, instance) {
   }
 
   if (!instance.body) {
+    return;
+  }
+
+  if (!isJSON(request.body)) {
     return;
   }
 
