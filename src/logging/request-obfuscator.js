@@ -48,15 +48,10 @@ function obfuscateResponse(request, instance) {
   if (!instance.body) {
     return;
   }
-
-  try {
-    request.body = JSON.parse(request.body);
-  } catch (e) {
-    return;
-  }
-
+  
   let requestBody;
   try {
+    request.body = JSON.parse(request.body);
     requestBody = JSON.parse(instance.body);
   } catch (e) {
     return;
