@@ -23,7 +23,7 @@
     "url": "https://github.com/ruimarinho/bitcoin-core.git"
   },
   "scripts": {
-    "changelog": "github_changelog_generator --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
+    "changelog": "github_changelog_generator --project bitcoin-core --user ruimarinho --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
     "cover": "nyc --reporter=html --reporter=text npm test",
     "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
     "lint": "eslint src test",
