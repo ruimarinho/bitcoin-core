@@ -1,8 +1,18 @@
 # Changelog
 
-## [2.2.0](https://github.com/ruimarinho/bitcoin-core/tree/2.2.0) (2019-06-28)
+## [2.2.1](https://github.com/ruimarinho/bitcoin-core/tree/2.2.1) (2019-09-20)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.1.0...2.2.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.2.0...2.2.1)
+
+**Merged pull requests:**
+
+- Add missing options to changelog script [\#105](https://github.com/ruimarinho/bitcoin-core/pull/105) ([pedrobranco](https://github.com/pedrobranco))
+- Add feature multiwallet to walletLock, walletPassphrase and walletPassphraseChange [\#104](https://github.com/ruimarinho/bitcoin-core/pull/104) ([patrix252](https://github.com/patrix252))
+- Fix batch example in README.md [\#96](https://github.com/ruimarinho/bitcoin-core/pull/96) ([intech](https://github.com/intech))
+
+## [v2.2.0](https://github.com/ruimarinho/bitcoin-core/tree/v2.2.0) (2019-06-28)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.1.0...v2.2.0)
 
 **Merged pull requests:**
 
