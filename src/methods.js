@@ -41,7 +41,11 @@ export default {
     features: {
       multiwallet: '>=0.15.0'
     },
-    version: '>=0.13.0'
+    version: '>=0.13.0 <0.18.0'
+  },
+  analyzePsbt: {
+    category: 'rawtransactions',
+    version: '>=0.18.0'
   },
   backupWallet: {
     category: 'wallet',
@@ -104,6 +108,10 @@ export default {
   decodeScript: {
     category: 'rawtransactions',
     version: '>=0.9.0'
+  },
+  deriveAddresses: {
+    category: 'util',
+    version: '>=0.18.0'
   },
   disconnectNode: {
     category: 'network',
@@ -267,6 +275,10 @@ export default {
     category: 'network',
     version: '>=0.1.0'
   },
+  getDescriptorInfo: {
+    category: 'util',
+    version: '>=0.18.0'
+  },
   getDifficulty: {
     category: 'blockchain',
     version: '>=0.1.0'
@@ -326,6 +338,10 @@ export default {
     },
     version: '>=0.1.0'
   },
+  getNodeAddresses: {
+    category: 'network',
+    version: '>=0.18.0'
+  },
   getPeerInfo: {
     category: 'network',
     version: '>=0.7.0'
@@ -365,6 +381,10 @@ export default {
       multiwallet: '>=0.17.0'
     },
     version: '>=0.17.0'
+  },
+  getRpcInfo: {
+    category: 'control',
+    version: '>=0.18.0'
   },
   getTransaction: {
     category: 'wallet',
@@ -465,6 +485,10 @@ export default {
     },
     version: '>=0.9.0'
   },
+  joinPsbts: {
+    category: 'rawtransactions',
+    version: '>=0.18.0'
+  },
   keypoolRefill: {
     category: 'wallet',
     features: {
@@ -545,6 +569,10 @@ export default {
       multiwallet: '>=0.15.0'
     },
     version: '>=0.7.0'
+  },
+  listWalletDir: {
+    category: 'wallet',
+    version: '>=0.18.0'
   },
   listWallets: {
     category: 'wallet',
@@ -705,7 +733,7 @@ export default {
         named: params => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
       }
     },
-    version: '>=0.7.0'
+    version: '>=0.7.0 <0.18.0'
   },
   signRawTransactionWithKey: {
     category: 'rawtransactions',
@@ -743,6 +771,10 @@ export default {
   upTime: {
     category: 'control',
     version: '>=0.15.0'
+  },
+  utxoUpdatePsbt: {
+    category: 'rawtransactions',
+    version: '>=0.18.0'
   },
   validateAddress: {
     category: 'util',
