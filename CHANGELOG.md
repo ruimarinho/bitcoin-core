@@ -1,8 +1,16 @@
 # Changelog
 
-## [2.2.1](https://github.com/ruimarinho/bitcoin-core/tree/2.2.1) (2019-09-20)
+## [2.3.0](https://github.com/ruimarinho/bitcoin-core/tree/2.3.0) (2019-09-27)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.2.0...2.2.1)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.2.1...2.3.0)
+
+**Merged pull requests:**
+
+- Add 'getrpcinfo' missing method for version 0.18.0 [\#100](https://github.com/ruimarinho/bitcoin-core/pull/100) ([sskender](https://github.com/sskender))
+
+## [v2.2.1](https://github.com/ruimarinho/bitcoin-core/tree/v2.2.1) (2019-09-20)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.2.0...v2.2.1)
 
 **Merged pull requests:**
 
