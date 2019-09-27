@@ -1,8 +1,16 @@
 # Changelog
 
-## [2.3.0](https://github.com/ruimarinho/bitcoin-core/tree/2.3.0) (2019-09-27)
+## [3.0.0](https://github.com/ruimarinho/bitcoin-core/tree/3.0.0) (2019-09-27)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.2.1...2.3.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.3.0...3.0.0)
+
+**Merged pull requests:**
+
+- Remove bluebird dependency and callbacks support [\#87](https://github.com/ruimarinho/bitcoin-core/pull/87) ([pedrobranco](https://github.com/pedrobranco))
+
+## [v2.3.0](https://github.com/ruimarinho/bitcoin-core/tree/v2.3.0) (2019-09-27)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.2.1...v2.3.0)
 
 **Merged pull requests:**
 

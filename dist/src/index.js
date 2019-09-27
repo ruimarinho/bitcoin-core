@@ -7,8 +7,6 @@ exports.default = void 0;
 
 var _parser = _interopRequireDefault(require("./parser"));
 
-var _bluebird = _interopRequireDefault(require("bluebird"));
-
 var _requester = _interopRequireDefault(require("./requester"));
 
 var _lodash = _interopRequireDefault(require("lodash"));
@@ -28,33 +26,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 
 /**
- * Source arguments to find out if a callback has been passed.
- */
-function source(...args) {
-  const last = _lodash.default.last(args);
-
-  let callback;
-
-  if (_lodash.default.isFunction(last)) {
-    callback = last;
-    args = _lodash.default.dropRight(args);
-  }
-
-  return [args, callback];
-}
-/**
  * List of networks and their default port mapping.
  */
-
-
 const networks = {
   mainnet: 8332,
   regtest: 18332,
   testnet: 18332
 };
 /**
+ * Promisify helper.
+ */
+
+const promisify = fn => (...args) => new Promise((resolve, reject) => {
+  fn(...args, (error, value) => {
+    if (error) {
+      reject(error);
+      return;
+    }
+
+    resolve(value);
+  });
+});
+/**
  * Constructor.
  */
+
 
 class Client {
   constructor({
@@ -121,14 +117,14 @@ class Client {
       };
     }, {});
     const request = (0, _requestLogger.default)(logger);
-    this.request = _bluebird.default.promisifyAll(request.defaults({
+    this.request = request.defaults({
       agentOptions: this.agentOptions,
       baseUrl: `${this.ssl.enabled ? 'https' : 'http'}://${this.host}:${this.port}`,
       strictSSL: this.ssl.strict,
       timeout: this.timeout
-    }), {
-      multiArgs: true
     });
+    this.request.getAsync = promisify(this.request.get);
+    this.request.postAsync = promisify(this.request.post);
     this.requester = new _requester.default({
       methods: this.methods,
       version
@@ -142,20 +138,12 @@ class Client {
    */
 
 
-  command(...args) {
+  async command(...args) {
     let body;
-    let callback;
     let multiwallet;
     let [input, ...parameters] = args; // eslint-disable-line prefer-const
 
-    const lastArg = _lodash.default.last(parameters);
-
     const isBatch = Array.isArray(input);
-
-    if (_lodash.default.isFunction(lastArg)) {
-      callback = lastArg;
-      parameters = _lodash.default.dropRight(parameters);
-    }
 
     if (isBatch) {
       multiwallet = _lodash.default.some(input, command => {
@@ -178,29 +166,24 @@ class Client {
       });
     }
 
-    return _bluebird.default.try(() => {
-      return this.request.postAsync({
-        auth: _lodash.default.pickBy(this.auth, _lodash.default.identity),
-        body: JSON.stringify(body),
-        uri: `${multiwallet && this.wallet ? `/wallet/${this.wallet}` : '/'}`
-      }).bind(this).then(this.parser.rpc);
-    }).asCallback(callback);
+    return this.parser.rpc((await this.request.postAsync({
+      auth: _lodash.default.pickBy(this.auth, _lodash.default.identity),
+      body: JSON.stringify(body),
+      uri: `${multiwallet && this.wallet ? `/wallet/${this.wallet}` : '/'}`
+    })));
   }
   /**
    * Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
    */
 
 
-  getTransactionByHash(...args) {
-    const [[hash, {
-      extension = 'json'
-    } = {}], callback] = source(...args);
-    return _bluebird.default.try(() => {
-      return this.request.getAsync({
-        encoding: extension === 'bin' ? null : undefined,
-        url: `/rest/tx/${hash}.${extension}`
-      }).bind(this).then(_lodash.default.partial(this.parser.rest, extension));
-    }).asCallback(callback);
+  async getTransactionByHash(hash, {
+    extension = 'json'
+  } = {}) {
+    return this.parser.rest(extension, (await this.request.getAsync({
+      encoding: extension === 'bin' ? null : undefined,
+      url: `/rest/tx/${hash}.${extension}`
+    })));
   }
   /**
    * Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
@@ -209,33 +192,31 @@ class Client {
    */
 
 
-  getBlockByHash(...args) {
-    const [[hash, {
-      summary = false,
-      extension = 'json'
-    } = {}], callback] = source(...args);
-    return _bluebird.default.try(() => {
-      return this.request.getAsync({
-        encoding: extension === 'bin' ? null : undefined,
-        url: `/rest/block${summary ? '/notxdetails/' : '/'}${hash}.${extension}`
-      }).bind(this).then(_lodash.default.partial(this.parser.rest, extension));
-    }).asCallback(callback);
+  async getBlockByHash(hash, {
+    summary = false,
+    extension = 'json'
+  } = {}) {
+    const encoding = extension === 'bin' ? null : undefined;
+    const url = `/rest/block${summary ? '/notxdetails/' : '/'}${hash}.${extension}`;
+    return this.parser.rest(extension, (await this.request.getAsync({
+      encoding,
+      url
+    })));
   }
   /**
    * Given a block hash, returns amount of blockheaders in upward direction.
    */
 
 
-  getBlockHeadersByHash(...args) {
-    const [[hash, count, {
-      extension = 'json'
-    } = {}], callback] = source(...args);
-    return _bluebird.default.try(() => {
-      return this.request.getAsync({
-        encoding: extension === 'bin' ? null : undefined,
-        url: `/rest/headers/${count}/${hash}.${extension}`
-      }).bind(this).then(_lodash.default.partial(this.parser.rest, extension));
-    }).asCallback(callback);
+  async getBlockHeadersByHash(hash, count, {
+    extension = 'json'
+  } = {}) {
+    const encoding = extension === 'bin' ? null : undefined;
+    const url = `/rest/headers/${count}/${hash}.${extension}`;
+    return this.parser.rest(extension, (await this.request.getAsync({
+      encoding,
+      url
+    })));
   }
   /**
    * Returns various state info regarding block chain processing.
@@ -243,9 +224,8 @@ class Client {
    */
 
 
-  getBlockchainInformation(...args) {
-    const [, callback] = source(...args);
-    return this.request.getAsync(`/rest/chaininfo.json`).bind(this).then(_lodash.default.partial(this.parser.rest, 'json')).asCallback(callback);
+  async getBlockchainInformation() {
+    return this.parser.rest('json', (await this.request.getAsync(`/rest/chaininfo.json`)));
   }
   /**
    * Query unspent transaction outputs for a given set of outpoints.
@@ -254,19 +234,20 @@ class Client {
    */
 
 
-  getUnspentTransactionOutputs(...args) {
-    const [[outpoints, {
-      extension = 'json'
-    } = {}], callback] = source(...args);
+  async getUnspentTransactionOutputs(outpoints, {
+    extension = 'json'
+  } = {}) {
+    const encoding = extension === 'bin' ? null : undefined;
 
     const sets = _lodash.default.flatten([outpoints]).map(outpoint => {
       return `${outpoint.id}-${outpoint.index}`;
     }).join('/');
 
-    return this.request.getAsync({
-      encoding: extension === 'bin' ? null : undefined,
-      url: `/rest/getutxos/checkmempool/${sets}.${extension}`
-    }).bind(this).then(_lodash.default.partial(this.parser.rest, extension)).asCallback(callback);
+    const url = `/rest/getutxos/checkmempool/${sets}.${extension}`;
+    return this.parser.rest(extension, (await this.request.getAsync({
+      encoding,
+      url
+    })));
   }
   /**
    * Returns transactions in the transaction memory pool.
@@ -274,9 +255,8 @@ class Client {
    */
 
 
-  getMemoryPoolContent(...args) {
-    const [, callback] = source(...args);
-    return this.request.getAsync('/rest/mempool/contents.json').bind(this).then(_lodash.default.partial(this.parser.rest, 'json')).asCallback(callback);
+  async getMemoryPoolContent() {
+    return this.parser.rest('json', (await this.request.getAsync('/rest/mempool/contents.json')));
   }
   /**
    * Returns various information about the transaction memory pool.
@@ -288,9 +268,8 @@ class Client {
    */
 
 
-  getMemoryPoolInformation(...args) {
-    const [, callback] = source(...args);
-    return this.request.getAsync('/rest/mempool/info.json').bind(this).then(_lodash.default.partial(this.parser.rest, 'json')).asCallback(callback);
+  async getMemoryPoolInformation() {
+    return this.parser.rest('json', (await this.request.getAsync('/rest/mempool/info.json')));
   }
 
 }
