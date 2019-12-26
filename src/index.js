@@ -107,7 +107,8 @@ class Client {
       agentOptions: this.agentOptions,
       baseUrl: `${this.ssl.enabled ? 'https' : 'http'}://${this.host}:${this.port}`,
       strictSSL: this.ssl.strict,
-      timeout: this.timeout
+      timeout: this.timeout,
+      pool: this.pool
     });
     this.request.getAsync = promisify(this.request.get);
     this.request.postAsync = promisify(this.request.post);
