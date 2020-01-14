@@ -231,6 +231,13 @@ export default {
     },
     version: '>=0.3.18'
   },
+  getBalances: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.19.0'
+    },
+    version: '>=0.19.0'
+  },
   getBestBlockHash: {
     category: 'blockchain',
     version: '>=0.9.0'
