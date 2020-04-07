@@ -29,6 +29,7 @@ services:
       -rest
       -rpcallowip=::/0
       -rpcpassword=bar
+      -wallet
       -wallet=wallet1
       -wallet=wallet2
       -rpcport=18443

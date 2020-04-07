@@ -7,6 +7,7 @@ import { defaults } from 'lodash';
 import Client from '../src/index';
 import RpcError from '../src/errors/rpc-error';
 import config from './config';
+import should from 'should';
 
 /**
  * Test instance.
@@ -50,7 +51,7 @@ describe('Multi Wallet', () => {
       it('should return a list of currently loaded wallets', async () => {
         const wallets = await client.listWallets();
 
-        wallets.should.eql(['wallet1', 'wallet2']);
+        wallets.should.eql(['', 'wallet1', 'wallet2']);
       });
     });
   });
@@ -230,7 +231,7 @@ describe('Multi Wallet', () => {
 
       const response = await client.command(batch);
 
-      response.should.eql([0, ['wallet1', 'wallet2'], ['wallet1', 'wallet2']]);
+      response.should.eql([0, ['', 'wallet1', 'wallet2'], ['', 'wallet1', 'wallet2']]);
     });
 
     it('should return an error if one of the request fails', async () => {
@@ -238,9 +239,33 @@ describe('Multi Wallet', () => {
 
       const [validateAddressError, listWallets] = await client.command(batch);
 
-      listWallets.should.eql(['wallet1', 'wallet2']);
+      listWallets.should.eql(['', 'wallet1', 'wallet2']);
       validateAddressError.should.be.an.instanceOf(RpcError);
       validateAddressError.code.should.equal(-1);
+    });
+  });
+
+  describe('default wallet', () => {
+    it('should return the balance for the default wallet with multiple wallets loaded if `allowDefaultWallet` is true', async () => {
+      const client = new Client(defaults({ allowDefaultWallet: true, version: '0.17.0' }, config.bitcoinMultiWallet));
+
+      const balance = await client.getBalance();
+
+      balance.should.be.aboveOrEqual(0);
+    });
+
+    it('should fail getting balance for default wallet with `allowDefaultWallet` as `false`', async () => {
+      const client = new Client(defaults({ version: '0.17.0' }, config.bitcoinMultiWallet));
+
+      try {
+        await client.getBalance();
+
+        should.fail();
+      } catch (error) {
+        error.should.be.an.instanceOf(RpcError);
+        error.code.should.be.equal(-19);
+        error.message.should.containEql('Wallet file not specified (must request wallet RPC through /wallet/<filename> uri-path).');
+      }
     });
   });
 });
