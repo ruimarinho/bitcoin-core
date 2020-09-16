@@ -177,9 +177,9 @@ export default {
   generate: {
     category: 'generating',
     features: {
-      multiwallet: '>=0.15.0'
+      multiwallet: '>=0.15.0 <0.19.0'
     },
-    version: '>=0.11.0'
+    version: '>=0.11.0 <0.19.0'
   },
   generateToAddress: {
     category: 'generating',
@@ -231,6 +231,13 @@ export default {
     },
     version: '>=0.3.18'
   },
+  getBalances: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.19.0'
+    },
+    version: '>=0.19.0'
+  },
   getBestBlockHash: {
     category: 'blockchain',
     version: '>=0.9.0'
@@ -242,6 +249,10 @@ export default {
   getBlockCount: {
     category: 'blockchain',
     version: '>=0.1.0'
+  },
+  getBlockFilter: {
+    category: 'blockchain',
+    version: '>=0.19.0'
   },
   getBlockHash: {
     category: 'blockchain',
@@ -707,6 +718,13 @@ export default {
       multiwallet: '>=0.15.0'
     },
     version: '>=0.3.22'
+  },
+  setWalletFlag: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.19.0'
+    },
+    version: '>=0.19.0'
   },
   signMessage: {
     category: 'wallet',
