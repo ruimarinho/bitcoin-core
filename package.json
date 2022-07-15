@@ -36,7 +36,7 @@
   "dependencies": {
     "@uphold/request-logger": "^2.0.0",
     "debugnyan": "^1.0.0",
-    "json-bigint": "^0.2.0",
+    "json-bigint": "^1.0.0",
     "lodash": "^4.0.0",
     "request": "^2.53.0",
     "semver": "^5.1.0",
