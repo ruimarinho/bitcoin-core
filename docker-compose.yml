@@ -1,83 +1,88 @@
-sut:
-  image: node:4
-  command: sh -c 'npm install && npm test'
-  volumes:
-    - .:/app
-  environment:
-    - CI=true
-  links:
-    - bitcoin-core
-    - bitcoin-core-multi-wallet
-    - bitcoin-core-ssl
-    - bitcoin-core-username-only
-  working_dir: /app
+version: '3.4'
 
-bitcoin-core:
-  image: ruimarinho/bitcoin-core:0.17-alpine
-  command:
-    -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -rpcport=18443
-    -rpcuser=foo
-    -server
-  ports:
-    - 18443:18443
+services:
+  bitcoin-core:
+    image: ruimarinho/bitcoin-core:0.17
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcpassword=bar
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    ports:
+      - 18443:18443
+    healthcheck:
+      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
 
-bitcoin-core-multi-wallet:
-  image: ruimarinho/bitcoin-core:0.17-alpine
-  command:
-    -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -wallet=wallet1
-    -wallet=wallet2
-    -rpcport=18453
-    -rpcuser=foo
-    -server
-  ports:
-    - 18453:18453
+  bitcoin-core-multi-wallet:
+    image: ruimarinho/bitcoin-core:0.17
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcpassword=bar
+      -wallet=wallet1
+      -wallet=wallet2
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    ports:
+      - 18453:18443
+    healthcheck:
+      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
 
-bitcoin-core-ssl:
-  image: ruimarinho/bitcoin-core:0.11-alpine
-  command:
-    -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -rpcport=18463
-    -rpcssl
-    -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
-    -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
-    -rpcuser=foo
-    -server
-  volumes:
-    - ./test/config/ssl:/etc/ssl/bitcoind
-  ports:
-    - 18463:18463
+  bitcoin-core-ssl:
+    image: ruimarinho/bitcoin-core:0.11
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcpassword=bar
+      -rpcport=18443
+      -rpcssl
+      -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
+      -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
+      -rpcuser=foo
+      -server
+    volumes:
+      - ./test/config/ssl:/etc/ssl/bitcoind
+    ports:
+      - 18463:18443
+    healthcheck:
+      test: curl --fail -k "https://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
 
-bitcoin-core-username-only:
-  image: ruimarinho/bitcoin-core:0.11-alpine
-  command:
-    -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcport=18473
-    -rpcuser=foo
-    -server
-  ports:
-    - 18473:18473
+  bitcoin-core-username-only:
+    image: ruimarinho/bitcoin-core:0.11
+    command:
+      -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=::/0
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    ports:
+      - 18473:18443
+    healthcheck:
+      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 2s
