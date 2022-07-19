@@ -1,7 +1,0 @@
-language: bash
-
-script:
-  - docker-compose run --rm sut
-
-services:
-  - docker
