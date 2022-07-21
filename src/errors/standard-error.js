@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-import BaseError from 'standard-error';
+const BaseError = require('standard-error');
 
 /**
  * Export `StandardError` class.
  */
 
-export default class StandardError extends BaseError {}
+module.exports = class StandardError extends BaseError {};

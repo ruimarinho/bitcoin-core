@@ -4,10 +4,10 @@
  */
 
 /**
- * Services config.
+ * Export services config.
  */
 
-const config = {
+module.exports = {
   bitcoin: {
     host: 'localhost',
     password: 'bar',
@@ -32,9 +32,3 @@ const config = {
     username: 'foo'
   }
 };
-
-/**
- * Export `config`.
- */
-
-export default config;

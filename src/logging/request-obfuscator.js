@@ -3,14 +3,14 @@
  * Module dependencies.
  */
 
-import { assign, defaults, get, has, isArray, isEmpty, isPlainObject, isString, map, mapKeys } from 'lodash';
-import methods from '../methods';
+const _ = require('lodash');
+const methods = require('../methods');
 
 /**
  * Map all methods to lowercase.
  */
 
-const lowercaseMethods = mapKeys(methods, (value, key) => key.toLowerCase());
+const lowercaseMethods = _.mapKeys(methods, (value, key) => key.toLowerCase());
 
 /**
  * Helper.
@@ -31,13 +31,13 @@ const isJSON = data => {
  */
 
 function obfuscateResponseBody(body, method) {
-  const fn = get(lowercaseMethods[method], 'obfuscate.response');
+  const fn = _.get(lowercaseMethods[method], 'obfuscate.response');
 
-  if (!fn || isEmpty(body.result)) {
+  if (!fn || _.isEmpty(body.result)) {
     return body;
   }
 
-  return defaults({ result: fn(body.result) }, body);
+  return _.defaults({ result: fn(body.result) }, body);
 }
 
 /**
@@ -53,7 +53,7 @@ function obfuscateResponse(request, instance) {
     return;
   }
 
-  if (get(request, `headers['content-type']`) === 'application/octet-stream') {
+  if (_.get(request, `headers['content-type']`) === 'application/octet-stream') {
     request.body = '******';
 
     return;
@@ -71,10 +71,10 @@ function obfuscateResponse(request, instance) {
 
   const requestBody = JSON.parse(instance.body);
 
-  if (isArray(request.body)) {
-    const methodsById = mapKeys(requestBody, method => method.id);
+  if (Array.isArray(request.body)) {
+    const methodsById = _.mapKeys(requestBody, method => method.id);
 
-    request.body = map(request.body, request => obfuscateResponseBody(request, methodsById[request.id].method));
+    request.body = _.map(request.body, request => obfuscateResponseBody(request, methodsById[request.id].method));
   } else {
     request.body = obfuscateResponseBody(request.body, requestBody.method);
   }
@@ -87,17 +87,17 @@ function obfuscateResponse(request, instance) {
  */
 
 function obfuscateRequestBody(body) {
-  const method = get(lowercaseMethods[body.method], 'obfuscate.request');
+  const method = _.get(lowercaseMethods[body.method], 'obfuscate.request');
 
   if (!method) {
     return body;
   }
 
-  if (isPlainObject(body.params)) {
-    return assign(body, { params: method.named(body.params) });
+  if (_.isPlainObject(body.params)) {
+    return _.assign(body, { params: method.named(body.params) });
   }
 
-  return assign(body, { params: method.default(body.params) });
+  return _.assign(body, { params: method.default(body.params) });
 }
 
 /**
@@ -109,14 +109,14 @@ function obfuscateRequest(request) {
     return;
   }
 
-  if (!isString(request.body)) {
+  if (!_.isString(request.body)) {
     return;
   }
 
   request.body = JSON.parse(request.body);
 
-  if (isArray(request.body)) {
-    request.body = map(request.body, obfuscateRequestBody);
+  if (Array.isArray(request.body)) {
+    request.body = _.map(request.body, obfuscateRequestBody);
   } else {
     request.body = obfuscateRequestBody(request.body);
   }
@@ -133,7 +133,7 @@ function obfuscateHeaders(request) {
     return;
   }
 
-  if (!has(request, 'headers.authorization')) {
+  if (!_.has(request, 'headers.authorization')) {
     return;
   }
 
@@ -144,8 +144,10 @@ function obfuscateHeaders(request) {
  * Export `RequestObfuscator`.
  */
 
-export function obfuscate(request, instance) {
-  obfuscateHeaders(request);
-  obfuscateRequest(request);
-  obfuscateResponse(request, instance);
-}
+module.exports = {
+  obfuscate: (request, instance) => {
+    obfuscateHeaders(request);
+    obfuscateRequest(request);
+    obfuscateResponse(request, instance);
+  }
+};

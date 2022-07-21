@@ -4,13 +4,13 @@
  * Module dependencies.
  */
 
-import { map, set } from 'lodash';
+const _ = require('lodash');
 
 /**
  * Export available rpc methods.
  */
 
-export default {
+module.exports = {
   abandonTransaction: {
     category: 'wallet',
     features: {
@@ -141,8 +141,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: params => set([...params], '[0]', '******'),
-        named: params => set(params, 'passphrase', '******')
+        default: params => _.set([...params], '[0]', '******'),
+        named: params => _.set(params, 'passphrase', '******')
       }
     },
     version: '>=0.1.0'
@@ -456,8 +456,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: params => set(params, '[0]', map(params[0], request => set(request, 'keys', map(request.keys, () => '******')))),
-        named: params => set(params, 'requests', map(params.requests, request => set(request, 'keys', map(request.keys, () => '******'))))
+        default: params => _.set(params, '[0]', _.map(params[0], request => _.set(request, 'keys', _.map(request.keys, () => '******')))),
+        named: params => _.set(params, 'requests', _.map(params.requests, request => _.set(request, 'keys', _.map(request.keys, () => '******'))))
       }
     },
     version: '>=0.14.0'
@@ -470,7 +470,7 @@ export default {
     obfuscate: {
       request: {
         default: () => ['******'],
-        named: params => set(params, 'privkey', '******')
+        named: params => _.set(params, 'privkey', '******')
       }
     },
     version: '>=0.6.0'
@@ -695,8 +695,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: params => set([...params], '[1]', '******'),
-        named: params => set(params, 'seed', '******')
+        default: params => _.set([...params], '[1]', '******'),
+        named: params => _.set(params, 'seed', '******')
       }
     },
     version: '>=0.17.0'
@@ -737,8 +737,8 @@ export default {
     category: 'util',
     obfuscate: {
       request: {
-        default: params => set([...params], '[0]', '******'),
-        named: params => set(params, 'privkey', '******')
+        default: params => _.set([...params], '[0]', '******'),
+        named: params => _.set(params, 'privkey', '******')
       }
     },
     version: '>=0.13.0'
@@ -747,8 +747,8 @@ export default {
     category: 'rawtransactions',
     obfuscate: {
       request: {
-        default: params => set([...params], '[2]', map(params[2], () => '******')),
-        named: params => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
+        default: params => _.set([...params], '[2]', _.map(params[2], () => '******')),
+        named: params => _.set(params, 'privkeys', _.map(params.privkeys || [], () => '******'))
       }
     },
     version: '>=0.7.0 <0.18.0'
@@ -757,8 +757,8 @@ export default {
     category: 'rawtransactions',
     obfuscate: {
       request: {
-        default: params => set([...params], '[1]', map(params[1], () => '******')),
-        named: params => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
+        default: params => _.set([...params], '[1]', _.map(params[1], () => '******')),
+        named: params => _.set(params, 'privkeys', _.map(params.privkeys || [], () => '******'))
       }
     },
     version: '>=0.17.0'
@@ -831,8 +831,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: params => set([...params], '[0]', '******'),
-        named: params => set(params, 'passphrase', '******')
+        default: params => _.set([...params], '[0]', '******'),
+        named: params => _.set(params, 'passphrase', '******')
       }
     },
     version: '>=0.1.0'
@@ -844,8 +844,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: params => set(set([...params], '[0]', '******'), '[1]', '******'),
-        named: params => set(set(params, 'oldpassphrase', '******'), 'newpassphrase', '******')
+        default: params => _.set(_.set([...params], '[0]', '******'), '[1]', '******'),
+        named: params => _.set(_.set(params, 'oldpassphrase', '******'), 'newpassphrase', '******')
       }
     },
     version: '>=0.1.0'

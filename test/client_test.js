@@ -3,15 +3,15 @@
  * Module dependencies.
  */
 
-import Client from '../src/index';
-import RpcError from '../src/errors/rpc-error';
-import _ from 'lodash';
-import config from './config';
-import fs from 'fs';
-import methods from '../src/methods';
-import parse from './utils/help-parser-util';
-import path from 'path';
-import should from 'should';
+const _ = require('lodash');
+const Client = require('../src/index');
+const RpcError = require('../src/errors/rpc-error');
+const config = require('./config');
+const fs = require('fs');
+const methods = require('../src/methods');
+const parse = require('./utils/help-parser-util');
+const path = require('path');
+const should = require('should');
 
 /**
  * Test `Client`.
@@ -101,9 +101,9 @@ describe('Client', () => {
 
   describe('connections', () => {
     describe('general', () => {
-      it.skip('should throw an error if timeout is reached', async () => {
+      it('should throw an error if timeout is reached', async () => {
         try {
-          await new Client(_.defaults({ timeout: 1 }, config.bitcoin)).listAccounts();
+          await new Client(_.defaults({ timeout: 1 }, config.bitcoin)).listUnspent();
 
           should.fail();
         } catch (e) {
