@@ -3,14 +3,14 @@
  * Module dependencies.
  */
 
-import { STATUS_CODES } from 'http';
-import StandardError from './standard-error';
+const { STATUS_CODES } = require('http');
+const StandardError = require('./standard-error');
 
 /**
  * Export `RpcError` class.
  */
 
-export default class RpcError extends StandardError {
+module.exports = class RpcError extends StandardError {
   constructor(code, msg, props = {}) {
     if (typeof code != 'number') {
       throw new TypeError(`Non-numeric HTTP code`);
@@ -42,4 +42,4 @@ export default class RpcError extends StandardError {
   toString() {
     return `${this.name}: ${this.code} ${this.message}`;
   }
-}
+};

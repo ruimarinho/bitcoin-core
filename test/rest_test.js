@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-import Client from '../src/index';
-import RpcError from '../src/errors/rpc-error';
-import config from './config';
-import should from 'should';
+const Client = require('../src/index');
+const RpcError = require('../src/errors/rpc-error');
+const config = require('./config');
+const should = require('should');
 
 /**
  * Test instance.

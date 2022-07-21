@@ -3,9 +3,9 @@
  * Module dependencies.
  */
 
-import { STATUS_CODES } from 'http';
-import RpcError from '../../src/errors/rpc-error';
-import should from 'should';
+const { STATUS_CODES } = require('http');
+const RpcError = require('../../src/errors/rpc-error');
+const should = require('should');
 
 /**
  * Test `RpcError`.
@@ -30,7 +30,6 @@ describe('RpcError', () => {
 
     should(error.code).equal(-32601);
     should(error.msg).equal('Method not found');
-
     should(error.message).be.undefined();
   });
 

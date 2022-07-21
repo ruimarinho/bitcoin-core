@@ -3,15 +3,15 @@
  * Module dependencies.
  */
 
-import { obfuscate } from './request-obfuscator';
-import request from 'request';
-import requestLogger from '@uphold/request-logger';
+const { obfuscate } = require('./request-obfuscator');
+const request = require('request');
+const requestLogger = require('@uphold/request-logger');
 
 /**
  * Exports.
  */
 
-export default logger => requestLogger(request, (request, instance) => {
+module.exports = logger => requestLogger(request, (request, instance) => {
   obfuscate(request, instance);
 
   if (request.type === 'response') {

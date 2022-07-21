@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-import { obfuscate } from '../../src/logging/request-obfuscator';
-import should from 'should';
+const { obfuscate } = require('../../src/logging/request-obfuscator');
+const should = require('should');
 
 /**
  * Test `RequestObfuscator`.

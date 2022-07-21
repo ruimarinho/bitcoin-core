@@ -3,17 +3,17 @@
  * Module dependencies.
  */
 
-import { defaults } from 'lodash';
-import Client from '../src/index';
-import RpcError from '../src/errors/rpc-error';
-import config from './config';
-import should from 'should';
+const _ = require('lodash');
+const Client = require('../src/index');
+const RpcError = require('../src/errors/rpc-error');
+const config = require('./config');
+const should = require('should');
 
 /**
  * Test instance.
  */
 
-const client = new Client(defaults({ version: '0.17.0', wallet: 'wallet1' }, config.bitcoinMultiWallet));
+const client = new Client(_.defaults({ version: '0.17.0', wallet: 'wallet1' }, config.bitcoinMultiWallet));
 
 /**
  * Test `Client`.
@@ -247,7 +247,7 @@ describe('Multi Wallet', () => {
 
   describe('default wallet', () => {
     it('should return the balance for the default wallet with multiple wallets loaded if `allowDefaultWallet` is true', async () => {
-      const client = new Client(defaults({ allowDefaultWallet: true, version: '0.17.0' }, config.bitcoinMultiWallet));
+      const client = new Client(_.defaults({ allowDefaultWallet: true, version: '0.17.0' }, config.bitcoinMultiWallet));
 
       const balance = await client.getBalance();
 
@@ -255,7 +255,7 @@ describe('Multi Wallet', () => {
     });
 
     it('should fail getting balance for default wallet with `allowDefaultWallet` as `false`', async () => {
-      const client = new Client(defaults({ version: '0.17.0' }, config.bitcoinMultiWallet));
+      const client = new Client(_.defaults({ version: '0.17.0' }, config.bitcoinMultiWallet));
 
       try {
         await client.getBalance();

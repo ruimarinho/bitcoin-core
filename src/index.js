@@ -3,13 +3,13 @@
  * Module dependencies.
  */
 
-import Parser from './parser';
-import Requester from './requester';
-import _ from 'lodash';
-import debugnyan from 'debugnyan';
-import methods from './methods';
-import requestLogger from './logging/request-logger';
-import semver from 'semver';
+const _ = require('lodash');
+const Parser = require('./parser');
+const Requester = require('./requester');
+const debugnyan = require('debugnyan');
+const methods = require('./methods');
+const requestLogger = require('./logging/request-logger');
+const semver = require('semver');
 
 /**
  * List of networks and their default port mapping.
@@ -253,13 +253,7 @@ _.forOwn(methods, (options, method) => {
 });
 
 /**
- * Export Client class (ESM).
- */
-
-export default Client;
-
-/**
- * Export Client class (CJS) for compatibility with require('bitcoin-core').
+ * Export Client class.
  */
 
 module.exports = Client;

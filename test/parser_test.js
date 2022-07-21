@@ -3,12 +3,12 @@
  * Module dependencies.
  */
 
-import { defaults } from 'lodash';
-import Client from '../src/index';
-import RpcError from '../src/errors/rpc-error';
-import config from './config';
-import nock from 'nock';
-import should from 'should';
+const _ = require('lodash');
+const Client = require('../src/index');
+const RpcError = require('../src/errors/rpc-error');
+const config = require('./config');
+const nock = require('nock');
+const should = require('should');
 
 /**
  * Test `Parser`.
@@ -57,7 +57,7 @@ describe('Parser', () => {
 
   it('should throw an error if the response is not successful but is json-formatted', async () => {
     try {
-      await new Client(defaults({ wallet: 'foobar' }, config.bitcoinMultiWallet)).getWalletInfo();
+      await new Client(_.defaults({ wallet: 'foobar' }, config.bitcoinMultiWallet)).getWalletInfo();
     } catch (e) {
       should(e).be.an.instanceOf(RpcError);
       should(e.message).equal('Requested wallet does not exist or is not loaded');
@@ -67,7 +67,7 @@ describe('Parser', () => {
 
   describe('headers', () => {
     it('should return the response headers if `headers` is enabled', async () => {
-      const [info, headers] = await new Client(defaults({ headers: true }, config.bitcoin)).getNetworkInfo();
+      const [info, headers] = await new Client(_.defaults({ headers: true }, config.bitcoin)).getNetworkInfo();
 
       should(info).be.an.Object();
       should(headers).have.keys('date', 'connection', 'content-length', 'content-type');
@@ -78,7 +78,7 @@ describe('Parser', () => {
         { method: 'getbalance' },
         { method: 'getbalance' }
       ];
-      const [addresses, headers] = await new Client(defaults({ headers: true }, config.bitcoin)).command(batch);
+      const [addresses, headers] = await new Client(_.defaults({ headers: true }, config.bitcoin)).command(batch);
 
       should(addresses).have.length(batch.length);
       should(headers).have.keys('date', 'connection', 'content-length', 'content-type');

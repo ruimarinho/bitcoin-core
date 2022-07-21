@@ -3,9 +3,9 @@
  * Module dependencies.
  */
 
-import JSONBigInt from 'json-bigint';
-import RpcError from './errors/rpc-error';
-import _ from 'lodash';
+const JSONBigInt = require('json-bigint');
+const RpcError = require('./errors/rpc-error');
+const _ = require('lodash');
 
 /**
  * JSONBigInt parser.
@@ -41,7 +41,7 @@ function getRpcResult(body, { headers = false, response } = {}) {
  * Export Parser class.
  */
 
-export default class Parser {
+module.exports = class Parser {
   constructor({ headers } = {}) {
     this.headers = headers;
   }
@@ -104,4 +104,4 @@ export default class Parser {
 
     return response.body;
   }
-}
+};

@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-import { defaults } from 'lodash';
-import Client from '../src/index';
-import config from './config';
-import should from 'should';
+const _ = require('lodash');
+const Client = require('../src/index');
+const config = require('./config');
+const should = require('should');
 
 /**
  * Test `Requester`.
@@ -15,7 +15,7 @@ import should from 'should';
 describe('Requester', () => {
   it('should throw an error if version does not support a given method', async () => {
     try {
-      await new Client(defaults({ version: '0.12.0' }, config.bitcoin)).getHashesPerSec();
+      await new Client(_.defaults({ version: '0.12.0' }, config.bitcoin)).getHashesPerSec();
 
       should.fail();
     } catch (e) {
