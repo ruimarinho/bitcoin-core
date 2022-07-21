@@ -1,10 +1,28 @@
 # Changelog
 
-## [3.0.0](https://github.com/ruimarinho/bitcoin-core/tree/3.0.0) (2019-09-27)
+## [3.1.0](https://github.com/ruimarinho/bitcoin-core/tree/3.1.0) (2022-07-21)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.3.0...3.0.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v3.0.0...3.1.0)
+
+**Implemented enhancements:**
+
+- Add support for bitcoin@0.19.0 RPC methods [\#123](https://github.com/ruimarinho/bitcoin-core/pull/123) ([sskender](https://github.com/sskender))
+
+**Fixed bugs:**
+
+- Handle non-JSON response [\#126](https://github.com/ruimarinho/bitcoin-core/pull/126) ([andrewda](https://github.com/andrewda))
 
 **Merged pull requests:**
+
+- Add support for GitHub actions tests [\#131](https://github.com/ruimarinho/bitcoin-core/pull/131) ([pedrobranco](https://github.com/pedrobranco))
+- Update json-bigint@^1.0.0 [\#130](https://github.com/ruimarinho/bitcoin-core/pull/130) ([rabm2k7](https://github.com/rabm2k7))
+- Added support for default wallet functions in multiwallet environment [\#117](https://github.com/ruimarinho/bitcoin-core/pull/117) ([wleev](https://github.com/wleev))
+
+## [v3.0.0](https://github.com/ruimarinho/bitcoin-core/tree/v3.0.0) (2019-09-27)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.3.0...v3.0.0)
+
+**Implemented enhancements:**
 
 - Remove bluebird dependency and callbacks support [\#87](https://github.com/ruimarinho/bitcoin-core/pull/87) ([pedrobranco](https://github.com/pedrobranco))
 
@@ -39,11 +57,14 @@
 
 [Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v2.0.0...v2.1.0)
 
+**Fixed bugs:**
+
+- Fix response log obfuscation [\#64](https://github.com/ruimarinho/bitcoin-core/pull/64) ([pedrobranco](https://github.com/pedrobranco))
+- Fix obfuscator with named parameters [\#62](https://github.com/ruimarinho/bitcoin-core/pull/62) ([pedrobranco](https://github.com/pedrobranco))
+
 **Merged pull requests:**
 
 - Add support for json extension in rest endpoint [\#78](https://github.com/ruimarinho/bitcoin-core/pull/78) ([pedrobranco](https://github.com/pedrobranco))
-- Fix response log obfuscation [\#64](https://github.com/ruimarinho/bitcoin-core/pull/64) ([pedrobranco](https://github.com/pedrobranco))
-- Fix obfuscator with named parameters [\#62](https://github.com/ruimarinho/bitcoin-core/pull/62) ([pedrobranco](https://github.com/pedrobranco))
 - Add support for multiwallet [\#45](https://github.com/ruimarinho/bitcoin-core/pull/45) ([ruimarinho](https://github.com/ruimarinho))
 
 ## [v2.0.0](https://github.com/ruimarinho/bitcoin-core/tree/v2.0.0) (2017-11-27)
@@ -77,24 +98,33 @@
 
 [Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v1.0.0...v1.1.0)
 
-**Merged pull requests:**
+**Implemented enhancements:**
 
 - Add support for bitcoind 0.13 [\#18](https://github.com/ruimarinho/bitcoin-core/pull/18) ([ruimarinho](https://github.com/ruimarinho))
+- Improve RPC documentation [\#12](https://github.com/ruimarinho/bitcoin-core/pull/12) ([ruimarinho](https://github.com/ruimarinho))
+
+**Merged pull requests:**
+
 - Simplify Docker setup [\#14](https://github.com/ruimarinho/bitcoin-core/pull/14) ([ruimarinho](https://github.com/ruimarinho))
 - Update babel-eslint@6.0.0 [\#13](https://github.com/ruimarinho/bitcoin-core/pull/13) ([ruimarinho](https://github.com/ruimarinho))
-- Improve RPC documentation [\#12](https://github.com/ruimarinho/bitcoin-core/pull/12) ([ruimarinho](https://github.com/ruimarinho))
 
 ## [v1.0.0](https://github.com/ruimarinho/bitcoin-core/tree/v1.0.0) (2016-03-06)
 
 [Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/bd98d0a89faae6ddafc71cf547f387c9c74490b1...v1.0.0)
 
-**Merged pull requests:**
+**Implemented enhancements:**
 
 - Add a better changelog sed [\#10](https://github.com/ruimarinho/bitcoin-core/pull/10) ([ruimarinho](https://github.com/ruimarinho))
 - Use async/await on tests [\#9](https://github.com/ruimarinho/bitcoin-core/pull/9) ([ruimarinho](https://github.com/ruimarinho))
 - Fix Docker hosts in CI environment [\#8](https://github.com/ruimarinho/bitcoin-core/pull/8) ([ruimarinho](https://github.com/ruimarinho))
 - Minor process improvements [\#7](https://github.com/ruimarinho/bitcoin-core/pull/7) ([ruimarinho](https://github.com/ruimarinho))
-- Call `done\(\)` when testing callbacks [\#6](https://github.com/ruimarinho/bitcoin-core/pull/6) ([ruimarinho](https://github.com/ruimarinho))
 - Allow extra ips in docker-compose.yml [\#5](https://github.com/ruimarinho/bitcoin-core/pull/5) ([ruimarinho](https://github.com/ruimarinho))
+
+**Fixed bugs:**
+
+- Call `done()` when testing callbacks [\#6](https://github.com/ruimarinho/bitcoin-core/pull/6) ([ruimarinho](https://github.com/ruimarinho))
+
+**Merged pull requests:**
+
 - Add support for 0.12 [\#4](https://github.com/ruimarinho/bitcoin-core/pull/4) ([ruimarinho](https://github.com/ruimarinho))
 - Add new 0.12 version methods [\#3](https://github.com/ruimarinho/bitcoin-core/pull/3) ([pedrobranco](https://github.com/pedrobranco))

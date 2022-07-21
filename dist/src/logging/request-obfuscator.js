@@ -20,8 +20,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 const lowercaseMethods = (0, _lodash.mapKeys)(_methods.default, (value, key) => key.toLowerCase());
 /**
+ * Helper.
+ */
+
+const isJSON = data => {
+  try {
+    JSON.parse(data);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+/**
  * Obfuscate the response body.
  */
+
 
 function obfuscateResponseBody(body, method) {
   const fn = (0, _lodash.get)(lowercaseMethods[method], 'obfuscate.response');
@@ -54,6 +67,10 @@ function obfuscateResponse(request, instance) {
   }
 
   if (!instance.body) {
+    return;
+  }
+
+  if (!isJSON(request.body)) {
     return;
   }
 

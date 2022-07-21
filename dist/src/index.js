@@ -55,6 +55,7 @@ const promisify = fn => (...args) => new Promise((resolve, reject) => {
 class Client {
   constructor({
     agentOptions,
+    allowDefaultWallet = false,
     headers = false,
     host = 'localhost',
     logger = (0, _debugnyan.default)('bitcoin-core'),
@@ -74,6 +75,7 @@ class Client {
     }
 
     this.agentOptions = agentOptions;
+    this.allowDefaultWallet = allowDefaultWallet;
     this.auth = (password || username) && {
       pass: password,
       user: username
@@ -166,10 +168,18 @@ class Client {
       });
     }
 
+    let uri = '/';
+
+    if (multiwallet && this.wallet) {
+      uri = `/wallet/${this.wallet}`;
+    } else if (multiwallet && !this.wallet && this.allowDefaultWallet) {
+      uri = '/wallet/';
+    }
+
     return this.parser.rpc((await this.request.postAsync({
       auth: _lodash.default.pickBy(this.auth, _lodash.default.identity),
       body: JSON.stringify(body),
-      uri: `${multiwallet && this.wallet ? `/wallet/${this.wallet}` : '/'}`
+      uri
     })));
   }
   /**

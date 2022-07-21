@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-core",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A modern Bitcoin Core REST and RPC client.",
   "keywords": [
     "bitcoin",
