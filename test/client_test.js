@@ -36,8 +36,8 @@ describe('Client', () => {
 
         should.fail();
       } catch (error) {
-        error.should.be.an.instanceOf(Error);
-        error.message.should.equal('Invalid network name "foo"');
+        should(error).be.an.instanceOf(Error);
+        should(error.message).equal('Invalid network name "foo"');
       }
     });
 
@@ -46,11 +46,11 @@ describe('Client', () => {
     });
 
     it('should not return headers by default', () => {
-      new Client().headers.should.be.false();
+      should(new Client().headers).be.false();
     });
 
     it('should have default host set to `localhost`', () => {
-      new Client().host.should.equal('localhost');
+      should(new Client().host).equal('localhost');
     });
 
     it('should not have a password set by default', () => {
@@ -58,28 +58,28 @@ describe('Client', () => {
     });
 
     it('should have default port set to `mainnet`\'s one', () => {
-      new Client().port.should.equal(8332);
+      should(new Client().port).equal(8332);
     });
 
     it('should set default to port `8332` if network is `mainnet`', () => {
-      new Client({ network: 'mainnet' }).port.should.equal(8332);
+      should(new Client({ network: 'mainnet' }).port).equal(8332);
     });
 
     it('should set default to port `18332` if network is `testnet`', () => {
-      new Client({ network: 'testnet' }).port.should.equal(18332);
+      should(new Client({ network: 'testnet' }).port).equal(18332);
     });
 
     it('should set default to port `18332` if network is `regtest`', () => {
-      new Client({ network: 'regtest' }).port.should.equal(18332);
+      should(new Client({ network: 'regtest' }).port).equal(18332);
     });
 
     it('should not have ssl enabled by default', () => {
-      new Client().ssl.enabled.should.equal(false);
-      new Client().ssl.strict.should.equal(false);
+      should(new Client().ssl.enabled).equal(false);
+      should(new Client().ssl.strict).equal(false);
     });
 
     it('should have default timeout of 30000ms', () => {
-      new Client().timeout.should.equal(30000);
+      should(new Client().timeout).equal(30000);
     });
 
     it('should not have username/password authentication enabled by default', () => {
@@ -89,7 +89,7 @@ describe('Client', () => {
     it('should have all the methods listed by `help`', async () => {
       const help = await new Client(config.bitcoin).help();
 
-      _.difference(_.without(parse(help), 'getaddressbyaccount'), _.invokeMap(Object.keys(methods), String.prototype.toLowerCase)).should.be.empty();
+      should(_.difference(_.without(parse(help), 'getaddressbyaccount'), _.invokeMap(Object.keys(methods), String.prototype.toLowerCase))).be.empty();
     });
 
     it('should accept valid versions', async () => {
@@ -107,8 +107,8 @@ describe('Client', () => {
 
           should.fail();
         } catch (e) {
-          e.should.be.an.instanceOf(Error);
-          e.code.should.match(/(ETIMEDOUT|ESOCKETTIMEDOUT)/);
+          should(e).be.an.instanceOf(Error);
+          should(e.code).match(/(ETIMEDOUT|ESOCKETTIMEDOUT)/);
         }
       });
 
@@ -118,8 +118,8 @@ describe('Client', () => {
 
           should.fail();
         } catch (e) {
-          e.should.be.an.instanceOf(Error);
-          e.message.should.equal('Invalid Version "0.12"');
+          should(e).be.an.instanceOf(Error);
+          should(e.message).equal('Invalid Version "0.12"');
         }
       });
 
@@ -129,9 +129,9 @@ describe('Client', () => {
 
           should.fail();
         } catch (e) {
-          e.should.be.an.instanceOf(Error);
-          e.message.should.match(/connect ECONNREFUSED/);
-          e.code.should.equal('ECONNREFUSED');
+          should(e).be.an.instanceOf(Error);
+          should(e.message).match(/connect ECONNREFUSED/);
+          should(e.code).equal('ECONNREFUSED');
         }
       });
     });
@@ -140,20 +140,20 @@ describe('Client', () => {
       it('should use `ssl.strict` by default when `ssl` is enabled', () => {
         const sslClient = new Client(_.defaults({ host: config.bitcoinSsl.host, port: config.bitcoinSsl.port, ssl: true }, config.bitcoin));
 
-        sslClient.ssl.strict.should.be.true();
+        should(sslClient.ssl.strict).be.true();
       });
 
       it('should throw an error if certificate is self signed by default', async () => {
         const sslClient = new Client(_.defaults({ host: config.bitcoinSsl.host, port: config.bitcoinSsl.port, ssl: true }, config.bitcoin));
 
-        sslClient.ssl.strict.should.be.true();
+        should(sslClient.ssl.strict).be.true();
 
         try {
           await sslClient.getInfo();
         } catch (e) {
-          e.should.be.an.instanceOf(Error);
-          e.code.should.equal('DEPTH_ZERO_SELF_SIGNED_CERT');
-          e.message.should.match(/self[ -]signed certificate/);
+          should(e).be.an.instanceOf(Error);
+          should(e.code).equal('DEPTH_ZERO_SELF_SIGNED_CERT');
+          should(e.message).match(/self[ -]signed certificate/);
         }
       });
 
@@ -175,14 +175,14 @@ describe('Client', () => {
 
         const info = await sslClient.getInfo();
 
-        info.should.not.be.empty();
+        should(info).not.be.empty();
       });
 
       it('should establish a connection if certificate is self signed but `ssl.strict` is disabled', async () => {
         const sslClient = new Client(_.defaults({ host: config.bitcoinSsl.host, port: config.bitcoinSsl.port, ssl: { enabled: true, strict: false } }, config.bitcoin));
         const info = await sslClient.getInfo();
 
-        info.should.not.be.empty();
+        should(info).not.be.empty();
       });
     });
 
@@ -191,17 +191,17 @@ describe('Client', () => {
         try {
           await new Client(_.defaults({ password: 'biz', username: 'foowrong' }, config.bitcoin)).getDifficulty();
         } catch (e) {
-          e.should.be.an.instanceOf(RpcError);
-          e.message.should.equal('Unauthorized');
-          e.body.should.equal('');
-          e.code.should.equal(401);
+          should(e).be.an.instanceOf(RpcError);
+          should(e.message).equal('Unauthorized');
+          should(e.body).equal('');
+          should(e.code).equal(401);
         }
       });
 
       it('should support username only authentication', async () => {
         const difficulty = await new Client(config.bitcoinUsernameOnly).getDifficulty();
 
-        difficulty.should.equal(0);
+        should(difficulty).equal(0);
       });
     });
   });

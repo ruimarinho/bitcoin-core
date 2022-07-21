@@ -20,38 +20,38 @@ describe('RpcError', () => {
 
       should.fail();
     } catch (e) {
-      e.should.be.an.instanceOf(TypeError);
-      e.message.should.equal('Non-numeric HTTP code');
+      should(e).be.an.instanceOf(TypeError);
+      should(e.message).equal('Non-numeric HTTP code');
     }
   });
 
   it('should accept extra properties', () => {
     const error = new RpcError(-32601, { msg: 'Method not found' });
 
-    error.code.should.equal(-32601);
-    error.msg.should.equal('Method not found');
+    should(error.code).equal(-32601);
+    should(error.msg).equal('Method not found');
 
-    (error.message === undefined).should.be.true();
+    should(error.message).be.undefined();
   });
 
   it('should alias `status` to its status code', () => {
-    new RpcError(-32601, 'Method not found').status.should.equal(-32601);
+    should(new RpcError(-32601, 'Method not found').status).equal(-32601);
   });
 
   it('should allow setting `status`', () => {
     const error = new RpcError(-32601, 'Method not found');
 
     error.status = -32700;
-    error.code.should.equal(-32601);
+    should(error.code).equal(-32601);
   });
 
   it('should return a well-formatted string representation', () => {
-    new RpcError(-32601, 'Method not found').toString().should.equal('RpcError: -32601 Method not found');
+    should(new RpcError(-32601, 'Method not found').toString()).equal('RpcError: -32601 Method not found');
   });
 
   it('should return the correct message by its http code', () => {
     for (const code in STATUS_CODES) {
-      new RpcError(Number(code)).toString().should.equal(`RpcError: ${code} ${STATUS_CODES[code]}`);
+      should(new RpcError(Number(code)).toString()).equal(`RpcError: ${code} ${STATUS_CODES[code]}`);
     }
   });
 });

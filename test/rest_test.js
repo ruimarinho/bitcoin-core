@@ -34,7 +34,7 @@ describe('REST', () => {
       const [{ txid }] = await client.listUnspent();
       const transaction = await client.getTransactionByHash(txid);
 
-      transaction.should.have.keys('blockhash', 'locktime', 'hash', 'size', 'txid', 'version', 'vin', 'vout', 'vsize');
+      should(transaction).have.keys('blockhash', 'locktime', 'hash', 'size', 'txid', 'version', 'vin', 'vout', 'vsize');
     });
 
     it('should return a transaction hex-encoded if extension is `hex`', async () => {
@@ -42,7 +42,7 @@ describe('REST', () => {
       const { hex: rawTransaction } = await client.getTransaction(txid);
       const hexTransaction = await client.getTransactionByHash(txid, { extension: 'hex' });
 
-      hexTransaction.should.equal(`${rawTransaction}\n`);
+      should(hexTransaction).equal(`${rawTransaction}\n`);
     });
 
     it('should return a transaction binary-encoded if extension is `bin`', async () => {
@@ -50,8 +50,8 @@ describe('REST', () => {
       const binaryTransaction = await client.getTransactionByHash(txid, { extension: 'bin' });
       const hexTransaction = await client.getTransactionByHash(txid, { extension: 'hex' });
 
-      binaryTransaction.should.be.instanceOf(Buffer);
-      hexTransaction.should.equal(`${binaryTransaction.toString('hex')}\n`);
+      should(binaryTransaction).be.instanceOf(Buffer);
+      should(hexTransaction).equal(`${binaryTransaction.toString('hex')}\n`);
     });
 
     it('should throw an error if a method contains invalid arguments', async () => {
@@ -60,10 +60,10 @@ describe('REST', () => {
 
         should.fail();
       } catch (e) {
-        e.should.be.an.instanceOf(RpcError);
-        e.body.should.equal('Invalid hash: foobar\r\n');
-        e.message.should.equal('Invalid hash: foobar');
-        e.code.should.equal(400);
+        should(e).be.an.instanceOf(RpcError);
+        should(e.body).equal('Invalid hash: foobar\r\n');
+        should(e.message).equal('Invalid hash: foobar');
+        should(e.code).equal(400);
       }
     });
 
@@ -73,10 +73,10 @@ describe('REST', () => {
 
         should.fail();
       } catch (e) {
-        e.should.be.an.instanceOf(RpcError);
-        e.body.should.equal('Invalid hash: foobar\r\n');
-        e.message.should.equal('Invalid hash: foobar');
-        e.code.should.equal(400);
+        should(e).be.an.instanceOf(RpcError);
+        should(e.body).equal('Invalid hash: foobar\r\n');
+        should(e.message).equal('Invalid hash: foobar');
+        should(e.code).equal(400);
       }
     });
   });
@@ -85,28 +85,28 @@ describe('REST', () => {
     it('should return a block json-encoded by default', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
 
-      block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
-      block.tx.should.matchEach(value => value.should.be.an.Object());
+      should(block).have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
+      should(block.tx).matchEach(value => should(value).be.an.Object());
     });
 
     it('should return a block hex-encoded if extension is `hex`', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'hex' });
 
-      block.should.equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000\n');
+      should(block).equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000\n');
     });
 
     it('should return a block binary-encoded if extension is `bin`', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'bin' });
 
-      block.should.be.instanceOf(Buffer);
-      block.toString('hex').should.equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000');
+      should(block).be.instanceOf(Buffer);
+      should(block.toString('hex')).equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000');
     });
 
     it('should return a block summary json-encoded if `summary` is enabled', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json', summary: true });
 
-      block.should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
-      block.tx.should.matchEach(value => value.should.be.a.String());
+      should(block).have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
+      should(block.tx).matchEach(value => should(value).be.a.String());
     });
   });
 
@@ -114,15 +114,15 @@ describe('REST', () => {
     it('should return a block json-encoded by default', async () => {
       const headers = await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
 
-      headers.should.have.length(1);
-      headers[0].should.have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'time', 'version', 'versionHex');
-      headers[0].hash.should.equal('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
+      should(headers).have.length(1);
+      should(headers[0]).have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'time', 'version', 'versionHex');
+      should(headers[0].hash).equal('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
     });
 
     it('should return block headers hex-encoded if extension is `hex`', async () => {
       const headers = await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'hex' });
 
-      headers.should.equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f2002000000\n');
+      should(headers).equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f2002000000\n');
     });
 
     it('should return block headers binary-encoded if extension is `bin`', async () => {
@@ -130,7 +130,7 @@ describe('REST', () => {
       const binaryHeaders = await client.getBlockHeadersByHash(hash, 1, { extension: 'bin' });
       const hexHeaders = await client.getBlockHeadersByHash(hash, 1, { extension: 'hex' });
 
-      binaryHeaders.toString('hex').should.equal(`${hexHeaders.toString('hex').replace('\n', '')}`);
+      should(binaryHeaders.toString('hex')).equal(`${hexHeaders.toString('hex').replace('\n', '')}`);
     });
   });
 
@@ -138,7 +138,7 @@ describe('REST', () => {
     it('should return blockchain information json-encoded by default', async () => {
       const information = await new Client(config.bitcoin).getBlockchainInformation();
 
-      information.should.have.properties('bestblockhash', 'blocks', 'chain', 'chainwork', 'difficulty', 'headers', 'pruned', 'verificationprogress');
+      should(information).have.properties('bestblockhash', 'blocks', 'chain', 'chainwork', 'difficulty', 'headers', 'pruned', 'verificationprogress');
     });
   });
 
@@ -152,8 +152,8 @@ describe('REST', () => {
         index: 1
       }]);
 
-      result.should.have.keys('bitmap', 'chainHeight', 'chaintipHash', 'utxos');
-      result.chainHeight.should.be.a.Number();
+      should(result).have.keys('bitmap', 'chainHeight', 'chaintipHash', 'utxos');
+      should(result.chainHeight).be.a.Number();
     });
 
     it('should return unspent transaction outputs hex-encoded if extension is `hex`', async () => {
@@ -165,7 +165,7 @@ describe('REST', () => {
         index: 1
       }], { extension: 'hex' });
 
-      result.should.endWith('10000\n');
+      should(result).endWith('10000\n');
     });
 
     it('should return unspent transaction outputs binary-encoded if extension is `bin`', async () => {
@@ -179,8 +179,8 @@ describe('REST', () => {
       const binaryUnspents = await new Client(config.bitcoin).getUnspentTransactionOutputs(outputs, { extension: 'bin' });
       const hexUnspents = await new Client(config.bitcoin).getUnspentTransactionOutputs(outputs, { extension: 'hex' });
 
-      binaryUnspents.should.be.instanceOf(Buffer);
-      hexUnspents.should.equal(`${binaryUnspents.toString('hex')}\n`);
+      should(binaryUnspents).be.instanceOf(Buffer);
+      should(hexUnspents).equal(`${binaryUnspents.toString('hex')}\n`);
     });
   });
 
@@ -196,7 +196,7 @@ describe('REST', () => {
 
       const transactions = await client.listTransactions();
 
-      Object.keys(content).length.should.not.equal(transactions.length);
+      should(Object.keys(content).length).not.equal(transactions.length);
     });
   });
 
@@ -204,12 +204,12 @@ describe('REST', () => {
     it('should return memory pool information json-encoded by default', async () => {
       const information = await new Client(config.bitcoin).getMemoryPoolInformation();
 
-      information.should.have.keys('bytes', 'maxmempool', 'mempoolminfee', 'size', 'usage');
-      information.bytes.should.be.a.Number();
-      information.maxmempool.should.be.a.Number();
-      information.mempoolminfee.should.be.a.Number();
-      information.size.should.be.a.Number();
-      information.usage.should.be.a.Number();
+      should(information).have.keys('bytes', 'maxmempool', 'mempoolminfee', 'size', 'usage');
+      should(information.bytes).be.a.Number();
+      should(information.maxmempool).be.a.Number();
+      should(information.mempoolminfee).be.a.Number();
+      should(information.size).be.a.Number();
+      should(information.usage).be.a.Number();
     });
   });
 });

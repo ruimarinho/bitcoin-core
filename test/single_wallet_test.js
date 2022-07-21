@@ -7,6 +7,7 @@ import { defaults } from 'lodash';
 import Client from '../src/index';
 import RpcError from '../src/errors/rpc-error';
 import config from './config';
+import should from 'should';
 
 /**
  * Test instance.
@@ -34,7 +35,7 @@ describe('Single Wallet', () => {
       it('should return the proof-of-work difficulty', async () => {
         const difficulty = await client.getDifficulty();
 
-        difficulty.should.be.a.String();
+        should(difficulty).be.a.String();
       });
     });
 
@@ -42,7 +43,7 @@ describe('Single Wallet', () => {
       it('should return information about the node\'s memory usage', async () => {
         const info = await client.getMemoryInfo();
 
-        info.should.have.keys('locked');
+        should(info).have.keys('locked');
       });
     });
 
@@ -52,7 +53,7 @@ describe('Single Wallet', () => {
         const wallets = await client.listWallets();
 
         // wallet is shown as '' unless -wallet set in config
-        wallets.should.eql(['']);
+        should(wallets).eql(['']);
       });
     });
   });
@@ -63,9 +64,9 @@ describe('Single Wallet', () => {
         const address = await client.getNewAddress('testlabelsingle');
         const labelList = await client.listLabels();
 
-        labelList.should.be.an.Array();
-        labelList.should.containEql('testlabelsingle');
-        address.should.be.a.String();
+        should(labelList).be.an.Array();
+        should(labelList).containEql('testlabelsingle');
+        should(address).be.a.String();
       });
     });
 
@@ -73,7 +74,7 @@ describe('Single Wallet', () => {
       it('should return the total server\'s balance', async () => {
         const balance = await client.getBalance();
 
-        balance.should.be.aboveOrEqual(0);
+        should(balance).be.aboveOrEqual(0);
       });
 
       it('should support named parameters', async () => {
@@ -82,7 +83,7 @@ describe('Single Wallet', () => {
         const mainWalletBalance = await client.getBalance({ dummy: '*', minconf: 0 });
         const mainWalletBalanceWithoutNamedParameters = await client.getBalance('*', 0);
 
-        mainWalletBalance.should.equal(mainWalletBalanceWithoutNamedParameters);
+        should(mainWalletBalance).equal(mainWalletBalanceWithoutNamedParameters);
       });
     });
 
@@ -90,7 +91,7 @@ describe('Single Wallet', () => {
       it('should return a new bitcoin address', async () => {
         const address = await client.getNewAddress('test');
 
-        address.should.be.a.String();
+        should(address).be.a.String();
       });
     });
 
@@ -105,18 +106,18 @@ describe('Single Wallet', () => {
 
         const transactions = await client.listTransactions('*', 5);
 
-        transactions.should.be.an.Array();
-        transactions.length.should.be.greaterThanOrEqual(5);
+        should(transactions).be.an.Array();
+        should(transactions.length).be.greaterThanOrEqual(5);
       });
 
       it('should return the most recent list of transactions using default count', async () => {
         const transactions = await client.listTransactions();
 
-        transactions.should.be.an.Array();
-        transactions.should.matchEach(value => {
+        should(transactions).be.an.Array();
+        should(transactions).matchEach(value => {
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          value.should.have.keys(
+          should(value).have.keys(
             'label',
             'address',
             'amount',
@@ -139,14 +140,14 @@ describe('Single Wallet', () => {
 
         let transactions = await new Client(defaults({ version: '0.17.0' }, config.bitcoin)).listTransactions();
 
-        transactions.should.be.an.Array();
-        transactions.length.should.be.greaterThanOrEqual(5);
+        should(transactions).be.an.Array();
+        should(transactions.length).be.greaterThanOrEqual(5);
 
         // Make sure `count` is read correctly.
         transactions = await new Client(defaults({ version: '0.17.0' }, config.bitcoin)).listTransactions({ count: 1 });
 
-        transactions.should.be.an.Array();
-        transactions.should.have.length(1);
+        should(transactions).be.an.Array();
+        should(transactions).have.length(1);
       });
     });
   });
@@ -162,7 +163,7 @@ describe('Single Wallet', () => {
 
       // 0.17 for some reason has wallets shown as ''
       // I'm guessing if you load a wallet specifically it will show it
-      response.should.eql([[''], [''], ['']]);
+      should(response).eql([[''], [''], ['']]);
     });
 
     it('should support request parameters in batched requests', async () => {
@@ -170,8 +171,8 @@ describe('Single Wallet', () => {
 
       const [newAddress, addressValidation] = await client.command(batch);
 
-      addressValidation.should.have.properties('address', 'isvalid', 'scriptPubKey', 'isscript', 'iswitness');
-      newAddress.should.be.a.String();
+      should(addressValidation).have.properties('address', 'isvalid', 'scriptPubKey', 'isscript', 'iswitness');
+      should(newAddress).be.a.String();
     });
 
     it('should return an error if one of the request fails', async () => {
@@ -179,9 +180,9 @@ describe('Single Wallet', () => {
 
       const [validateAddressError, validateAddress] = await client.command(batch);
 
-      validateAddress.should.have.properties('address', 'isvalid', 'scriptPubKey');
-      validateAddressError.should.be.an.instanceOf(RpcError);
-      validateAddressError.code.should.equal(-1);
+      should(validateAddress).have.properties('address', 'isvalid', 'scriptPubKey');
+      should(validateAddressError).be.an.instanceOf(RpcError);
+      should(validateAddressError.code).equal(-1);
     });
   });
 });
