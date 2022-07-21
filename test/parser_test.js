@@ -33,9 +33,9 @@ describe('Parser', () => {
 
       should.fail();
     } catch (e) {
-      e.should.be.an.instanceOf(RpcError);
-      e.message.should.equal('An error occurred while processing the RPC call to bitcoind');
-      e.code.should.equal(-32601);
+      should(e).be.an.instanceOf(RpcError);
+      should(e.message).equal('An error occurred while processing the RPC call to bitcoind');
+      should(e.code).equal(-32601);
     }
   });
 
@@ -49,9 +49,9 @@ describe('Parser', () => {
 
       should.fail();
     } catch (e) {
-      e.should.be.an.instanceOf(RpcError);
-      e.message.should.equal('Missing `result` on the RPC call result');
-      e.code.should.equal(-32700);
+      should(e).be.an.instanceOf(RpcError);
+      should(e.message).equal('Missing `result` on the RPC call result');
+      should(e.code).equal(-32700);
     }
   });
 
@@ -59,9 +59,9 @@ describe('Parser', () => {
     try {
       await new Client(defaults({ wallet: 'foobar' }, config.bitcoinMultiWallet)).getWalletInfo();
     } catch (e) {
-      e.should.be.an.instanceOf(RpcError);
-      e.message.should.equal('Requested wallet does not exist or is not loaded');
-      e.code.should.equal(-18);
+      should(e).be.an.instanceOf(RpcError);
+      should(e.message).equal('Requested wallet does not exist or is not loaded');
+      should(e.code).equal(-18);
     }
   });
 
@@ -69,8 +69,8 @@ describe('Parser', () => {
     it('should return the response headers if `headers` is enabled', async () => {
       const [info, headers] = await new Client(defaults({ headers: true }, config.bitcoin)).getNetworkInfo();
 
-      info.should.be.an.Object();
-      headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
+      should(info).be.an.Object();
+      should(headers).have.keys('date', 'connection', 'content-length', 'content-type');
     });
 
     it('should return the response headers if `headers` is enabled and batching is used', async () => {
@@ -80,8 +80,8 @@ describe('Parser', () => {
       ];
       const [addresses, headers] = await new Client(defaults({ headers: true }, config.bitcoin)).command(batch);
 
-      addresses.should.have.length(batch.length);
-      headers.should.have.keys('date', 'connection', 'content-length', 'content-type');
+      should(addresses).have.length(batch.length);
+      should(headers).have.keys('date', 'connection', 'content-length', 'content-type');
     });
   });
 });

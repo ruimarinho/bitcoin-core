@@ -35,7 +35,7 @@ describe('Multi Wallet', () => {
       it('should return the proof-of-work difficulty', async () => {
         const difficulty = await client.getDifficulty();
 
-        difficulty.should.be.a.String();
+        should(difficulty).be.a.String();
       });
     });
 
@@ -43,7 +43,7 @@ describe('Multi Wallet', () => {
       it('should return information about the node\'s memory usage', async () => {
         const info = await client.getMemoryInfo();
 
-        info.should.have.keys('locked');
+        should(info).have.keys('locked');
       });
     });
 
@@ -51,7 +51,7 @@ describe('Multi Wallet', () => {
       it('should return a list of currently loaded wallets', async () => {
         const wallets = await client.listWallets();
 
-        wallets.should.eql(['', 'wallet1', 'wallet2']);
+        should(wallets).eql(['', 'wallet1', 'wallet2']);
       });
     });
   });
@@ -63,8 +63,8 @@ describe('Multi Wallet', () => {
 
         const labelList = await client.listLabels();
 
-        labelList.should.be.an.Array();
-        labelList.should.containEql('testlabelmulti');
+        should(labelList).be.an.Array();
+        should(labelList).containEql('testlabelmulti');
       });
     });
 
@@ -72,14 +72,14 @@ describe('Multi Wallet', () => {
       it('should return the total server\'s balance', async () => {
         const balance = await client.getBalance();
 
-        balance.should.be.aboveOrEqual(0);
+        should(balance).be.aboveOrEqual(0);
       });
 
       it('should support named parameters', async () => {
         const mainWalletBalance = await client.getBalance({ dummy: '*', minconf: 0 });
         const mainWalletBalanceWithoutNamedParameters = await client.getBalance('*', 0);
 
-        mainWalletBalance.should.equal(mainWalletBalanceWithoutNamedParameters);
+        should(mainWalletBalance).equal(mainWalletBalanceWithoutNamedParameters);
       });
     });
 
@@ -88,7 +88,7 @@ describe('Multi Wallet', () => {
         const address = await client.getNewAddress('test', 'legacy');
         const amount = await client.getReceivedByAddress({ address, minconf: 0 });
 
-        amount.should.equal(0);
+        should(amount).equal(0);
       });
     });
 
@@ -98,7 +98,7 @@ describe('Multi Wallet', () => {
         const dest = [{ mkteeBFmGkraJaWN5WzqHCjmbQWVrPo5X3: 1000 }];
         const pbst = await client.createPsbt(inputs, dest);
 
-        pbst.should.be.a.String();
+        should(pbst).be.a.String();
       });
     });
 
@@ -113,12 +113,12 @@ describe('Multi Wallet', () => {
 
         const transactions = await client.listTransactions({ count: 5 });
 
-        transactions.should.be.an.Array();
-        transactions.should.matchEach(value => {
-          value.label.should.equal('listspecificcount');
+        should(transactions).be.an.Array();
+        should(transactions).matchEach(value => {
+          should(value.label).equal('listspecificcount');
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          value.should.have.keys(
+          should(value).have.keys(
             'label',
             'address',
             'amount',
@@ -129,7 +129,7 @@ describe('Multi Wallet', () => {
             'vout'
           );
         });
-        transactions.length.should.be.greaterThanOrEqual(5);
+        should(transactions.length).be.greaterThanOrEqual(5);
       });
 
       it('should return the most recent list of transactions using default count', async () => {
@@ -142,13 +142,13 @@ describe('Multi Wallet', () => {
 
         const transactions = await client.listTransactions();
 
-        transactions.should.be.an.Array();
-        transactions.should.matchEach(value => {
-          value.label.should.equal('listdefaultcount');
+        should(transactions).be.an.Array();
+        should(transactions).matchEach(value => {
+          should(value.label).equal('listdefaultcount');
 
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          value.should.have.keys(
+          should(value).have.keys(
             'label',
             'address',
             'amount',
@@ -171,19 +171,19 @@ describe('Multi Wallet', () => {
 
         let transactions = await client.listTransactions();
 
-        transactions.should.be.an.Array();
-        transactions.length.should.be.greaterThanOrEqual(5);
+        should(transactions).be.an.Array();
+        should(transactions.length).be.greaterThanOrEqual(5);
 
         // Make sure `count` is read correctly.
         transactions = await client.listTransactions({ count: 1 });
 
-        transactions.should.be.an.Array();
-        transactions.should.have.length(1);
-        transactions.should.matchEach(value => {
-          value.label.should.equal('testlistwithparams');
+        should(transactions).be.an.Array();
+        should(transactions).have.length(1);
+        should(transactions).matchEach(value => {
+          should(value.label).equal('testlistwithparams');
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          value.should.have.keys(
+          should(value).have.keys(
             'label',
             'address',
             'amount',
@@ -204,8 +204,8 @@ describe('Multi Wallet', () => {
         const fundedTransaction = await client.fundRawTransaction(rawTransaction);
         const signedTransaction = await client.signRawTransactionWithWallet(fundedTransaction.hex);
 
-        signedTransaction.should.have.keys('hex');
-        signedTransaction.hex.should.be.a.String();
+        should(signedTransaction).have.keys('hex');
+        should(signedTransaction.hex).be.a.String();
       });
 
       it('should support named parameters', async () => {
@@ -214,8 +214,8 @@ describe('Multi Wallet', () => {
         const fundedTransaction = await client.fundRawTransaction(rawTransaction);
         const signedTransaction = await client.signRawTransactionWithWallet({ hexstring: fundedTransaction.hex });
 
-        signedTransaction.should.have.keys('hex');
-        signedTransaction.hex.should.be.a.String();
+        should(signedTransaction).have.keys('hex');
+        should(signedTransaction.hex).be.a.String();
       });
     });
   });
@@ -231,7 +231,7 @@ describe('Multi Wallet', () => {
 
       const response = await client.command(batch);
 
-      response.should.eql([0, ['', 'wallet1', 'wallet2'], ['', 'wallet1', 'wallet2']]);
+      should(response).eql([0, ['', 'wallet1', 'wallet2'], ['', 'wallet1', 'wallet2']]);
     });
 
     it('should return an error if one of the request fails', async () => {
@@ -239,9 +239,9 @@ describe('Multi Wallet', () => {
 
       const [validateAddressError, listWallets] = await client.command(batch);
 
-      listWallets.should.eql(['', 'wallet1', 'wallet2']);
-      validateAddressError.should.be.an.instanceOf(RpcError);
-      validateAddressError.code.should.equal(-1);
+      should(listWallets).eql(['', 'wallet1', 'wallet2']);
+      should(validateAddressError).be.an.instanceOf(RpcError);
+      should(validateAddressError.code).equal(-1);
     });
   });
 
@@ -251,7 +251,7 @@ describe('Multi Wallet', () => {
 
       const balance = await client.getBalance();
 
-      balance.should.be.aboveOrEqual(0);
+      should(balance).be.aboveOrEqual(0);
     });
 
     it('should fail getting balance for default wallet with `allowDefaultWallet` as `false`', async () => {
@@ -262,9 +262,9 @@ describe('Multi Wallet', () => {
 
         should.fail();
       } catch (error) {
-        error.should.be.an.instanceOf(RpcError);
-        error.code.should.be.equal(-19);
-        error.message.should.containEql('Wallet file not specified (must request wallet RPC through /wallet/<filename> uri-path).');
+        should(error).be.an.instanceOf(RpcError);
+        should(error.code).be.equal(-19);
+        should(error.message).containEql('Wallet file not specified (must request wallet RPC through /wallet/<filename> uri-path).');
       }
     });
   });

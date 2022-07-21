@@ -19,8 +19,8 @@ describe('Requester', () => {
 
       should.fail();
     } catch (e) {
-      e.should.be.an.instanceOf(Error);
-      e.message.should.equal('Method "gethashespersec" is not supported by version "0.12.0"');
+      should(e).be.an.instanceOf(Error);
+      should(e.message).equal('Method "gethashespersec" is not supported by version "0.12.0"');
     }
   });
 });
