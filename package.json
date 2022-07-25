@@ -43,7 +43,7 @@
   "devDependencies": {
     "eslint": "4.11.0",
     "eslint-config-uphold": "0.0.1",
-    "mocha": "^4.0.1",
+    "mocha": "^6.0.0",
     "nock": "^9.1.0",
     "nyc": "^11.3.0",
     "pre-commit": "^1.1.2",
