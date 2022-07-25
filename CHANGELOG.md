@@ -1,8 +1,16 @@
 # Changelog
 
-## [3.1.0](https://github.com/ruimarinho/bitcoin-core/tree/3.1.0) (2022-07-21)
+## [4.0.0](https://github.com/ruimarinho/bitcoin-core/tree/4.0.0) (2022-07-25)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v3.0.0...3.1.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v3.1.0...4.0.0)
+
+**Implemented enhancements:**
+
+- Remove Babel [\#106](https://github.com/ruimarinho/bitcoin-core/pull/106) ([pedrobranco](https://github.com/pedrobranco))
+
+## [v3.1.0](https://github.com/ruimarinho/bitcoin-core/tree/v3.1.0) (2022-07-21)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v3.0.0...v3.1.0)
 
 **Implemented enhancements:**
 
