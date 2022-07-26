@@ -310,6 +310,10 @@ module.exports = {
     category: 'blockchain',
     version: '<0.10.0'
   },
+  getIndexInfo: {
+    category: 'util',
+    version: '>=0.21.0'
+  },
   getInfo: {
     category: 'control',
     version: '>=0.1.0 <0.16.0'
