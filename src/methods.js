@@ -294,6 +294,10 @@ module.exports = {
     category: 'network',
     version: '>=0.1.0'
   },
+  getDeploymentInfo: {
+    category: 'blockchain',
+    version: '>=0.23.0'
+  },
   getDescriptorInfo: {
     category: 'util',
     version: '>=0.18.0'
