@@ -127,6 +127,10 @@ module.exports = {
     },
     version: '>=0.6.0'
   },
+  dumpTxOutset: {
+    category: 'wallet',
+    version: '>=0.20.0'
+  },
   dumpWallet: {
     category: 'wallet',
     features: {
@@ -184,6 +188,10 @@ module.exports = {
   generateToAddress: {
     category: 'generating',
     version: '>=0.13.0'
+  },
+  generateToDescriptor: {
+    category: 'generating',
+    version: '>=0.20.0'
   },
   getAccount: {
     category: 'wallet',
