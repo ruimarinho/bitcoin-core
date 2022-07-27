@@ -1,8 +1,16 @@
 # Changelog
 
-## [4.0.0](https://github.com/ruimarinho/bitcoin-core/tree/4.0.0) (2022-07-25)
+## [4.1.0](https://github.com/ruimarinho/bitcoin-core/tree/4.1.0) (2022-07-27)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v3.1.0...4.0.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.0.0...4.1.0)
+
+**Implemented enhancements:**
+
+- Add support for bitcoin@\>0.19.0 RPC methods [\#142](https://github.com/ruimarinho/bitcoin-core/pull/142) ([joaomatbarbosa](https://github.com/joaomatbarbosa))
+
+## [v4.0.0](https://github.com/ruimarinho/bitcoin-core/tree/v4.0.0) (2022-07-25)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v3.1.0...v4.0.0)
 
 **Implemented enhancements:**
 
