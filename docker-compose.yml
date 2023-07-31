@@ -2,85 +2,47 @@ version: '3.4'
 
 services:
   bitcoin-core:
-    image: ruimarinho/bitcoin-core:0.17
+    image: ruimarinho/bitcoin-core:24.0.1
     command:
+      -fallbackfee=0.0002
       -printtoconsole
       -regtest=1
       -rest
-      -rpcallowip=::/0
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
       -rpcpassword=bar
       -rpcport=18443
       -rpcuser=foo
+      -txindex=1
       -server
     ports:
-      - 18443:18443
+    - 18443:18443
     healthcheck:
-      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
+      test: curl --fail "http://foo@bitcoin-core:18443/rest/chaininfo.json" || exit 1
       interval: 2s
       retries: 100
       start_period: 2s
       timeout: 2s
 
   bitcoin-core-multi-wallet:
-    image: ruimarinho/bitcoin-core:0.17
+    image: ruimarinho/bitcoin-core:24.0.1
     command:
+      -fallbackfee=0.0002
       -printtoconsole
       -regtest=1
       -rest
-      -rpcallowip=::/0
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
       -rpcpassword=bar
-      -wallet
+      -wallet=wallet
       -wallet=wallet1
       -wallet=wallet2
       -rpcport=18443
       -rpcuser=foo
+      -txindex=1
       -server
     ports:
       - 18453:18443
-    healthcheck:
-      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
-      interval: 2s
-      retries: 100
-      start_period: 2s
-      timeout: 2s
-
-  bitcoin-core-ssl:
-    image: ruimarinho/bitcoin-core:0.11
-    command:
-      -printtoconsole
-      -regtest=1
-      -rest
-      -rpcallowip=::/0
-      -rpcpassword=bar
-      -rpcport=18443
-      -rpcssl
-      -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
-      -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
-      -rpcuser=foo
-      -server
-    volumes:
-      - ./test/config/ssl:/etc/ssl/bitcoind
-    ports:
-      - 18463:18443
-    healthcheck:
-      test: curl --fail -k "https://foo@localhost:18443/rest/chaininfo.json" || exit 1
-      interval: 2s
-      retries: 100
-      start_period: 2s
-      timeout: 2s
-
-  bitcoin-core-username-only:
-    image: ruimarinho/bitcoin-core:0.11
-    command:
-      -printtoconsole
-      -regtest=1
-      -rest
-      -rpcallowip=::/0
-      -rpcport=18443
-      -rpcuser=foo
-      -server
-    ports:
-      - 18473:18443
     healthcheck:
       test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
       interval: 2s

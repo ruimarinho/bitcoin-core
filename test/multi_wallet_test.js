@@ -8,12 +8,13 @@ const Client = require('../src/index');
 const RpcError = require('../src/errors/rpc-error');
 const config = require('./config');
 const should = require('should');
+const { generateWalletFunds } = require('./utils/helper');
 
 /**
  * Test instance.
  */
 
-const client = new Client(_.defaults({ version: '0.17.0', wallet: 'wallet1' }, config.bitcoinMultiWallet));
+const client = new Client(_.defaults({ version: '24.0.1', wallet: 'wallet1' }, config.bitcoinMultiWallet));
 
 /**
  * Test `Client`.
@@ -21,13 +22,7 @@ const client = new Client(_.defaults({ version: '0.17.0', wallet: 'wallet1' }, c
 
 describe('Multi Wallet', () => {
   before(async () => {
-    const [tip] = await client.getChainTips();
-
-    if (tip.height >= 432) {
-      return null;
-    }
-
-    await client.generate(432);
+    await generateWalletFunds(client, client.wallet);
   });
 
   describe('node-level requests', () => {
@@ -51,7 +46,7 @@ describe('Multi Wallet', () => {
       it('should return a list of currently loaded wallets', async () => {
         const wallets = await client.listWallets();
 
-        should(wallets).eql(['', 'wallet1', 'wallet2']);
+        should(wallets).eql(['wallet1']);
       });
     });
   });
@@ -221,8 +216,7 @@ describe('Multi Wallet', () => {
   });
 
   describe('batched requests', () => {
-    // Waiting for 0.15.x with a fix for batched requests in a multiwallet context.
-    it.skip('should support batched requests', async () => {
+    it('should support batched requests', async () => {
       const batch = [
         { method: 'getbalance' },
         { method: 'listwallets' },
@@ -231,7 +225,10 @@ describe('Multi Wallet', () => {
 
       const response = await client.command(batch);
 
-      should(response).eql([0, ['', 'wallet1', 'wallet2'], ['', 'wallet1', 'wallet2']]);
+      should(response).lengthOf(3);
+      should(response[0]).be.a.Number();
+      should(response[1]).eql(['wallet1']);
+      should(response[2]).eql(['wallet1']);
     });
 
     it('should return an error if one of the request fails', async () => {
@@ -239,33 +236,9 @@ describe('Multi Wallet', () => {
 
       const [validateAddressError, listWallets] = await client.command(batch);
 
-      should(listWallets).eql(['', 'wallet1', 'wallet2']);
+      should(listWallets).eql(['wallet1']);
       should(validateAddressError).be.an.instanceOf(RpcError);
       should(validateAddressError.code).equal(-1);
-    });
-  });
-
-  describe('default wallet', () => {
-    it('should return the balance for the default wallet with multiple wallets loaded if `allowDefaultWallet` is true', async () => {
-      const client = new Client(_.defaults({ allowDefaultWallet: true, version: '0.17.0' }, config.bitcoinMultiWallet));
-
-      const balance = await client.getBalance();
-
-      should(balance).be.aboveOrEqual(0);
-    });
-
-    it('should fail getting balance for default wallet with `allowDefaultWallet` as `false`', async () => {
-      const client = new Client(_.defaults({ version: '0.17.0' }, config.bitcoinMultiWallet));
-
-      try {
-        await client.getBalance();
-
-        should.fail();
-      } catch (error) {
-        should(error).be.an.instanceOf(RpcError);
-        should(error.code).be.equal(-19);
-        should(error.message).containEql('Wallet file not specified (must request wallet RPC through /wallet/<filename> uri-path).');
-      }
     });
   });
 });

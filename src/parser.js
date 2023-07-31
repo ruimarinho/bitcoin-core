@@ -17,7 +17,7 @@ const { parse } = JSONBigInt({ storeAsString: true, strict: true }); // eslint-d
  * Get RPC response body result.
  */
 
-function getRpcResult(body, { headers = false, response } = {}) {
+function getRpcResult(body) {
   if (body.error !== null) {
     throw new RpcError(
       _.get(body, 'error.code', -32603),
@@ -30,10 +30,6 @@ function getRpcResult(body, { headers = false, response } = {}) {
     throw new RpcError(-32700, 'Missing `result` on the RPC call result');
   }
 
-  if (headers) {
-    return [body.result, response.headers];
-  }
-
   return body.result;
 }
 
@@ -42,10 +38,6 @@ function getRpcResult(body, { headers = false, response } = {}) {
  */
 
 module.exports = class Parser {
-  constructor({ headers } = {}) {
-    this.headers = headers;
-  }
-
   /**
    * Parse rpc response.
    */
@@ -61,21 +53,17 @@ module.exports = class Parser {
     const body = parse(response.body);
 
     if (!Array.isArray(body)) {
-      return getRpcResult(body, { headers: this.headers, response });
+      return getRpcResult(body);
     }
 
     // Batch response parsing where each response may or may not be successful.
     const batch = body.map(response => {
       try {
-        return getRpcResult(response, { headers: false, response });
+        return getRpcResult(response);
       } catch (e) {
         return e;
       }
     });
-
-    if (this.headers) {
-      return [batch, response.headers];
-    }
 
     return batch;
   }
@@ -96,10 +84,6 @@ module.exports = class Parser {
     // Parsing the body with custom parser to support BigNumbers.
     if (extension === 'json') {
       response.body = parse(response.body);
-    }
-
-    if (this.headers) {
-      return [response.body, response.headers];
     }
 
     return response.body;
