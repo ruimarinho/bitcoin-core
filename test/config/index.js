@@ -9,26 +9,13 @@
 
 module.exports = {
   bitcoin: {
-    host: 'localhost',
+    host: 'http://localhost:18443',
     password: 'bar',
-    port: 18443,
     username: 'foo'
   },
   bitcoinMultiWallet: {
-    host: 'localhost',
+    host: 'http://localhost:18453',
     password: 'bar',
-    port: 18453,
-    username: 'foo'
-  },
-  bitcoinSsl: {
-    host: 'localhost',
-    password: 'bar',
-    port: 18463,
-    username: 'foo'
-  },
-  bitcoinUsernameOnly: {
-    host: 'localhost',
-    port: 18473,
     username: 'foo'
   }
 };

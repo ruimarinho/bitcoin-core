@@ -151,6 +151,10 @@ module.exports = {
     },
     version: '>=0.1.0'
   },
+  enumerateSigners: {
+    category: 'signer',
+    version: '>=0.24.0'
+  },
   estimateFee: {
     category: 'util',
     version: '>=0.10.0'
@@ -261,6 +265,10 @@ module.exports = {
   getBlockFilter: {
     category: 'blockchain',
     version: '>=0.19.0'
+  },
+  getBlockFromPeer: {
+    category: 'blockchain',
+    version: '>=24.0.0'
   },
   getBlockHash: {
     category: 'blockchain',
@@ -431,6 +439,10 @@ module.exports = {
   getTxOutSetInfo: {
     category: 'blockchain',
     version: '>=0.7.0'
+  },
+  getTxSpendingPrevOut: {
+    category: 'blockchain',
+    version: '>=24.0.0'
   },
   getUnconfirmedBalance: {
     category: 'wallet',
@@ -636,12 +648,26 @@ module.exports = {
   logging: {
     version: '>=0.17.0'
   },
+  migrateWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
+  },
   move: {
     category: 'wallet',
     features: {
       multiwallet: '>=0.15.0'
     },
     version: '>=0.3.18'
+  },
+  newKeyPool: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
   },
   ping: {
     category: 'network',
@@ -658,6 +684,13 @@ module.exports = {
   pruneBlockchain: {
     category: 'blockchain',
     version: '>=0.14.0'
+  },
+  psbtBumpFee: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
   },
   removePrunedFunds: {
     category: 'wallet',
@@ -684,6 +717,20 @@ module.exports = {
   scantxoutset: {
     category: 'blockchain',
     version: '=>0.17.0'
+  },
+  send: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
+  },
+  sendAll: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
   },
   sendFrom: {
     category: 'wallet',
@@ -807,6 +854,13 @@ module.exports = {
     },
     version: '>=0.17.0'
   },
+  simulateRawTransaction: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
+  },
   stop: {
     category: 'control',
     version: '>=0.1.0'
@@ -814,6 +868,10 @@ module.exports = {
   submitBlock: {
     category: 'mining',
     version: '>=0.7.0'
+  },
+  submitHeader: {
+    category: 'mining',
+    version: '>=24.0.0'
   },
   testMempoolAccept: {
     category: 'blockchain',
@@ -826,6 +884,13 @@ module.exports = {
   upTime: {
     category: 'control',
     version: '>=0.15.0'
+  },
+  upgradeWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
   },
   utxoUpdatePsbt: {
     category: 'rawtransactions',
@@ -853,6 +918,13 @@ module.exports = {
       multiwallet: '>=0.17.0'
     },
     version: '>=0.17.0'
+  },
+  walletDisplayAddress: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=24.0.0'
+    },
+    version: '>=24.0.0'
   },
   walletLock: {
     category: 'wallet',
