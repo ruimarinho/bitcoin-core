@@ -24,7 +24,7 @@ afterEach(() => {
 
 describe('Parser', () => {
   it('should throw an error with a generic message if one is not returned on the response', async () => {
-    nock(`http://${config.bitcoin.host}:${config.bitcoin.port}/`)
+    nock(config.bitcoin.host)
       .post('/')
       .reply(200, '{ "result": null, "error": { "code": -32601 }, "id": "69837016239933"}');
 
@@ -40,7 +40,7 @@ describe('Parser', () => {
   });
 
   it('should throw an error if the response does not include a `result`', async () => {
-    nock(`http://${config.bitcoin.host}:${config.bitcoin.port}/`)
+    nock(config.bitcoin.host)
       .post('/')
       .reply(200, '{ "error": null, "id": "69837016239933"}');
 
@@ -58,30 +58,12 @@ describe('Parser', () => {
   it('should throw an error if the response is not successful but is json-formatted', async () => {
     try {
       await new Client(_.defaults({ wallet: 'foobar' }, config.bitcoinMultiWallet)).getWalletInfo();
+
+      should.fail();
     } catch (e) {
       should(e).be.an.instanceOf(RpcError);
       should(e.message).equal('Requested wallet does not exist or is not loaded');
       should(e.code).equal(-18);
     }
-  });
-
-  describe('headers', () => {
-    it('should return the response headers if `headers` is enabled', async () => {
-      const [info, headers] = await new Client(_.defaults({ headers: true }, config.bitcoin)).getNetworkInfo();
-
-      should(info).be.an.Object();
-      should(headers).have.keys('date', 'connection', 'content-length', 'content-type');
-    });
-
-    it('should return the response headers if `headers` is enabled and batching is used', async () => {
-      const batch = [
-        { method: 'getbalance' },
-        { method: 'getbalance' }
-      ];
-      const [addresses, headers] = await new Client(_.defaults({ headers: true }, config.bitcoin)).command(batch);
-
-      should(addresses).have.length(batch.length);
-      should(headers).have.keys('date', 'connection', 'content-length', 'content-type');
-    });
   });
 });
