@@ -545,6 +545,13 @@ module.exports = {
     category: 'network',
     version: '>=0.12.0'
   },
+  listDescriptors: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=0.22.0'
+    },
+    version: '>=0.22.0'
+  },
   listLabels: {
     category: 'wallet',
     features: {
