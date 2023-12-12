@@ -670,6 +670,13 @@ module.exports = {
     category: 'wallet',
     version: '>=0.16.0'
   },
+  restoreWallet: {
+    category: 'wallet',
+    features: {
+      multiwallet: '>=23.0.0'
+    },
+    version: '>=23.0.0'
+  },
   saveMempool: {
     category: 'blockchain',
     version: '>=0.16.0'
