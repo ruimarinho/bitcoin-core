@@ -465,6 +465,10 @@ module.exports = {
     },
     version: '>=0.10.0'
   },
+  importDescriptors: {
+    category: 'wallet',
+    version: '>=0.21.0'
+  },
   importMulti: {
     category: 'wallet',
     features: {
