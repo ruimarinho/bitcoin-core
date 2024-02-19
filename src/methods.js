@@ -467,6 +467,9 @@ module.exports = {
   },
   importDescriptors: {
     category: 'wallet',
+    features: {
+      multiwallet: '>=0.21.0'
+    },
     version: '>=0.21.0'
   },
   importMulti: {
