@@ -1,8 +1,20 @@
 # Changelog
 
-## [4.1.0](https://github.com/ruimarinho/bitcoin-core/tree/4.1.0) (2022-07-27)
+## [4.2.0](https://github.com/ruimarinho/bitcoin-core/tree/4.2.0) (2024-02-29)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.0.0...4.1.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.1.0...4.2.0)
+
+**Merged pull requests:**
+
+- Add multi wallet support for `importDescriptors` [\#155](https://github.com/ruimarinho/bitcoin-core/pull/155) ([JoelGama](https://github.com/JoelGama))
+- Add `importDescriptors` [\#154](https://github.com/ruimarinho/bitcoin-core/pull/154) ([JoelGama](https://github.com/JoelGama))
+- Add restorewallet rpc method for version \>=0.23.0 [\#152](https://github.com/ruimarinho/bitcoin-core/pull/152) ([n1rna](https://github.com/n1rna))
+- support listDescriptors method for version \>=0.22.0 [\#151](https://github.com/ruimarinho/bitcoin-core/pull/151) ([turkycat](https://github.com/turkycat))
+- Run tests on every pull request [\#143](https://github.com/ruimarinho/bitcoin-core/pull/143) ([ruimarinho](https://github.com/ruimarinho))
+
+## [v4.1.0](https://github.com/ruimarinho/bitcoin-core/tree/v4.1.0) (2022-07-27)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.0.0...v4.1.0)
 
 **Implemented enhancements:**
 
