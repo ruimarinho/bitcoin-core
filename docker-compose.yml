@@ -1,8 +1,6 @@
-version: '3.4'
-
 services:
   bitcoin-core:
-    image: ruimarinho/bitcoin-core:24.0.1
+    image: bitcoin/bitcoin:28.0
     command:
       -fallbackfee=0.0002
       -printtoconsole
@@ -25,7 +23,7 @@ services:
       timeout: 2s
 
   bitcoin-core-multi-wallet:
-    image: ruimarinho/bitcoin-core:24.0.1
+    image: bitcoin/bitcoin:28.0
     command:
       -fallbackfee=0.0002
       -printtoconsole
