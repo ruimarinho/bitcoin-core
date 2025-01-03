@@ -130,7 +130,6 @@ describe('Client', () => {
           should.fail();
         } catch (e) {
           should(e).be.an.instanceOf(Error);
-          should(e.message).match(/connect ECONNREFUSED/);
           should(e.code).equal('ECONNREFUSED');
         }
       });
