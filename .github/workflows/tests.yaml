@@ -24,7 +24,7 @@ jobs:
           version: '2.6.1'
 
       - name: Start containers
-        run: docker-compose up -d --build --wait --timeout 60
+        run: docker-compose up -d --build
 
       - name: Install dependencies
         run: yarn

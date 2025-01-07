@@ -15,12 +15,6 @@ services:
       -server
     ports:
     - 18443:18443
-    healthcheck:
-      test: curl --fail "http://foo@bitcoin-core:18443/rest/chaininfo.json" || exit 1
-      interval: 2s
-      retries: 100
-      start_period: 2s
-      timeout: 2s
 
   bitcoin-core-multi-wallet:
     image: bitcoin/bitcoin:28.0
@@ -41,9 +35,3 @@ services:
       -server
     ports:
       - 18453:18443
-    healthcheck:
-      test: curl --fail "http://foo@localhost:18443/rest/chaininfo.json" || exit 1
-      interval: 2s
-      retries: 100
-      start_period: 2s
-      timeout: 2s
