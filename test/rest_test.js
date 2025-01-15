@@ -7,6 +7,7 @@ const Client = require('../src/index');
 const RpcError = require('../src/errors/rpc-error');
 const config = require('./config');
 const should = require('should');
+const { generateWalletFunds } = require('./utils/helper');
 
 /**
  * Test instance.
@@ -20,19 +21,13 @@ const client = new Client(config.bitcoin);
 
 describe('REST', () => {
   before(async () => {
-    const [tip] = await client.getChainTips();
-
-    if (tip.height >= 432) {
-      return null;
-    }
-
-    await client.generate(432);
+    await generateWalletFunds(client, 'test');
   });
 
   describe('getTransactionByHash()', () => {
     it('should return a transaction json-encoded by default', async () => {
-      const [{ txid }] = await client.listUnspent();
-      const transaction = await client.getTransactionByHash(txid);
+      const unspents = await client.listUnspent();
+      const transaction = await client.getTransactionByHash(unspents[0].txid);
 
       should(transaction).have.keys('blockhash', 'locktime', 'hash', 'size', 'txid', 'version', 'vin', 'vout', 'vsize');
     });

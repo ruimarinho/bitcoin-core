@@ -8,6 +8,7 @@ const Client = require('../src/index');
 const RpcError = require('../src/errors/rpc-error');
 const config = require('./config');
 const should = require('should');
+const { generateWalletFunds } = require('./utils/helper');
 
 /**
  * Test instance.
@@ -21,13 +22,7 @@ const client = new Client(config.bitcoin);
 
 describe('Single Wallet', () => {
   before(async () => {
-    const [tip] = await client.getChainTips();
-
-    if (tip.height >= 432) {
-      return null;
-    }
-
-    await client.generate(432);
+    await generateWalletFunds(client, 'test');
   });
 
   describe('node-level requests', () => {
@@ -53,7 +48,7 @@ describe('Single Wallet', () => {
         const wallets = await client.listWallets();
 
         // wallet is shown as '' unless -wallet set in config
-        should(wallets).eql(['']);
+        should(wallets).eql(['test']);
       });
     });
   });
@@ -163,7 +158,7 @@ describe('Single Wallet', () => {
 
       // 0.17 for some reason has wallets shown as ''
       // I'm guessing if you load a wallet specifically it will show it
-      should(response).eql([[''], [''], ['']]);
+      should(response).eql([['test'], ['test'], ['test']]);
     });
 
     it('should support request parameters in batched requests', async () => {

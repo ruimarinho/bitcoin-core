@@ -23,59 +23,16 @@ npm install bitcoin-core --save
 ## Usage
 ### Client(...args)
 #### Arguments
-1. `[agentOptions]` _(Object)_: Optional `agent` [options](https://github.com/request/request#using-optionsagentoptions) to configure SSL/TLS.
-2. `[headers=false]` _(boolean)_: Whether to return the response headers.
-3. `[host=localhost]` _(string)_: The host to connect to.
-4. `[logger=debugnyan('bitcoin-core')]` _(Function)_: Custom logger (by default, `debugnyan`).
-5. `[network=mainnet]` _(string)_: The network
-6. `[password]` _(string)_: The RPC server user password.
-7. `[port=[network]]` _(string)_: The RPC server port.
-8. `[ssl]` _(boolean|Object)_: Whether to use SSL/TLS with strict checking (_boolean_) or an expanded config (_Object_).
-9. `[ssl.enabled]` _(boolean)_: Whether to use SSL/TLS.
-10. `[ssl.strict]` _(boolean)_: Whether to do strict SSL/TLS checking (certificate must match host).
-11. `[timeout=30000]` _(number)_: How long until the request times out (ms).
-12. `[username]` _(number)_: The RPC server user name.
-13. `[version]` _(string)_: Which version to check methods for ([read more](#versionchecking)).
-14. `[wallet]` _(string)_: Which wallet to manage ([read more](#multiwallet)).
+1. `[headers={}]` _(object)_: Custom request headers.
+2. `[host=http://localhost:8332]` _(string)_: The host to connect to.
+3. `[logger=debugnyan('bitcoin-core')]` _(Function)_: Custom logger (by default, `debugnyan`).
+4. `[password]` _(string)_: The RPC server user password.
+5. `[timeout=30000]` _(number)_: How long until the request times out (ms).
+6. `[username]` _(number)_: The RPC server user name.
+7. `[version]` _(string)_: Which version to check methods for ([read more](#versionchecking)).
+8. `[wallet]` _(string)_: Which wallet to manage ([read more](#multiwallet)).
 
 ### Examples
-#### Using network mode
-The `network` will automatically determine the port to connect to, just like the `bitcoind` and `bitcoin-cli` commands.
-
-```js
-const Client = require('bitcoin-core');
-const client = new Client({ network: 'regtest' });
-```
-
-##### Setting a custom port
-
-```js
-const client = new Client({ port: 28332 });
-```
-
-#### Connecting to an SSL/TLS server with strict checking enabled
-By default, when `ssl` is enabled, strict checking is implicitly enabled.
-
-```js
-const fs = require('fs');
-const client = new Client({
-  agentOptions: {
-    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')
-  },
-  ssl: true
-});
-```
-
-#### Connecting to an SSL/TLS server without strict checking enabled
-
-```js
-const client = new Client({
-  ssl: {
-    enabled: true,
-    strict: false
-  }
-});
-```
 
 #### Using promises to process the response
 
@@ -89,19 +46,6 @@ Callback support was removed. Since every method returns a `Promise`, [callbacki
 
 ```js
 util.callbackify(() => client.getInfo())((error, help) => console.log(help));
-```
-
-#### Returning headers in the response
-For compatibility with other Bitcoin Core clients.
-
-```js
-const client = new Client({ headers: true });
-
-// Promise style with headers enabled:
-client.getInfo().then(([body, headers]) => console.log(body, headers));
-
-// Await style based on promises with headers enabled:
-const [body, headers] = await client.getInfo();
 ```
 
 ## Named parameters
@@ -222,8 +166,6 @@ docker run --rm -it ruimarinho/bitcoin-core:0.12-alpine -printtoconsole -rpcuser
 ```
 
 These configuration values may also be set on the `bitcoin.conf` file of your platform installation.
-
-By default, port `8332` is used to listen for requests in `mainnet` mode, or `18332` in `testnet` and `regtest` modes (the regtest change will be changed to `18443` in [0.16](https://github.com/bitcoin/bitcoin/pull/10825)). Use the `network` property to initialize the client on the desired mode and automatically set the respective default port. You can optionally set a custom port of your choice too.
 
 The RPC services binds to the localhost loopback network interface, so use `rpcbind` to change where to bind to and `rpcallowip` to whitelist source IP access.
 
@@ -386,58 +328,8 @@ client.getUnspentTransactionOutputs([{
 }], { extension: 'json' })
 ```
 
-### SSL
-This client supports SSL out of the box. Simply pass the SSL public certificate to the client and optionally disable strict SSL checking which will bypass SSL validation (the connection is still encrypted but the server it is connecting to may not be trusted). This is, of course, discouraged unless for testing purposes when using something like self-signed certificates.
-
-#### Generating a self-signed certificates for testing purposes
-Please note that the following procedure should only be used for testing purposes.
-
-Generate an self-signed certificate together with an unprotected private key:
-
-```sh
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nodes
-```
-
 #### Connecting via SSL
-On Bitcoin Core <0.12, you can start the `bitcoind` RPC server directly with SSL:
-
-```sh
-docker run --rm -it -v $(PWD)/ssl:/etc/ssl ruimarinho/bitcoin-core:0.11-alpine -printtoconsole -rpcuser=foo -rpcpassword=bar -rpcssl -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem -server
-```
-
-On Bitcoin Core >0.12, use must use `stunnel` (`brew install stunnel` or `sudo apt-get install stunnel4`) or an HTTPS reverse proxy to configure SSL since the built-in support for SSL has been removed. The trade off with `stunnel` is performance and simplicity versus features, as it lacks more powerful capacities such as Basic Authentication and caching which are standard in reverse proxies.
-
-You can use `stunnel` by configuring `stunnel.conf` with the following service requirements:
-
-```
-[bitcoin]
-accept = 28332
-connect = 18332
-cert = /etc/ssl/bitcoind/cert.pem
-key = /etc/ssl/bitcoind/key.pem
-```
-
-The `key` option may be omitted if you concatenating your private and public certificates into a single `stunnel.pem` file.
-
-On some versions of `stunnel` it is also possible to start a service using command line arguments. The equivalent would be:
-
-```sh
-stunnel -d 28332 -r 127.0.0.1:18332 -p stunnel.pem -P ''
-```
-
-Then pass the public certificate to the client:
-
-```js
-const Client = require('bitcoin-core');
-const fs = require('fs');
-const client = new Client({
-  agentOptions: {
-    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')
-  },
-  port: 28332,
-  ssl: true
-});
-```
+Deprecated since release 0.5.0.
 
 ## Logging
 

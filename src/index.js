@@ -12,16 +12,6 @@ const requestLogger = require('./logging/request-logger');
 const semver = require('semver');
 
 /**
- * List of networks and their default port mapping.
- */
-
-const networks = {
-  mainnet: 8332,
-  regtest: 18332,
-  testnet: 18332
-};
-
-/**
  * Promisify helper.
  */
 
@@ -43,36 +33,20 @@ const promisify = fn => (...args) => new Promise((resolve, reject) => {
 
 class Client {
   constructor({
-    agentOptions,
-    allowDefaultWallet = false,
-    headers = false,
-    host = 'localhost',
+    headers = {},
+    host = 'http://localhost:8332',
     logger = debugnyan('bitcoin-core'),
-    network = 'mainnet',
     password,
-    port,
-    ssl = false,
     timeout = 30000,
     username,
     version,
     wallet
   } = {}) {
-    if (!_.has(networks, network)) {
-      throw new Error(`Invalid network name "${network}"`, { network });
-    }
-
-    this.agentOptions = agentOptions;
-    this.allowDefaultWallet = allowDefaultWallet;
     this.auth = (password || username) && { pass: password, user: username };
     this.hasNamedParametersSupport = false;
     this.headers = headers;
     this.host = host;
     this.password = password;
-    this.port = port || networks[network];
-    this.ssl = {
-      enabled: _.get(ssl, 'enabled', ssl),
-      strict: _.get(ssl, 'strict', _.get(ssl, 'enabled', ssl))
-    };
     this.timeout = timeout;
     this.wallet = wallet;
 
@@ -106,15 +80,14 @@ class Client {
     const request = requestLogger(logger);
 
     this.request = request.defaults({
-      agentOptions: this.agentOptions,
-      baseUrl: `${this.ssl.enabled ? 'https' : 'http'}://${this.host}:${this.port}`,
-      strictSSL: this.ssl.strict,
+      baseUrl: this.host,
+      headers: this.headers,
       timeout: this.timeout
     });
     this.request.getAsync = promisify(this.request.get);
     this.request.postAsync = promisify(this.request.post);
     this.requester = new Requester({ methods: this.methods, version });
-    this.parser = new Parser({ headers: this.headers });
+    this.parser = new Parser();
   }
 
   /**
@@ -154,9 +127,18 @@ class Client {
       uri = '/wallet/';
     }
 
+    if (this.auth) {
+      return this.parser.rpc(await this.request.postAsync({
+        auth: _.pickBy(this.auth, _.identity),
+        body: JSON.stringify(body),
+        followRedirect: true,
+        uri
+      }));
+    }
+
     return this.parser.rpc(await this.request.postAsync({
-      auth: _.pickBy(this.auth, _.identity),
       body: JSON.stringify(body),
+      followRedirect: true,
       uri
     }));
   }
