@@ -1,8 +1,17 @@
 # Changelog
 
-## [4.2.0](https://github.com/ruimarinho/bitcoin-core/tree/4.2.0) (2024-02-29)
+## [5.0.0](https://github.com/ruimarinho/bitcoin-core/tree/5.0.0) (2025-01-23)
 
-[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.1.0...4.2.0)
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.2.0...5.0.0)
+
+**Merged pull requests:**
+
+- Update supported node versions on unit tests [\#157](https://github.com/ruimarinho/bitcoin-core/pull/157) ([jpuh](https://github.com/jpuh))
+- Improve client and deprecate useless features [\#149](https://github.com/ruimarinho/bitcoin-core/pull/149) ([pedrobranco](https://github.com/pedrobranco))
+
+## [v4.2.0](https://github.com/ruimarinho/bitcoin-core/tree/v4.2.0) (2024-02-29)
+
+[Full Changelog](https://github.com/ruimarinho/bitcoin-core/compare/v4.1.0...v4.2.0)
 
 **Merged pull requests:**
 
