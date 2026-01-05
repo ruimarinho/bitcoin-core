@@ -1,1 +1,3 @@
 extends: uphold
+env:
+  jest: true

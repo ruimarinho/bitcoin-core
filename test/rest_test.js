@@ -6,7 +6,6 @@
 const Client = require('../src/index');
 const RpcError = require('../src/errors/rpc-error');
 const config = require('./config');
-const should = require('should');
 const { generateWalletFunds } = require('./utils/helper');
 
 /**
@@ -20,7 +19,7 @@ const client = new Client(config.bitcoin);
  */
 
 describe('REST', () => {
-  before(async () => {
+  beforeAll(async () => {
     await generateWalletFunds(client, 'test');
   });
 
@@ -29,7 +28,11 @@ describe('REST', () => {
       const unspents = await client.listUnspent();
       const transaction = await client.getTransactionByHash(unspents[0].txid);
 
-      should(transaction).have.keys('blockhash', 'locktime', 'hash', 'size', 'txid', 'version', 'vin', 'vout', 'vsize');
+      const requiredProperties = ['blockhash', 'locktime', 'hash', 'size', 'txid', 'version', 'vin', 'vout', 'vsize'];
+
+      requiredProperties.forEach(property => {
+        expect(transaction).toHaveProperty(property);
+      });
     });
 
     it('should return a transaction hex-encoded if extension is `hex`', async () => {
@@ -37,7 +40,7 @@ describe('REST', () => {
       const { hex: rawTransaction } = await client.getTransaction(txid);
       const hexTransaction = await client.getTransactionByHash(txid, { extension: 'hex' });
 
-      should(hexTransaction).equal(`${rawTransaction}\n`);
+      expect(hexTransaction).toEqual(`${rawTransaction}\n`);
     });
 
     it('should return a transaction binary-encoded if extension is `bin`', async () => {
@@ -45,33 +48,29 @@ describe('REST', () => {
       const binaryTransaction = await client.getTransactionByHash(txid, { extension: 'bin' });
       const hexTransaction = await client.getTransactionByHash(txid, { extension: 'hex' });
 
-      should(binaryTransaction).be.instanceOf(Buffer);
-      should(hexTransaction).equal(`${binaryTransaction.toString('hex')}\n`);
+      expect(binaryTransaction).toBeInstanceOf(Buffer);
+      expect(hexTransaction).toEqual(`${binaryTransaction.toString('hex')}\n`);
     });
 
     it('should throw an error if a method contains invalid arguments', async () => {
       try {
         await new Client(config.bitcoin).getTransactionByHash('foobar');
-
-        should.fail();
       } catch (e) {
-        should(e).be.an.instanceOf(RpcError);
-        should(e.body).equal('Invalid hash: foobar\r\n');
-        should(e.message).equal('Invalid hash: foobar');
-        should(e.code).equal(400);
+        expect(e).toBeInstanceOf(RpcError);
+        expect(e.body).toEqual('Invalid hash: foobar\r\n');
+        expect(e.message).toEqual('Invalid hash: foobar');
+        expect(e.code).toEqual(400);
       }
     });
 
     it('should throw an error if a method in binary mode contains invalid arguments', async () => {
       try {
         await new Client(config.bitcoin).getTransactionByHash('foobar', { extension: 'bin' });
-
-        should.fail();
       } catch (e) {
-        should(e).be.an.instanceOf(RpcError);
-        should(e.body).equal('Invalid hash: foobar\r\n');
-        should(e.message).equal('Invalid hash: foobar');
-        should(e.code).equal(400);
+        expect(e).toBeInstanceOf(RpcError);
+        expect(e.body).toEqual('Invalid hash: foobar\r\n');
+        expect(e.message).toEqual('Invalid hash: foobar');
+        expect(e.code).toEqual(400);
       }
     });
   });
@@ -80,28 +79,41 @@ describe('REST', () => {
     it('should return a block json-encoded by default', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
 
-      should(block).have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
-      should(block.tx).matchEach(value => should(value).be.an.Object());
+      const requiredProperties = ['bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight'];
+
+      requiredProperties.forEach(property => {
+        expect(block).toHaveProperty(property);
+      });
+
+      block.tx.forEach(value => {
+        expect(typeof value).toBe('object');
+      });
     });
 
     it('should return a block hex-encoded if extension is `hex`', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'hex' });
 
-      should(block).equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000\n');
+      expect(block).toEqual('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000\n');
     });
 
     it('should return a block binary-encoded if extension is `bin`', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'bin' });
 
-      should(block).be.instanceOf(Buffer);
-      should(block.toString('hex')).equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000');
+      expect(block).toBeInstanceOf(Buffer);
+      expect(block.toString('hex')).toEqual('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000');
     });
 
     it('should return a block summary json-encoded if `summary` is enabled', async () => {
       const block = await client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json', summary: true });
 
-      should(block).have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight');
-      should(block.tx).matchEach(value => should(value).be.a.String());
+      const requiredProperties = ['bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'size', 'strippedsize', 'time', 'tx', 'version', 'versionHex', 'weight'];
+
+      requiredProperties.forEach(property => {
+        expect(block).toHaveProperty(property);
+      });
+      block.tx.forEach(value => {
+        expect(typeof value).toBe('string');
+      });
     });
   });
 
@@ -109,15 +121,19 @@ describe('REST', () => {
     it('should return a block json-encoded by default', async () => {
       const headers = await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
 
-      should(headers).have.length(1);
-      should(headers[0]).have.keys('bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'time', 'version', 'versionHex');
-      should(headers[0].hash).equal('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
+      expect(headers).toHaveLength(1);
+      const requiredProperties = ['bits', 'chainwork', 'confirmations', 'difficulty', 'hash', 'height', 'mediantime', 'merkleroot', 'nonce', 'time', 'version', 'versionHex'];
+
+      requiredProperties.forEach(property => {
+        expect(headers[0]).toHaveProperty(property);
+      });
+      expect(headers[0].hash).toEqual('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206');
     });
 
     it('should return block headers hex-encoded if extension is `hex`', async () => {
       const headers = await client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'hex' });
 
-      should(headers).equal('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f2002000000\n');
+      expect(headers).toEqual('0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f2002000000\n');
     });
 
     it('should return block headers binary-encoded if extension is `bin`', async () => {
@@ -125,7 +141,7 @@ describe('REST', () => {
       const binaryHeaders = await client.getBlockHeadersByHash(hash, 1, { extension: 'bin' });
       const hexHeaders = await client.getBlockHeadersByHash(hash, 1, { extension: 'hex' });
 
-      should(binaryHeaders.toString('hex')).equal(`${hexHeaders.toString('hex').replace('\n', '')}`);
+      expect(binaryHeaders.toString('hex')).toEqual(`${hexHeaders.toString('hex').replace('\n', '')}`);
     });
   });
 
@@ -133,7 +149,11 @@ describe('REST', () => {
     it('should return blockchain information json-encoded by default', async () => {
       const information = await new Client(config.bitcoin).getBlockchainInformation();
 
-      should(information).have.properties('bestblockhash', 'blocks', 'chain', 'chainwork', 'difficulty', 'headers', 'pruned', 'verificationprogress');
+      const requiredProperties = ['bestblockhash', 'blocks', 'chain', 'chainwork', 'difficulty', 'headers', 'pruned', 'verificationprogress'];
+
+      requiredProperties.forEach(property => {
+        expect(information).toHaveProperty(property);
+      });
     });
   });
 
@@ -147,8 +167,12 @@ describe('REST', () => {
         index: 1
       }]);
 
-      should(result).have.keys('bitmap', 'chainHeight', 'chaintipHash', 'utxos');
-      should(result.chainHeight).be.a.Number();
+      const requiredProperties = ['bitmap', 'chainHeight', 'chaintipHash', 'utxos'];
+
+      requiredProperties.forEach(property => {
+        expect(result).toHaveProperty(property);
+      });
+      expect(typeof result.chainHeight).toBe('number');
     });
 
     it('should return unspent transaction outputs hex-encoded if extension is `hex`', async () => {
@@ -160,7 +184,7 @@ describe('REST', () => {
         index: 1
       }], { extension: 'hex' });
 
-      should(result).endWith('10000\n');
+      expect(result.endsWith('10000\n')).toBe(true);
     });
 
     it('should return unspent transaction outputs binary-encoded if extension is `bin`', async () => {
@@ -174,8 +198,8 @@ describe('REST', () => {
       const binaryUnspents = await new Client(config.bitcoin).getUnspentTransactionOutputs(outputs, { extension: 'bin' });
       const hexUnspents = await new Client(config.bitcoin).getUnspentTransactionOutputs(outputs, { extension: 'hex' });
 
-      should(binaryUnspents).be.instanceOf(Buffer);
-      should(hexUnspents).equal(`${binaryUnspents.toString('hex')}\n`);
+      expect(binaryUnspents).toBeInstanceOf(Buffer);
+      expect(hexUnspents).toEqual(`${binaryUnspents.toString('hex')}\n`);
     });
   });
 
@@ -191,20 +215,23 @@ describe('REST', () => {
 
       const transactions = await client.listTransactions();
 
-      should(Object.keys(content).length).not.equal(transactions.length);
+      expect(Object.keys(content).length).not.toEqual(transactions.length);
     });
   });
 
   describe('getMemoryPoolInformation()', () => {
     it('should return memory pool information json-encoded by default', async () => {
       const information = await new Client(config.bitcoin).getMemoryPoolInformation();
+      const requiredProperties = ['bytes', 'maxmempool', 'mempoolminfee', 'size', 'usage'];
 
-      should(information).have.keys('bytes', 'maxmempool', 'mempoolminfee', 'size', 'usage');
-      should(information.bytes).be.a.Number();
-      should(information.maxmempool).be.a.Number();
-      should(information.mempoolminfee).be.a.Number();
-      should(information.size).be.a.Number();
-      should(information.usage).be.a.Number();
+      requiredProperties.forEach(property => {
+        expect(information).toHaveProperty(property);
+      });
+      expect(typeof information.bytes).toBe('number');
+      expect(typeof information.maxmempool).toBe('number');
+      expect(typeof information.mempoolminfee).toBe('number');
+      expect(typeof information.size).toBe('number');
+      expect(typeof information.usage).toBe('number');
     });
   });
 });

@@ -7,7 +7,6 @@ const _ = require('lodash');
 const Client = require('../src/index');
 const RpcError = require('../src/errors/rpc-error');
 const config = require('./config');
-const should = require('should');
 const { generateWalletFunds } = require('./utils/helper');
 
 /**
@@ -21,7 +20,7 @@ const client = new Client(_.defaults({ version: '24.0.1', wallet: 'wallet1' }, c
  */
 
 describe('Multi Wallet', () => {
-  before(async () => {
+  beforeAll(async () => {
     await generateWalletFunds(client, client.wallet);
   });
 
@@ -30,7 +29,7 @@ describe('Multi Wallet', () => {
       it('should return the proof-of-work difficulty', async () => {
         const difficulty = await client.getDifficulty();
 
-        should(difficulty).be.a.String();
+        expect(typeof difficulty).toBe('string');
       });
     });
 
@@ -38,7 +37,7 @@ describe('Multi Wallet', () => {
       it('should return information about the node\'s memory usage', async () => {
         const info = await client.getMemoryInfo();
 
-        should(info).have.keys('locked');
+        expect(info).toHaveProperty('locked');
       });
     });
 
@@ -46,7 +45,7 @@ describe('Multi Wallet', () => {
       it('should return a list of currently loaded wallets', async () => {
         const wallets = await client.listWallets();
 
-        should(wallets).eql(['wallet1']);
+        expect(wallets).toEqual(['wallet1']);
       });
     });
   });
@@ -58,8 +57,8 @@ describe('Multi Wallet', () => {
 
         const labelList = await client.listLabels();
 
-        should(labelList).be.an.Array();
-        should(labelList).containEql('testlabelmulti');
+        expect(labelList).toBeInstanceOf(Array);
+        expect(labelList).toContain('testlabelmulti');
       });
     });
 
@@ -67,14 +66,14 @@ describe('Multi Wallet', () => {
       it('should return the total server\'s balance', async () => {
         const balance = await client.getBalance();
 
-        should(balance).be.aboveOrEqual(0);
+        expect(balance).toBeGreaterThanOrEqual(0);
       });
 
       it('should support named parameters', async () => {
         const mainWalletBalance = await client.getBalance({ dummy: '*', minconf: 0 });
         const mainWalletBalanceWithoutNamedParameters = await client.getBalance('*', 0);
 
-        should(mainWalletBalance).equal(mainWalletBalanceWithoutNamedParameters);
+        expect(mainWalletBalance).toEqual(mainWalletBalanceWithoutNamedParameters);
       });
     });
 
@@ -83,7 +82,7 @@ describe('Multi Wallet', () => {
         const address = await client.getNewAddress('test', 'legacy');
         const amount = await client.getReceivedByAddress({ address, minconf: 0 });
 
-        should(amount).equal(0);
+        expect(amount).toEqual(0);
       });
     });
 
@@ -93,7 +92,7 @@ describe('Multi Wallet', () => {
         const dest = [{ mkteeBFmGkraJaWN5WzqHCjmbQWVrPo5X3: 1000 }];
         const pbst = await client.createPsbt(inputs, dest);
 
-        should(pbst).be.a.String();
+        expect(typeof pbst).toBe('string');
       });
     });
 
@@ -108,12 +107,12 @@ describe('Multi Wallet', () => {
 
         const transactions = await client.listTransactions({ count: 5 });
 
-        should(transactions).be.an.Array();
-        should(transactions).matchEach(value => {
-          should(value.label).equal('listspecificcount');
+        expect(transactions).toBeInstanceOf(Array);
+        transactions.forEach(value => {
+          expect(value.label).toEqual('listspecificcount');
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          should(value).have.keys(
+          const requiredProperties = [
             'label',
             'address',
             'amount',
@@ -121,10 +120,13 @@ describe('Multi Wallet', () => {
             'confirmations',
             'time',
             'txid',
-            'vout'
-          );
+            'vout'];
+
+          requiredProperties.forEach(property => {
+            expect(value).toHaveProperty(property);
+          });
         });
-        should(transactions.length).be.greaterThanOrEqual(5);
+        expect(transactions.length).toBeGreaterThanOrEqual(5);
       });
 
       it('should return the most recent list of transactions using default count', async () => {
@@ -137,13 +139,13 @@ describe('Multi Wallet', () => {
 
         const transactions = await client.listTransactions();
 
-        should(transactions).be.an.Array();
-        should(transactions).matchEach(value => {
-          should(value.label).equal('listdefaultcount');
+        expect(transactions).toBeInstanceOf(Array);
+        transactions.forEach(value => {
+          expect(value.label).toEqual('listdefaultcount');
 
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          should(value).have.keys(
+          const requiredProperties = [
             'label',
             'address',
             'amount',
@@ -151,8 +153,11 @@ describe('Multi Wallet', () => {
             'confirmations',
             'time',
             'txid',
-            'vout'
-          );
+            'vout'];
+
+          requiredProperties.forEach(property => {
+            expect(value).toHaveProperty(property);
+          });
         });
       });
 
@@ -166,19 +171,20 @@ describe('Multi Wallet', () => {
 
         let transactions = await client.listTransactions();
 
-        should(transactions).be.an.Array();
-        should(transactions.length).be.greaterThanOrEqual(5);
+        expect(transactions).toBeInstanceOf(Array);
+        expect(transactions.length).toBeGreaterThanOrEqual(5);
 
         // Make sure `count` is read correctly.
         transactions = await client.listTransactions({ count: 1 });
 
-        should(transactions).be.an.Array();
-        should(transactions).have.length(1);
-        should(transactions).matchEach(value => {
-          should(value.label).equal('testlistwithparams');
+        expect(transactions).toBeInstanceOf(Array);
+        expect(transactions).toHaveLength(1);
+        transactions.forEach(value => {
+          expect(value.label).toEqual('testlistwithparams');
           // Only a small subset of transaction properties are being asserted here to make
           // sure we've received a transaction and not an empty object instead.
-          should(value).have.keys(
+
+          const requiredProperties = [
             'label',
             'address',
             'amount',
@@ -186,8 +192,11 @@ describe('Multi Wallet', () => {
             'confirmations',
             'time',
             'txid',
-            'vout'
-          );
+            'vout'];
+
+          requiredProperties.forEach(property => {
+            expect(value).toHaveProperty(property);
+          });
         });
       });
     });
@@ -199,8 +208,8 @@ describe('Multi Wallet', () => {
         const fundedTransaction = await client.fundRawTransaction(rawTransaction);
         const signedTransaction = await client.signRawTransactionWithWallet(fundedTransaction.hex);
 
-        should(signedTransaction).have.keys('hex');
-        should(signedTransaction.hex).be.a.String();
+        expect(signedTransaction).toHaveProperty('hex');
+        expect(typeof signedTransaction.hex).toBe('string');
       });
 
       it('should support named parameters', async () => {
@@ -209,8 +218,8 @@ describe('Multi Wallet', () => {
         const fundedTransaction = await client.fundRawTransaction(rawTransaction);
         const signedTransaction = await client.signRawTransactionWithWallet({ hexstring: fundedTransaction.hex });
 
-        should(signedTransaction).have.keys('hex');
-        should(signedTransaction.hex).be.a.String();
+        expect(signedTransaction).toHaveProperty('hex');
+        expect(typeof signedTransaction.hex).toBe('string');
       });
     });
   });
@@ -225,10 +234,10 @@ describe('Multi Wallet', () => {
 
       const response = await client.command(batch);
 
-      should(response).lengthOf(3);
-      should(response[0]).be.a.Number();
-      should(response[1]).eql(['wallet1']);
-      should(response[2]).eql(['wallet1']);
+      expect(response).toHaveLength(3);
+      expect(typeof response[0]).toBe('number');
+      expect(response[1]).toEqual(['wallet1']);
+      expect(response[2]).toEqual(['wallet1']);
     });
 
     it('should return an error if one of the request fails', async () => {
@@ -236,9 +245,9 @@ describe('Multi Wallet', () => {
 
       const [validateAddressError, listWallets] = await client.command(batch);
 
-      should(listWallets).eql(['wallet1']);
-      should(validateAddressError).be.an.instanceOf(RpcError);
-      should(validateAddressError.code).equal(-1);
+      expect(listWallets).toEqual(['wallet1']);
+      expect(validateAddressError).toBeInstanceOf(RpcError);
+      expect(validateAddressError.code).toEqual(-1);
     });
   });
 });
