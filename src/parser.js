@@ -18,7 +18,7 @@ const { parse } = JSONBigInt({ storeAsString: true, strict: true }); // eslint-d
  */
 
 function getRpcResult(body) {
-  if (body.error !== null) {
+  if (body.error) {
     throw new RpcError(
       _.get(body, 'error.code', -32603),
       _.get(body, 'error.message', 'An error occurred while processing the RPC call to bitcoind')
