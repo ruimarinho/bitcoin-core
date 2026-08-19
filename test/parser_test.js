@@ -66,4 +66,14 @@ describe('Parser', () => {
       should(e.code).equal(-18);
     }
   });
+
+  it('should return the result when a JSON-RPC 2.0 success omits `error`', async () => {
+    nock(config.bitcoin.host)
+      .post('/')
+      .reply(200, '{ "jsonrpc": "2.0", "result": { "hash": "00" }, "id": "1" }');
+
+    const result = await new Client(config.bitcoin).command('getblock', '00');
+
+    should(result).have.property('hash', '00');
+  });
 });
